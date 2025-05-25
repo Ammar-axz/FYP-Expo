@@ -1,45 +1,119 @@
-import { Tabs } from 'expo-router';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Screens
+// import ReminderLayout from '../(Reminder)/_layout';
+import { Tabs } from 'expo-router';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+const Tab = createBottomTabNavigator();
 
+const TabsLayout = () => {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarStyle:{
+          height:'10%',
+          paddingTop:'2%',
+          backgroundColor:'#FFFFFF'
+        },
+        tabBarActiveTintColor: '#36B295',
+        tabBarInactiveTintColor: '#0000008C',
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
       }}>
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarLabel: 'Home',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={require('@/assets/icons/home.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C'},
+              ]}
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="(quiz)"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarLabel: 'Quiz',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={require('@/assets/icons/courses.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C'},
+              ]}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(course)"
+        options={{
+          tabBarLabel: 'Course',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={require('@/assets/icons/library.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C'},
+              ]}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Leaderboard"
+        options={{
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={require('@/assets/icons/ranking.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C',
+                  height:'100%'
+                },
+              ]}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Setting"
+        options={{
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={require('@/assets/icons/setting.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C'},
+              ]}
+            />
+          ),
         }}
       />
     </Tabs>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  tabIcon: {
+    resizeMode: 'contain',
+  },
+  backButton: {
+    padding: 15,
+    marginVertical:15,
+    backgroundColor: '#1212120D',
+    borderRadius: 100,
+  },
+  backArrow: {
+    tintColor: '#000',
+    resizeMode: 'contain',
+  },
+});
+
+export default TabsLayout;
