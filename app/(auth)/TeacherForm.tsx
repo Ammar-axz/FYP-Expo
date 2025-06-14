@@ -1,52 +1,114 @@
-import ConfirmBtn from '@/components/ConfirmBtn'
-import FormField from '@/components/FormField'
-import Heading from '@/components/Heading'
-import Paragraph from '@/components/Paragraph'
-import React, { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import ConfirmBtn from '@/components/ConfirmBtn';
+import FormField from '@/components/FormField';
+import Heading from '@/components/Heading';
+import Paragraph from '@/components/Paragraph';
+import { userData } from '@/Context/UserContext';
+import axios from 'axios';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-//const navigation = useNavigation();
+const StudentForm = () => {
+  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserPoints} = userData()
+  
+  const baseURL =
+  Platform.OS === 'android'
+    ? 'http://10.0.2.2:5000'  // Android emulator
+    : 'http://localhost:5000'; // iOS simulator or Web
 
-const TeacherForm = ({navigation}) => {
+  const [error,setError] = useState()
   const [form, setForm] = useState({
-    name: '',
+    // studentId: '',
     email: '',
-    password: ''
+    pass: '',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    navigation.navigate('(tabs)');
-  }
+  const handleSubmit = async () => {
+    // if (!form.studentId || !form.email || !form.password) {
+    //   Alert.alert('Error', 'All fields are required!');
+    //   return;
+    // }
+    // setIsSubmitting(true);
+    try{
+      let response = await axios.post(`http://10.0.2.2:5000/api/Login`,form)
+        // setLoggedInUserId(response.data._id)
+        // setLoggedInUserPfp(response.data.pfp)
+        // setLoggedInUser(response.data.Name)
+        // console.log(response.data.Name)
+        console.log(response.data);
+        
+        setLoggedInUserId(response.data._id)
+        setLoggedInUser(response.data.Name)
+        setLoggedInUserPoints(response.data.Points)
+        // setIsSubmitting(false);
+        // navigation.replace('(tabs)');
+      }
+      catch(err)
+      {
+        // setError(err.response.data)
+        console.log("err"+err)
+      }
+
+    // setTimeout(() => {
+    //   setIsSubmitting(false);
+    //   // Alert.alert('Success', 'Registration completed!');
+    //   navigation.replace('(tabs)'); // Navigate to the main app
+    // }, 1500);
+  };
+
+  useEffect(() => {
+    if (loggedInUser !== 'Demo User') {
+      console.log(loggedInUser);      
+      router.replace('(home-teacher)');
+    }
+  }, [loggedInUser]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <Heading heading='Enter Information Teacher' />
-          <Paragraph paragraph='Provide Email address to continue the journey' />
-          <FormField title='Student Id'
-          value={form.name}
-          handleChangeText={(e) => setForm({...form, name: e})}
-          keyboardType='name'
-          placeholder='ex. 232435' />
-          <FormField title='Email'
-          value={form.email}
-          handleChangeText={(e) => setForm({...form, email: e})}
-          keyboardType='email-address' 
-          placeholder='example@domain.com'/>
-          <FormField title='Password'
-          value={form.password}
-          handleChangeText={(e) => setForm({...form, password: e})}
-          placeholder='Password' />
-          <ConfirmBtn title='Log in' isLoading={isSubmitting} handlePress={handleSubmit} />
+          <Heading heading="Enter Information" />
+          <Paragraph paragraph="Provide your details to continue" />
+
+          {/* <FormField
+            title="Student ID"
+            value={form.studentId}
+            handleChangeText={(e) => setForm({ ...form, studentId: e })}
+            keyboardType="numeric"
+            placeholder="ex. 232435"
+          /> */}
+
+          <FormField
+            title="Email"
+            value={form.email}
+            handleChangeText={(e) => setForm({ ...form, email: e })}
+            keyboardType="email-address"
+            placeholder="example@domain.com"
+          />
+
+          <FormField
+            title="Password"
+            value={form.pass}
+            handleChangeText={(e) => setForm({ ...form, pass: e })}
+            placeholder="Enter your password"
+            secureTextEntry={true} // Hides password
+          />
+
+          <ConfirmBtn
+            title="Log in"
+            isLoading={isSubmitting}
+            handlePress={handleSubmit}
+          />
+
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -56,4 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TeacherForm
+export default StudentForm;

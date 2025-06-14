@@ -9,7 +9,7 @@ import ViewAll from './ViewAll';
 
 
 
-const QuickAccess = () => {
+const QuickAccessTeacher = () => {
   
   
   return (
@@ -18,7 +18,7 @@ const QuickAccess = () => {
       <View style={styles.box}>
         <TouchableOpacity onPress={()=>{router.push('Reminder')}} style={styles.innerBox}>
           <Image source={require('@/assets/icons/clock1.png')} />
-          <Text style={styles.SubTitle}> Reminder </Text>
+          <Text style={styles.SubTitle}> Classes </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Attendance')}}>
           <Image source={require('@/assets/icons/attendance.png')} />
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff'
+    backgroundColor:'white'
   },
   box: {
     flexDirection: 'row',
@@ -98,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QuickAccess;
+export default QuickAccessTeacher;

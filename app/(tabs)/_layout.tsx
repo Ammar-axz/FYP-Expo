@@ -37,6 +37,21 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="(home-teacher)"
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={require('@/assets/icons/home.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C'},
+              ]}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="(quiz)"
         options={{
           tabBarLabel: 'Quiz',

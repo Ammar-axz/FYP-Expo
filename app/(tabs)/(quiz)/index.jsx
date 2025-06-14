@@ -39,9 +39,10 @@ const QuizCard = ({ quiz }) => {
       onPress={()=>{
         router.push({
         pathname: 'QuizDetails',
-        params: { course: JSON.stringify(quiz) },
-        });
-      }}
+        params: {
+          course: encodeURIComponent(JSON.stringify(quiz)), // ← Encode it!
+        },
+      })}}
       >
       <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
       <View style={styles.textView}>

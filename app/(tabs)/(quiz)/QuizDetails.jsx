@@ -161,16 +161,23 @@ const Data =
 }
 
 const QuizDetails = () => {
-    const {unParsedCourse} = useLocalSearchParams()
-    const course = JSON.parse(unParsedCourse);
+    // const {unParsedCourse} = useLocalSearchParams()
+    // console.log('unParsedCourse:', unParsedCourse);
+    // const course = JSON.parse(unParsedCourse);
 
+    const {course} = useLocalSearchParams()
+    const courseData = JSON.parse(decodeURIComponent(course));
+    
+    
     const {loggedInUserId,loggedInUserPoints,setLoggedInUserPoints} = userData();
     // const route = useRoute();
     const [quizQue,setQuizQue] = useState({})
-    const [que_index,setQue_index] = useState(course.completed);
+    const [que_index,setQue_index] = useState(courseData.completed);
     const [submitted,setSubmitted] = useState(false)
     const [correctButton,setCorrectButton] = useState(0)
     const [inCorrectButton,setInCorrectButton] = useState(0)
+    
+    console.log(courseData);
 
     useEffect(()=>{
         getQuesion();   
@@ -178,8 +185,9 @@ const QuizDetails = () => {
     
     async function getQuesion()
     {
-        let id = { id : course.quiz.Quiz_Questions[que_index]}
-
+        let id = { id : courseData.quiz.Quiz_Questions[que_index]}
+        console.log("HERE ->"+id);
+        
         let Question = await axios.post('http://10.0.2.2:5000/api/getQuizQuestion',id)
         
         console.log(Question.data);
@@ -192,12 +200,12 @@ const QuizDetails = () => {
         let increment = que_index+1
         let inc_quiz = {
             user_id : loggedInUserId,
-            quiz_id : course.quiz._id,
+            quiz_id : courseData.quiz._id,
             completed : increment
         }
         let Question = await axios.post('http://10.0.2.2:5000/api/addIncompleteQuiz',inc_quiz)
         
-        if(increment < course.quiz.Quiz_Questions.length)
+        if(increment < courseData.quiz.Quiz_Questions.length)
         {
             setQue_index(increment)
             setSubmitted(false)
@@ -296,7 +304,7 @@ const QuizDetails = () => {
             <Image style={styles.headerImg} source={require('@/assets/images/QuizHeaderBG.png')}/>
             <View style={{flex:1}}>
                 <View style={styles.choiceContainer}>
-                    <Text style={styles.totalQueTxt}>Question {que_index+1} of {course.quiz.Quiz_Questions.length}</Text>
+                    <Text style={styles.totalQueTxt}>Question {que_index+1} of {courseData.quiz.Quiz_Questions.length}</Text>
                     <Text style={styles.questionTxt}>{quizQue.Question}</Text>
 
                     <TouchableOpacity 
