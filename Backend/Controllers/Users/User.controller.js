@@ -1,11 +1,10 @@
-import mongoose, { mongo } from 'mongoose'
-import User from '../../Models/Users.model.js'
 import Contact from '../../Models/Contacts.model.js'
+import IncompleteQuiz from '../../Models/IncompleteQuiz.model.js'
 import Message from '../../Models/Message.model.js'
-import Room from '../../Models/Room.model.js'
 import Quiz from '../../Models/Quiz.model.js'
 import QuizQuestions from '../../Models/QuizQuestions.model.js'
-import IncompleteQuiz from '../../Models/IncompleteQuiz.model.js'
+import Room from '../../Models/Room.model.js'
+import User from '../../Models/Users.model.js'
 
 async function AddUser(req,res,next){
     try
@@ -21,6 +20,7 @@ async function AddUser(req,res,next){
                     "Age":req.body.age,
                     "Gender":req.body.gender,
                     "Phone":req.body.phone,
+                    "Role":req.body.role,
                     "pfp":`/Images/ProfilePictures/${req.file.filename}`
                 }
             )

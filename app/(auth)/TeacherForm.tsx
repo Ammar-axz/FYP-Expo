@@ -11,7 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StudentForm = () => {
-  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserPoints} = userData()
+  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
   
   const baseURL =
   Platform.OS === 'android'
@@ -35,14 +35,11 @@ const StudentForm = () => {
     // setIsSubmitting(true);
     try{
       let response = await axios.post(`http://10.0.2.2:5000/api/Login`,form)
-        // setLoggedInUserId(response.data._id)
-        // setLoggedInUserPfp(response.data.pfp)
-        // setLoggedInUser(response.data.Name)
-        // console.log(response.data.Name)
         console.log(response.data);
         
         setLoggedInUserId(response.data._id)
         setLoggedInUser(response.data.Name)
+        setLoggedInUserRole(response.data.Role)
         setLoggedInUserPoints(response.data.Points)
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
@@ -52,18 +49,12 @@ const StudentForm = () => {
         // setError(err.response.data)
         console.log("err"+err)
       }
-
-    // setTimeout(() => {
-    //   setIsSubmitting(false);
-    //   // Alert.alert('Success', 'Registration completed!');
-    //   navigation.replace('(tabs)'); // Navigate to the main app
-    // }, 1500);
   };
 
   useEffect(() => {
     if (loggedInUser !== 'Demo User') {
       console.log(loggedInUser);      
-      router.replace('(home-teacher)');
+      router.replace('(tabs-teacher)/(home-teacher)');
     }
   }, [loggedInUser]);
 

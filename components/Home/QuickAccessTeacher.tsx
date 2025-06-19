@@ -1,10 +1,7 @@
-import Courses from '@/app/(tabs)/(course)/index';
+import Timetable from '@/app/(tabs-teacher)/Timetable';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import Card from './Card';
-import CourseData from './CourseData';
 import ViewAll from './ViewAll';
 
 
@@ -20,7 +17,7 @@ const QuickAccessTeacher = () => {
           <Image source={require('@/assets/icons/clock1.png')} />
           <Text style={styles.SubTitle}> Classes </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Attendance')}}>
+        <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Attendance-Teacher')}}>
           <Image source={require('@/assets/icons/attendance.png')} />
           <Text style={styles.SubTitle} > Attendance </Text>
         </TouchableOpacity>
@@ -43,20 +40,38 @@ const QuickAccessTeacher = () => {
           <Text style={styles.SubTitle}> Donate </Text>
         </TouchableOpacity>
       </View>
-      <ViewAll title="Technical Courses" PageLink="Courses" PageLink={Courses} /> 
-      <View style={styles.courseList}>
-       <ScrollView>
-       <FlatList
-        data={CourseData}
-        renderItem={({ item }) => <Card title={item.title} />}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={false}
-        scrollEnabled={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        />
-       </ScrollView>
-      </View>
+      <ViewAll title="Time Table" PageLink="Timetable" PageLink={Timetable} /> 
+      
+      <Text style={styles.DayHeading}>Today</Text>
+      
+            <View style={styles.TTContainer}>
+              <View style={styles.TTDates}>
+                <Text style={styles.TTStartTimeTxt}>08:30 AM</Text>
+                <Text style={styles.TTEndTimeTxt}>09:30 AM</Text>
+              </View>
+              <View style={styles.TTCourse}>
+                <Text style={styles.TTCourseTxt}>Hifz Group 1</Text>
+              </View>
+            </View>
+            <View style={styles.TTContainer}>
+              <View style={styles.TTDates}>
+                <Text style={styles.TTStartTimeTxt}>08:30 AM</Text>
+                <Text style={styles.TTEndTimeTxt}>09:30 AM</Text>
+              </View>
+              <View style={styles.TTCourse}>
+                <Text style={styles.TTCourseTxt}>Hifz Group 1</Text>
+              </View>
+            </View>
+            <View style={styles.TTContainer}>
+              <View style={styles.TTDates}>
+                <Text style={styles.TTStartTimeTxt}>08:30 AM</Text>
+                <Text style={styles.TTEndTimeTxt}>09:30 AM</Text>
+              </View>
+              <View style={styles.TTCourse}>
+                <Text style={styles.TTCourseTxt}>Hifz Group 1</Text>
+              </View>
+            </View>
+      
     </View>
   );
 };
@@ -96,6 +111,47 @@ const styles = StyleSheet.create({
   courseList: {
     marginVertical: 20,
   },
+  DayHeading:{
+    fontSize:18,
+    marginVertical:5
+  },
+  TTContainer:{
+    flexDirection:'row',
+    backgroundColor:'rgba(237,247,240,255)',
+    paddingHorizontal:15,
+    paddingVertical:10,
+    marginHorizontal:5,
+    marginVertical:5,
+    borderRadius:10,
+  },
+  TTDates:{
+    height:80,
+    flexDirection:'column',
+    justifyContent:'center',
+    borderRightWidth:3,
+    borderRightColor:'rgba(225,235,228,255)',
+    paddingRight:20,
+  },
+  TTCourse:{
+    marginLeft:20,
+    justifyContent:'center',
+  },
+  TTStartTimeTxt:{
+    marginBottom:10,
+    fontWeight:'bold',
+    fontSize:18,
+    color:'rgba(94,192,169,255)'
+  },
+  TTEndTimeTxt:{
+    fontSize:18,
+    fontWeight:'bold',
+    color:'rgba(148,155,151,255)'
+  },
+  TTCourseTxt:{
+    height:65,
+    fontSize:20,
+    fontWeight:'bold',
+  }
 });
 
 export default QuickAccessTeacher;

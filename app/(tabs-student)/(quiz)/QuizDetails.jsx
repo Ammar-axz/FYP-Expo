@@ -1,6 +1,6 @@
 import { userData } from '@/Context/UserContext';
 import axios from 'axios';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
     Image,
@@ -10,155 +10,9 @@ import {
     View
 } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import { BackButton } from '../../../components/BackButton';
 // import { useNavigation } from '@react-navigation/native';
 
-const Data = 
-{
-    totalQues:20,
-    Ques:
-    [
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-        {
-            Que:'Which Surah is called the heart of the Quran?',
-            op1:"Surah Ya'seen",
-            op2:"Surah Baqarah",
-            op3:"Surah Ar-Rehman",
-            op4:"Surah Tauba",
-        },
-    ]
-}
 
 const QuizDetails = () => {
     // const {unParsedCourse} = useLocalSearchParams()
@@ -270,15 +124,9 @@ const QuizDetails = () => {
 
     return(
         <View style={styles.container}>
+            <Image style={styles.headerImg} source={require('@/assets/images/QuizHeaderBG.png')}/>
             <View style={styles.headerContainer}>
-                <TouchableOpacity
-                    onPress={() => router.back()}
-                    style={styles.backButton}>
-                    <Image
-                      source={require('@/assets/icons/left-arrow.png')}
-                      style={styles.backArrow}
-                    />
-                </TouchableOpacity>
+                <BackButton/>
                 <View style={styles.progress}>
                 <CircularProgress
                     value={que_index+1}
@@ -301,7 +149,7 @@ const QuizDetails = () => {
                 </View>
             </View>
 
-            <Image style={styles.headerImg} source={require('@/assets/images/QuizHeaderBG.png')}/>
+            
             <View style={{flex:1}}>
                 <View style={styles.choiceContainer}>
                     <Text style={styles.totalQueTxt}>Question {que_index+1} of {courseData.quiz.Quiz_Questions.length}</Text>
@@ -440,7 +288,7 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center',
         marginHorizontal:10,
-        marginTop:10
+        marginTop:40
     },
     progress:{
         flex:1,

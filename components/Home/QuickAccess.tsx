@@ -1,4 +1,4 @@
-import Courses from '@/app/(tabs)/(course)/index';
+import Courses from '@/app/(tabs-student)/(course)/index';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';

@@ -1,3 +1,4 @@
+import { userData } from '@/Context/UserContext';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
@@ -9,6 +10,7 @@ import { Tabs } from 'expo-router';
 const Tab = createBottomTabNavigator();
 
 const TabsLayout = () => {
+  const {loggedInUserRole} = userData()
   return (
     <Tabs
       screenOptions={{
@@ -21,21 +23,6 @@ const TabsLayout = () => {
         tabBarInactiveTintColor: '#0000008C',
         headerShown: false,
       }}>
-      <Tabs.Screen
-        name="(home)"
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({focused}) => (
-            <Image
-              source={require('@/assets/icons/home.png')}
-              style={[
-                styles.tabIcon,
-                {tintColor: focused ? '#36B295' : '#0000008C'},
-              ]}
-            />
-          ),
-        }}
-      />
       <Tabs.Screen
         name="(home-teacher)"
         options={{
@@ -52,9 +39,9 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="(quiz)"
+        name="Timetable"
         options={{
-          tabBarLabel: 'Quiz',
+          tabBarLabel: 'TimeTable',
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/courses.png')}
@@ -64,12 +51,13 @@ const TabsLayout = () => {
               ]}
             />
           ),
+          
         }}
       />
       <Tabs.Screen
-        name="(course)"
+        name="(courses)"
         options={{
-          tabBarLabel: 'Course',
+          tabBarLabel: 'Courses',
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/library.png')}

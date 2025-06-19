@@ -1,6 +1,6 @@
 import Paragraph from '@/components/Paragraph';
 import ReminderBtn from '@/components/ReminderBtn';
-import { Picker } from '@react-native-picker/picker'; // Import Picker
+import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
 import {
   Modal,

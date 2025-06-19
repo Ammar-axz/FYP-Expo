@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
         Age:{type:Number,required:[true,"Age is Required"]},
         Gender:{type:String,required:[true,"Gender is Required"]},
         Phone:{type:Number,required:[true,"Phone is Required"]},
+        Role:{type:String,required:[true,"Role is Required"]},
         pfp:{type:String,required:[true,"Picture is Required"]},
         Points:{type:Number}
     }

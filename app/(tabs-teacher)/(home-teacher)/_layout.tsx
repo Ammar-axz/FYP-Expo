@@ -16,7 +16,7 @@ const HomeStack = () => {
       <Stack.Screen name="index" />
       {/* <Stack.Screen name="Courses"  /> */}
       <Stack.Screen
-        name="Attendance"
+        name="Attendance-Teacher"
         options={({navigation}) => ({
           headerShown: true,
           headerTitle: 'Attendance',
