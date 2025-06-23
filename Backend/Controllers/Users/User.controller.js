@@ -168,26 +168,24 @@ async function addIncompleteQuiz(req,res){
     }
 }
 
-async function loginUser(req,res,next){
-    
-    try{
+async function loginUser(req, res, next) {
+    try {
         let user = await User.User.findOne({
-        "Email":req.body.email,
-        "Password":req.body.pass
-        })
-        
-        if(user === null)
-        {
-            throw new Error("No User found")
+            "Email": req.body.email,
+            "Password": req.body.pass
+        });
+
+        if (user === null) {
+            throw new Error("No User found");
         }
-        res.status(200).send(user)
-    }
-    catch(err)
-    {
-        console.log(err);
-        res.status(400).send(err)
+
+        res.status(200).send(user);
+    } catch (err) {
+        console.error("Login error:", err.message); // Log just the message
+        res.status(400).send({ error: err.message }); // Send a readable error response
     }
 }
+
 
 function checkInput(req,res,next){
     if(req.body.name== "" || req.body.email== "" || req.body.pass== "" 

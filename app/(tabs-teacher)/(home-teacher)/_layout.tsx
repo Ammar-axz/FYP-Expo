@@ -32,9 +32,19 @@ const HomeStack = () => {
           headerTitle: 'Reminder',
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: 'center',
-          headerStyle: {backgroundColor: '#fff'},
+          headerStyle: {backgroundColor: '#fff',elevation: 0},
         })}
       />
+      {/* <Stack.Screen
+        name="Timetable"
+        options={({navigation}) => ({
+          headerShown: true,
+          headerTitle: 'Timetable',
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#fff'},
+        })}
+      /> */}
       <Stack.Screen
         name="DuaDhikr"
         options={({navigation}) => ({
