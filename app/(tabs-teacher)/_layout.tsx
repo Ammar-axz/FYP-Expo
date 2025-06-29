@@ -26,6 +26,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="(home-teacher)"
         options={{
+          
           tabBarLabel: 'Home',
           tabBarIcon: ({focused}) => (
             <Image
@@ -39,9 +40,10 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="Timetable"
+        name="(time-table)"
         options={{
           tabBarLabel: 'TimeTable',
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/courses.png')}

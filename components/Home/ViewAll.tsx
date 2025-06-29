@@ -3,15 +3,16 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const ViewAll = ({ title, PageLink }) => {
-
-  const viewPage = () => {
-    router.navigate(PageLink);
+  const handleNavigate = () => {
+    if (PageLink) {
+      router.navigate(PageLink);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <TouchableOpacity onPress={viewPage}>
+      <TouchableOpacity onPress={handleNavigate}>
         <Text style={styles.viewAllText}>View All</Text>
       </TouchableOpacity>
     </View>
@@ -23,12 +24,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginVertical: 10,
   },
   title: {
     fontSize: 20,
     fontWeight: '700',
     lineHeight: 24,
-    color: '#000', // Replace with your desired color
+    color: '#000',
   },
   viewAllText: {
     fontSize: 14,

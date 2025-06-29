@@ -1,29 +1,33 @@
-import HomeNotification from '@/components/Home/HomeNotification';
-import QuickAccessTeacher from '@/components/Home/QuickAccessTeacher';
-import { userData } from '@/Context/UserContext';
-import React from 'react';
+import HomeNotification from "@/components/Home/HomeNotification";
+import QuickAccessTeacher from "@/components/Home/QuickAccessTeacher";
+import { userData } from "@/Context/UserContext";
+import React from "react";
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native';
+  View,
+} from "react-native";
 
 const DATA = [
-  {id: '1', title: 'Item 1', image: 'https://via.placeholder.com/150'},
-  {id: '2', title: 'Item 2', image: 'https://via.placeholder.com/150'},
-  {id: '3', title: 'Item 3', image: 'https://via.placeholder.com/150'},
-  {id: '4', title: 'Item 4', image: 'https://via.placeholder.com/150'},
+  { id: "1", title: "Item 1", image: "https://via.placeholder.com/150" },
+  { id: "2", title: "Item 2", image: "https://via.placeholder.com/150" },
+  { id: "3", title: "Item 3", image: "https://via.placeholder.com/150" },
+  { id: "4", title: "Item 4", image: "https://via.placeholder.com/150" },
 ];
 
 const Home = () => {
-  const {loggedInUser,loggedInUserPfp, loggedInUserId} = userData()
+  const { loggedInUser, loggedInUserPfp, loggedInUserId } = userData();
   return (
     <>
-    <ScrollView style={styles.mainContainer}>
-        <Image style={styles.headerImg} source={require('@/assets/images/QuizHeaderBG.png')} resizeMode='stretch' />
+      <ScrollView style={styles.mainContainer}>
+        <Image
+          style={styles.headerImg}
+          source={require("@/assets/images/QuizHeaderBG.png")}
+          resizeMode="stretch"
+        />
         {/* Header Section */}
         <View style={styles.container}>
           <View style={styles.textContainer}>
@@ -34,16 +38,17 @@ const Home = () => {
           <View style={styles.iconsContainer}>
             <TouchableOpacity
               style={styles.bellButton}
-              onPress={() => alert('Notifications Pressed')}>
+              onPress={() => alert("Notifications Pressed")}
+            >
               <Image
-                source={require('@/assets/icons/bell-white.png')}
+                source={require("@/assets/icons/bell-white.png")}
                 style={styles.topNotiIcon}
               />
               <View style={styles.notificationDot} />
             </TouchableOpacity>
 
             <Image
-              source={require('@/assets/icons/user-pic.png')}
+              source={require("@/assets/icons/user-pic.png")}
               style={styles.profileImage}
             />
           </View>
@@ -51,55 +56,53 @@ const Home = () => {
 
         {/* Progress List */}
         <View style={styles.progressContainer}>
-          
           <HomeNotification />
-          
         </View>
 
-      <QuickAccessTeacher />
+        <QuickAccessTeacher />
       </ScrollView>
-      </>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  mainContainer:{
-    backgroundColor:"white"
+  mainContainer: {
+    backgroundColor: "white",
   },
   headerImg: {
-    position:"absolute",
-    height:400
+    position: "absolute",
+    height: 400,
   },
   container: {
-    marginTop:25,
+    marginTop: 25,
     padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   textContainer: {
     flex: 1,
   },
   greeting: {
-    color: 'black',
+    color: "black",
     fontSize: 14,
   },
   name: {
-    color: 'black',
+    color: "black",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   iconsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   notificationDot: {
-    position: 'absolute',
+    position: "absolute",
     top: -3,
     right: -3,
     width: 8,
     height: 8,
-    backgroundColor: 'red',
+    backgroundColor: "red",
     borderRadius: 4,
   },
   profileImage: {
@@ -107,40 +110,40 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 18,
     marginLeft: 10,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   bellButton: {
     borderRadius: 100,
   },
-  topNotiIcon:{
+  topNotiIcon: {
     width: 40,
     height: 40,
-    borderRadius:100,
-    resizeMode: 'contain',
+    borderRadius: 100,
+    resizeMode: "contain",
   },
   progressContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   schedule: {
-    backgroundColor: '#0F2823',
+    backgroundColor: "#0F2823",
     padding: 16,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
   },
   scheduleBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   clockIcon: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 30,
     padding: 7,
   },
   scheduleText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     lineHeight: 20,
     flex: 1,
     marginLeft: 10,

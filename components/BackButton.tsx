@@ -17,7 +17,7 @@ const styles = {
     backButton: {
     padding: 15,
     marginVertical:15,
-    backgroundColor: '#1212120D',
+    backgroundColor: '#fff',
     borderRadius: 100,
     },
     backArrow: {
