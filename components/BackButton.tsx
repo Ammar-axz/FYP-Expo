@@ -15,13 +15,22 @@ export const BackButton = () => (
 
 const styles = {
     backButton: {
-    padding: 15,
+    height:40,
+    width:40,
+    alignItems:'center',
+    justifyContent:'center',
     marginVertical:15,
-    backgroundColor: '#fff',
+    marginLeft:10,
+    backgroundColor: 'transparent',
     borderRadius: 100,
+    borderWidth:1,
+    borderColor:'gray'
     },
     backArrow: {
     tintColor: '#000',
     resizeMode: 'contain',
+    height:18,
+    width:18,
+    marginRight:3
     }
 }

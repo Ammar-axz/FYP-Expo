@@ -1,5 +1,5 @@
-import { router } from "expo-router";
-import React, { useState } from "react";
+import TimeTableItem from "@/components/TimeTableItem";
+import { useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import TimeTableItem from "./components/TimeTableItem";
 
 const Timetable = () => {
   const [selectedDay, setSelectedDay] = useState(0);
@@ -113,7 +112,7 @@ const Timetable = () => {
       <Text style={styles.label}>Schedule</Text>
       <Text style={styles.label2}>Select day to view timetable</Text>
 
-<TouchableOpacity
+{/* <TouchableOpacity
   style={{
     flexDirection: "row",
     alignItems: "center",
@@ -126,13 +125,13 @@ const Timetable = () => {
   onPress={() => {
     router.navigate("./add-schedule");
   }}
->
+> */}
   {/* <Image
     source={require('@/assets/icons/plus.png')} // make sure this path is correct
     style={{ width: 16, height: 16, marginRight: 6, tintColor: 'white' }}
   /> */}
-  <Text style={{ color: "white", fontWeight: "600" }}>Add New Schedule</Text>
-</TouchableOpacity>
+  {/* <Text style={{ color: "white", fontWeight: "600" }}>Add New Schedule</Text>
+</TouchableOpacity> */}
 
 
       <View style={{ height: 110 }}>

@@ -35,7 +35,7 @@ const StudentForm = () => {
     // }
     // setIsSubmitting(true);
     try{
-      let response = await axios.post(`${baseURL}`,form)
+      let response = await axios.post(`${baseURL}/api/login`,form)
         console.log(response.data);
         
         setLoggedInUserId(response.data._id)

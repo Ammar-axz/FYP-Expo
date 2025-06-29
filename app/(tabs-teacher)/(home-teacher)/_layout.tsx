@@ -87,17 +87,13 @@ const HomeStack = () => {
           headerStyle: {backgroundColor: '#fff'},
         })}
       />
-      {/* <Stack.Screen
-        name="(Reminder)"
-        component={ReminderLayout}
-        options={({navigation}) => ({
-          headerShown: true,
-          headerTitle: 'Reminder',
-          headerLeft: () => <BackButton navigation={navigation} />,
-          headerTitleAlign: 'center',
+      <Stack.Screen
+        name="Timetable"
+        options={({route, navigation}) => ({
+          headerShown: false,
           headerStyle: {backgroundColor: '#fff'},
         })}
-      /> */}
+      />
     </Stack>
   );
 };

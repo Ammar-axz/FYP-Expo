@@ -1,10 +1,37 @@
+import TimeTableItem from "@/components/TimeTableItem";
 import { router } from "expo-router";
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import TimeTableItem from "../../app/(tabs-teacher)/(time-table)/components/TimeTableItem";
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ViewAll from "./ViewAll";
 
 const QuickAccessTeacher = () => {
+
+  const schedule = [
+    {
+      id: "1",
+      day: 0,
+      startTime: "08:30 AM",
+      endTime: "09:30 AM",
+      courseText: "Surah Al-Baqarah, Ayah 183–186",
+      groupName: "Hifz Group A",
+    },
+    {
+      id: "2",
+      day: 0,
+      startTime: "09:45 AM",
+      endTime: "10:45 AM",
+      courseText: "Tajweed Rules Review",
+      groupName: "Tajweed Group B",
+    },
+    {
+      id: "3",
+      day: 0,
+      startTime: "11:00 AM",
+      endTime: "12:00 PM",
+      courseText: "Arabic Grammar Basics",
+      groupName: "Language Group",
+    },]
+
   return (
     <View style={styles.main}>
       <ViewAll title="Quick Access" PageLink="Courses" />
@@ -27,9 +54,13 @@ const QuickAccessTeacher = () => {
           <Image source={require("@/assets/icons/attendance.png")} />
           <Text style={styles.SubTitle}> Attendance </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.innerBox}>
+        <TouchableOpacity 
+          style={styles.innerBox}
+          onPress={() => {
+            router.push("Timetable");
+          }}>
           <Image source={require("@/assets/icons/task.png")} />
-          <Text style={styles.SubTitle}> Tasks </Text>
+          <Text style={styles.SubTitle}> TimeTable </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.box}>
@@ -56,26 +87,29 @@ const QuickAccessTeacher = () => {
           <Text style={styles.SubTitle}> Donate </Text>
         </TouchableOpacity>
       </View>
-      <ViewAll title="Schedule" PageLink="(time-table)"/>
-
-
-      <View style={styles.DayContainer}>
+      <ViewAll title="Schedule" PageLink="(home-teacher)/Timetable"/>
+      
+      <View style={styles.headingContainer}>
         <Text style={styles.DayHeading}>Today</Text>
-        <Text style={styles.Days}>Tue, 23 May</Text>
+        <Text style={styles.DayHeading2}>Tue, 23 may</Text>
       </View>
 
-      <TimeTableItem
-        startTime="08:30 AM"
-        endTime="09:30 AM"
-        courseText="Surah Al-Baqarah, Ayah 183–186"
-        groupName="Hifz Group A"
-      />
-
-      <TimeTableItem
-        startTime="09:45 AM"
-        endTime="10:45 AM"
-        courseText="Tajweed Rules Review"
-        groupName="Tajweed Group B"
+      <FlatList
+        data={schedule}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TimeTableItem
+            startTime={item.startTime}
+            endTime={item.endTime}
+            courseText={item.courseText}
+            groupName={item.groupName}
+          />
+        )}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", color: "gray", marginTop: 20 }}>
+            No schedule for this day.
+          </Text>
+        }
       />
     </View>
   );
@@ -121,11 +155,21 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
   },
+  headingContainer:{
+    flexDirection:'row'
+  },
   DayHeading: {
-    fontSize: 14,
+    fontSize: 16,
     marginVertical: 5,
     marginRight: 10,
     color: "black",
+    fontWeight: "700",
+  },
+  DayHeading2: {
+    fontSize: 16,
+    marginVertical: 5,
+    marginRight: 10,
+    color: "gray",
     fontWeight: "700",
   },
   Days: {

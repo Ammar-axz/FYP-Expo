@@ -40,13 +40,13 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="(time-table)"
+        name="(quiz)"
         options={{
-          tabBarLabel: 'TimeTable',
+          tabBarLabel: 'Quiz',
           headerShown: false,
           tabBarIcon: ({focused}) => (
             <Image
-              source={require('@/assets/icons/courses.png')}
+              source={require('@/assets/icons/library.png')}
               style={[
                 styles.tabIcon,
                 {tintColor: focused ? '#36B295' : '#0000008C'},
