@@ -3,9 +3,10 @@ import FormField from '@/components/FormField';
 import Heading from '@/components/Heading';
 import Paragraph from '@/components/Paragraph';
 import { userData } from '@/Context/UserContext';
+import { API_URL, WEB_API_URL } from "@env";
 import axios from 'axios';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,8 +16,8 @@ const StudentForm = () => {
   
   const baseURL =
   Platform.OS === 'android'
-    ? 'http://10.0.2.2:5000'  // Android emulator
-    : 'http://localhost:5000'; // iOS simulator or Web
+    ? API_URL
+    : WEB_API_URL;
 
   const [error,setError] = useState()
   const [form, setForm] = useState({
@@ -34,18 +35,19 @@ const StudentForm = () => {
     // }
     // setIsSubmitting(true);
     try{
-      let response = await axios.post(`http://10.0.2.2:5000/api/Login`,form)
+      let response = await axios.post(`${baseURL}`,form)
         console.log(response.data);
         
         setLoggedInUserId(response.data._id)
         setLoggedInUser(response.data.Name)
-        setLoggedInUserPoints(response.data.Points)
         setLoggedInUserRole(response.data.Role)
+        setLoggedInUserPoints(response.data.Points)
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
       }
       catch(err)
       {
+        // setError(err.response.data)
         console.log("err"+err)
       }
   };
@@ -53,7 +55,7 @@ const StudentForm = () => {
   useEffect(() => {
     if (loggedInUser !== 'Demo User') {
       console.log(loggedInUser);      
-      router.replace('(tabs-student)/(home)');
+      router.replace('(tabs-teacher)/(home-teacher)');
     }
   }, [loggedInUser]);
 
@@ -64,13 +66,13 @@ const StudentForm = () => {
           <Heading heading="Enter Information" />
           <Paragraph paragraph="Provide your details to continue" />
 
-          <FormField
+          {/* <FormField
             title="Student ID"
             value={form.studentId}
             handleChangeText={(e) => setForm({ ...form, studentId: e })}
             keyboardType="numeric"
             placeholder="ex. 232435"
-          />
+          /> */}
 
           <FormField
             title="Email"
