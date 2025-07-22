@@ -1,5 +1,5 @@
 import { userData } from '@/Context/UserContext';
-import { API_URL, WEB_API_URL } from "@env";
+import { API } from '@/api';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
@@ -42,11 +42,6 @@ const Leaderboard = () => {
   const [users,setUsers] = useState([])
   let index = 0
 
-  const baseURL =
-    Platform.OS === 'android'
-      ? API_URL
-      : WEB_API_URL;
-
   useEffect(()=>{
     console.log("useeffect called");
     
@@ -58,7 +53,7 @@ const Leaderboard = () => {
     try
     {
       console.log("Get users called")
-      let usersData = await axios.get(`${baseURL}/api/getAllUsers`)
+      let usersData = await axios.get(`${API.BASE_URL}/api/getAllUsers`)
       console.log("xDDDDDD")
       console.log(usersData.data);
       setUsers(usersData.data)

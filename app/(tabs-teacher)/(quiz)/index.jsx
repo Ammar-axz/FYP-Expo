@@ -1,13 +1,12 @@
 import { userData } from '@/Context/UserContext';
-import { API_URL, WEB_API_URL } from "@env";
+import { API } from '@/api';
+import { Picker } from "@react-native-picker/picker";
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   FlatList,
-  Image,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -29,9 +28,6 @@ let image = 'https://via.placeholder.com/150';
 // ];
 
 const QuizCard = ({ quiz }) => {
-  const percent = quiz.quiz.T_Questions > 0 
-  ? (quiz.completed / quiz.quiz.T_Questions) * 100 
-  : 0;
   return (
     <TouchableOpacity
       style={styles.card}
@@ -40,11 +36,11 @@ const QuizCard = ({ quiz }) => {
         router.push({
         pathname: 'QuizDetails',
         params: {
-          course: encodeURIComponent(JSON.stringify(quiz)), // ← Encode it!
+          quizData: encodeURIComponent(JSON.stringify({quiz_id : quiz.quiz._id, title : quiz.quiz.Title})), // ← Encode it!
         },
       })}}
       >
-      <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
+      {/* <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/> */}
       <View style={styles.textView}>
         <Text style={styles.title}>{quiz.quiz.Title}</Text>
         <Text style={styles.questions}>{quiz.quiz.T_Questions} Questions</Text>
@@ -56,15 +52,12 @@ const QuizCard = ({ quiz }) => {
 
 
 const Quiz = () => {
-  const {loggedInUser,loggedInUserPoints,loggedInUserId} = userData()
+  const {loggedInUserId} = userData()
   const [quizes,setQuizes] = useState([])
+  const categories = ["Hifz Group 1", "Tajweed Group 2", "Taharat Group 2"];
+  const [selectedCourse, setSelectedCourse] = useState(categories[0]);
   const isFocused = useIsFocused()
-
-  const baseURL =
-    Platform.OS === 'android'
-      ? API_URL
-      : WEB_API_URL;
-
+  
   useEffect(()=>{
     if(isFocused)
       getQuizes();
@@ -73,7 +66,7 @@ const Quiz = () => {
   async function getQuizes()
   {
     let id = {user_id: loggedInUserId}
-    let Quizes = await axios.post(`${baseURL}/api/getQuizes`,id)
+    let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
     setQuizes(Quizes.data)
         
   }
@@ -106,8 +99,19 @@ const Quiz = () => {
             showsHorizontalScrollIndicator={false}
           />
         </View> */}
-        <View style={styles.ltQuizHeadContainer}>
+        {/* <View style={styles.ltQuizHeadContainer}>
           <Text style={styles.ltQuizHead}>Previous Quizes</Text>
+        </View> */}
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={selectedCourse}
+            onValueChange={(itemValue) => setSelectedCourse(itemValue)}
+            style={styles.picker}
+          >
+            {categories.map((item, index) => (
+              <Picker.Item key={index} label={item} value={item} />
+            ))}
+          </Picker>
         </View>
         <View style={styles.latestQuiz}>
             <FlatList
@@ -141,6 +145,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  pickerContainer: {
+    width: "90%",
+    alignSelf:'center',
+    height: 50,
+    borderRadius: 30,
+    justifyContent: "center",
+    marginBottom: 20,
+    backgroundColor: "rgba(247,247,247,255)",
+  },
+  picker: {
+    width: "100%",
+    height: 50,
   },
   headerImg:{
       position:'absolute'

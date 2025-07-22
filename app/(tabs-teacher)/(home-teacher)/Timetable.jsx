@@ -1,5 +1,8 @@
+import { API } from "@/api";
 import TimeTableItem from "@/components/TimeTableItem";
-import { useState } from "react";
+import { userData } from '@/Context/UserContext';
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -10,102 +13,127 @@ import {
 } from "react-native";
 
 const Timetable = () => {
-  const [selectedDay, setSelectedDay] = useState(0);
+  const {loggedInUserId,loggedInUserRole} = userData()
+  const [selectedDay, setSelectedDay] = useState("Monday");
+  const [schedule, setSchedule] = useState([])
 
-  const schedule = [
+  async function getSchedule()
+  {
+    try
     {
-      id: "1",
-      day: 0,
-      startTime: "08:30 AM",
-      endTime: "09:30 AM",
-      courseText: "Surah Al-Baqarah, Ayah 183–186",
-      groupName: "Hifz Group A",
-    },
+      let userData = 
+      {
+        user_id : loggedInUserId,
+        role : loggedInUserRole
+      }
+      const schedule = await axios.post(`${API.BASE_URL}/api/getSchedule`,userData)
+      setSchedule(schedule.data)
+    }
+    catch(e)
     {
-      id: "2",
-      day: 0,
-      startTime: "09:45 AM",
-      endTime: "10:45 AM",
-      courseText: "Tajweed Rules Review",
-      groupName: "Tajweed Group B",
-    },
-    {
-      id: "3",
-      day: 0,
-      startTime: "11:00 AM",
-      endTime: "12:00 PM",
-      courseText: "Arabic Grammar Basics",
-      groupName: "Language Group",
-    },
-    {
-      id: "4",
-      day: 0,
-      startTime: "08:30 AM",
-      endTime: "09:30 AM",
-      courseText: "Quran Recitation",
-      groupName: "Hifz Group A",
-    },
-    {
-      id: "5",
-      day: 0,
-      startTime: "08:30 AM",
-      endTime: "09:30 AM",
-      courseText: "Fiqh Essentials",
-      groupName: "Taharat Group C",
-    },
-    {
-      id: "6",
-      day: 2,
-      startTime: "10:00 AM",
-      endTime: "11:00 AM",
-      courseText: "Hadith Study",
-      groupName: "Hadith Group",
-    },
-    {
-      id: "7",
-      day: 3,
-      startTime: "09:00 AM",
-      endTime: "10:00 AM",
-      courseText: "Seerah of the Prophet",
-      groupName: "History Group",
-    },
-    {
-      id: "8",
-      day: 4,
-      startTime: "08:00 AM",
-      endTime: "09:00 AM",
-      courseText: "Morning Review Session",
-      groupName: "All Groups",
-    },
-    {
-      id: "9",
-      day: 5,
-      startTime: "10:00 AM",
-      endTime: "11:00 AM",
-      courseText: "Tafseer Overview",
-      groupName: "Advanced Group",
-    },
-    {
-      id: "10",
-      day: 6,
-      startTime: "09:00 AM",
-      endTime: "10:00 AM",
-      courseText: "General Knowledge",
-      groupName: "Youth Group",
-    },
-  ];
+      console.log(e)      
+    }
+  }
+
+  useEffect(() => {
+    getSchedule()
+  }, [])
+  
+
+  // const schedule = [
+  //   {
+  //     id: "1",
+  //     day: 0,
+  //     startTime: "08:30 AM",
+  //     endTime: "09:30 AM",
+  //     courseText: "Surah Al-Baqarah, Ayah 183–186",
+  //     groupName: "Hifz Group A",
+  //   },
+  //   {
+  //     id: "2",
+  //     day: 0,
+  //     startTime: "09:45 AM",
+  //     endTime: "10:45 AM",
+  //     courseText: "Tajweed Rules Review",
+  //     groupName: "Tajweed Group B",
+  //   },
+  //   {
+  //     id: "3",
+  //     day: 0,
+  //     startTime: "11:00 AM",
+  //     endTime: "12:00 PM",
+  //     courseText: "Arabic Grammar Basics",
+  //     groupName: "Language Group",
+  //   },
+  //   {
+  //     id: "4",
+  //     day: 0,
+  //     startTime: "08:30 AM",
+  //     endTime: "09:30 AM",
+  //     courseText: "Quran Recitation",
+  //     groupName: "Hifz Group A",
+  //   },
+  //   {
+  //     id: "5",
+  //     day: 0,
+  //     startTime: "08:30 AM",
+  //     endTime: "09:30 AM",
+  //     courseText: "Fiqh Essentials",
+  //     groupName: "Taharat Group C",
+  //   },
+  //   {
+  //     id: "6",
+  //     day: 2,
+  //     startTime: "10:00 AM",
+  //     endTime: "11:00 AM",
+  //     courseText: "Hadith Study",
+  //     groupName: "Hadith Group",
+  //   },
+  //   {
+  //     id: "7",
+  //     day: 3,
+  //     startTime: "09:00 AM",
+  //     endTime: "10:00 AM",
+  //     courseText: "Seerah of the Prophet",
+  //     groupName: "History Group",
+  //   },
+  //   {
+  //     id: "8",
+  //     day: 4,
+  //     startTime: "08:00 AM",
+  //     endTime: "09:00 AM",
+  //     courseText: "Morning Review Session",
+  //     groupName: "All Groups",
+  //   },
+  //   {
+  //     id: "9",
+  //     day: 5,
+  //     startTime: "10:00 AM",
+  //     endTime: "11:00 AM",
+  //     courseText: "Tafseer Overview",
+  //     groupName: "Advanced Group",
+  //   },
+  //   {
+  //     id: "10",
+  //     day: 6,
+  //     startTime: "09:00 AM",
+  //     endTime: "10:00 AM",
+  //     courseText: "General Knowledge",
+  //     groupName: "Youth Group",
+  //   },
+  // ];
 
   const days = [
-    { no: 0, day: "MON", date: 24 },
-    { no: 1, day: "TUE", date: 25 },
-    { no: 2, day: "WED", date: 26 },
-    { no: 3, day: "THU", date: 27 },
-    { no: 4, day: "FRI", date: 28 },
-    { no: 5, day: "SAT", date: 29 },
-    { no: 6, day: "SUN", date: 30 },
+    { no: 0, day: "MON", ac_day: "Monday"},
+    { no: 1, day: "TUE", ac_day: "Tuesday"},
+    { no: 2, day: "WED", ac_day: "Wednesday"},
+    { no: 3, day: "THU", ac_day: "Thursday"},
+    { no: 4, day: "FRI", ac_day: "Friday"},
+    { no: 5, day: "SAT", ac_day: "Saturday"},
+    { no: 6, day: "SUN", ac_day: "Sunday"},
   ];
 
-  const filteredSchedule = schedule.filter((item) => item.day === selectedDay);
+  const filteredSchedule = schedule.filter((item) => item.Day === selectedDay);
 
   return (
     <View style={styles.container}>
@@ -140,49 +168,35 @@ const Timetable = () => {
             <TouchableOpacity
               key={i.no}
               style={
-                selectedDay === i.no
+                selectedDay === i.ac_day
                   ? styles.daysBoxSelected
                   : styles.daysBoxUnselected
               }
-              onPress={() => setSelectedDay(i.no)}
+              onPress={() => setSelectedDay(i.ac_day)}
             >
               <Text
                 style={
-                  selectedDay === i.no
+                  selectedDay === i.ac_day
                     ? styles.daysLabelSelected
                     : styles.daysLabelUnselected
                 }
               >
                 {i.day}
               </Text>
-              <Text
-                style={
-                  selectedDay === i.no
-                    ? styles.daysValueSelected
-                    : styles.daysValueUnselected
-                }
-              >
-                {i.date}
-              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
 
-<Text style={styles.DayHeading}>
-  {`${days[selectedDay].day}, ${days[selectedDay].date} May`}
-</Text>
-
-
       <FlatList
         data={filteredSchedule}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <TimeTableItem
-            startTime={item.startTime}
-            endTime={item.endTime}
-            courseText={item.courseText}
-            groupName={item.groupName}
+            startTime={item.Start_Time}
+            endTime={item.End_Time}
+            courseText={item.Class_Name.split(" - ")[0]}
+            groupName={item.Class_Name}
           />
         )}
         ListEmptyComponent={

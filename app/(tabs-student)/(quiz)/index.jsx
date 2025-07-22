@@ -1,6 +1,6 @@
+import { API } from '@/api';
 import QuizProgressCard from '@/components/Home/Progress';
 import { userData } from '@/Context/UserContext';
-import { API_URL, WEB_API_URL } from "@env";
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { router } from 'expo-router';
@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -74,12 +73,7 @@ const Quiz = () => {
   const {loggedInUser,loggedInUserPoints,loggedInUserId} = userData()
   const [quizes,setQuizes] = useState([])
   const isFocused = useIsFocused()
-
-  const baseURL =
-    Platform.OS === 'android'
-      ? API_URL
-      : WEB_API_URL;
-
+  
   useEffect(()=>{
     if(isFocused)
       getQuizes();
@@ -88,7 +82,7 @@ const Quiz = () => {
   async function getQuizes()
   {
     let id = {user_id: loggedInUserId}
-    let Quizes = await axios.post(`${baseURL}/api/getQuizes`,id)
+    let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
     setQuizes(Quizes.data)
         
   }

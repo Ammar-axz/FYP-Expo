@@ -1,10 +1,15 @@
+import Class_Student from '../../Models/Class_Student.model.js'
+import Classes from '../../Models/Classes.model.js'
 import Contact from '../../Models/Contacts.model.js'
 import IncompleteQuiz from '../../Models/IncompleteQuiz.model.js'
 import Message from '../../Models/Message.model.js'
 import Quiz from '../../Models/Quiz.model.js'
 import QuizQuestions from '../../Models/QuizQuestions.model.js'
 import Room from '../../Models/Room.model.js'
+import Schedules from '../../Models/Schedules.model.js'
 import User from '../../Models/Users.model.js'
+
+import mongoose from 'mongoose'
 
 async function AddUser(req,res,next){
     try
@@ -69,31 +74,41 @@ async function AddQuiz(req,res,next){
     {
         let resp;
         let id_arr=[];
-        const questionPromises = req.body.questions.map(async(item)=> {
-            resp = await QuizQuestions.QuizQuestions.create(
-                {
-                    "Question":item.question,
-                    "Answer_1":item.answer_1,
-                    "Answer_2":item.answer_2,
-                    "Answer_3":item.answer_3,
-                    "Answer_4":item.answer_4,
-                    "R_Answer":item.r_answer
-                })
-                id_arr.push(resp._id)
-                console.log(resp._id)  
-            }
-        )
-        //wait for all promises to resolve before contnuing below code
-        await Promise.all(questionPromises);
+        console.log("ADD QUIZ CALLED");
         
-        let resp2 = await Quiz.Quiz.create(
-            {
-                "Title":req.body.title,
-                "T_Questions":req.body.t_questions,
-                "Quiz_Questions":id_arr
-            }
-        )
-        res.status(201).send("Quiz Added Successfully")
+        if(req.body.title == null || req.body.class == null || req.body.due_date == null || req.body.t_questions == null)
+        {
+            res.status(400).send("Missing required fields")
+        }
+        else
+        {
+            const questionPromises = req.body.questions.map(async(item)=> {
+                resp = await QuizQuestions.QuizQuestions.create(
+                    {
+                        "Question":item.question,
+                        "Answer_1":item.option_1,
+                        "Answer_2":item.option_2,
+                        "Answer_3":item.option_3,
+                        "R_Answer":item.r_answer
+                    })
+                    id_arr.push(resp._id)
+                    console.log(resp._id)  
+                }
+            )
+            //wait for all promises to resolve before contnuing below code
+            await Promise.all(questionPromises);
+            
+            let resp2 = await Quiz.Quiz.create(
+                {
+                    "Title":req.body.title,
+                    "Class":req.body.class,
+                    "Due_Date":req.body.due_date,
+                    "T_Questions":req.body.t_questions,
+                    "Quiz_Questions":id_arr
+                }
+            )
+            res.status(201).send("Quiz Added Successfully")
+        }
     }
     catch(error)
     {
@@ -140,6 +155,49 @@ async function getQuizQuestion(req,res){
     {
         let question = await QuizQuestions.QuizQuestions.findOne({"_id":req.body.id})
         res.status(200).send(question)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+
+async function getAllQuizQuestions(req,res){
+    try
+    {
+        let questions = await QuizQuestions.QuizQuestions.find({"Quiz_id":req.body.Quiz_id})
+        res.status(200).send(questions)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+
+async function getSchedule(req,res){
+    try
+    {
+        let classes
+        let classIds=[]
+        if(req.body.role == 'Student')
+        {
+            classes = await Class_Student.Class_Student.find({"Student_id":req.body.user_id},{"Class_id":1,"_id":0})
+            classes.map((i)=>(
+                classIds.push(new mongoose.Types.ObjectId(i.Class_id))
+            ))
+        }
+        else if(req.body.role == 'Teacher')
+        {
+            classes = await Classes.Classes.find({"Teacher_id":req.body.user_id},{"_id":1,"Class":1})
+            classes.map((i)=>(
+                classIds.push(new mongoose.Types.ObjectId(i._id))
+            ))  
+        }
+        let schedule = await Schedules.Schedules.find({"Class_id":{$in:classIds}})
+        
+        res.status(200).send(schedule)
     }
     catch(error)
     {
@@ -376,6 +434,6 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
+export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAllQuizQuestions,getSchedule,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
 
 

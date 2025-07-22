@@ -99,6 +99,10 @@ app.post('/api/getQuizes',UserControllers.getQuizes)
 
 app.post('/api/getQuizQuestion',UserControllers.getQuizQuestion)
 
+app.post('/api/getAllQuizQuestions',UserControllers.getAllQuizQuestions)
+
+app.post('/api/getSchedule',UserControllers.getSchedule)
+
 app.post('/api/updatePoints',UserControllers.UpdatePoints)
 
 app.post('/api/addIncompleteQuiz',UserControllers.addIncompleteQuiz)

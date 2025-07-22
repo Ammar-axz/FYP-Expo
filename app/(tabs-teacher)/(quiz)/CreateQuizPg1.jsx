@@ -4,13 +4,13 @@ import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
-import DatePicker from 'react-native-date-picker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 BackButton
 
 const categories = [
@@ -19,15 +19,36 @@ const categories = [
   { label: 'Health', value: 'health' },
 ];
 
-const CreateQuizPg1 = ({ visible, onSave, onClose }) => {
-  const [localReminder, setLocalReminder] = useState({
+const CreateQuizPg1 = () => {
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [quiz, setQuiz] = useState({
     title: '',
-    category: categories[0].value, // Default to first category
-    date: new Date(),
-    color: 'gray',
+    class: categories[0].value, // Default to first category
+    due_date: new Date(),
   });
 
-  const [open, setOpen] = useState(false);
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+   const handleConfirm = (date) => {
+    setQuiz({...quiz,date:date})
+    hideDatePicker();
+  };
+
+  const handleNext = () => {
+    router.push({
+        pathname: 'CreateQuizPg2',
+        params: {
+          quiz: encodeURIComponent(JSON.stringify(quiz))
+        },
+      })
+  }
 
   return (
       <View style={styles.modalOverlay}>
@@ -38,8 +59,8 @@ const CreateQuizPg1 = ({ visible, onSave, onClose }) => {
                 <Text style={styles.modalTitle}>Create Quiz</Text>
           <Text style={styles.label}>Title</Text>
           <TextInput
-            value={localReminder.title}
-            onChangeText={text => setLocalReminder({ ...localReminder, title: text })}
+            value={quiz.title}
+            onChangeText={text => setQuiz({ ...quiz, title: text })}
             style={styles.input}
             placeholder="Enter quiz title"
           />
@@ -47,8 +68,8 @@ const CreateQuizPg1 = ({ visible, onSave, onClose }) => {
           <Text style={styles.label}>Class</Text>
           <View style={styles.pickerContainer}>
             <Picker
-              selectedValue={localReminder.category}
-              onValueChange={(itemValue) => setLocalReminder({ ...localReminder, category: itemValue })}
+              selectedValue={quiz.class}
+              onValueChange={(itemValue) => setQuiz({ ...quiz, class: itemValue })}
               style={styles.picker}
             >
               {categories.map((cat, index) => (
@@ -58,22 +79,19 @@ const CreateQuizPg1 = ({ visible, onSave, onClose }) => {
           </View>
 
           <Text style={styles.label}>Due Date</Text>
-          <TouchableOpacity onPress={() => setOpen(true)} style={styles.input}>
-            <Text>{localReminder.date.toLocaleDateString()}</Text>
+          <TouchableOpacity onPress={showDatePicker} style={styles.input}>
+            <Text>{quiz.due_date.toLocaleDateString()}</Text>
           </TouchableOpacity>
+              {console.log(quiz.date)}
 
-          <DatePicker
-            modal
-            open={open}
-            date={localReminder.date}
-            onConfirm={selectedDate => {
-              setOpen(false);
-              setLocalReminder({ ...localReminder, date: selectedDate });
-            }}
-            onCancel={() => setOpen(false)}
-          />
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />    
 
-          <ReminderBtn btnTitle="Next" handleAddReminder={()=>router.push('CreateQuizPg2')} />
+          <ReminderBtn btnTitle="Next" handleAddReminder={handleNext} />
         </View>
       </View>
   );

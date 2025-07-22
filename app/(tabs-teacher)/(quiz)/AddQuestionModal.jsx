@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import DatePicker from 'react-native-date-picker';
 
 const categories = [
   { label: 'Quran', value: 'Quran' },
@@ -17,18 +16,19 @@ const categories = [
   { label: 'Health', value: 'health' },
 ];
 
-const AddQuestionModal = ({ visible, onSave, onClose }) => {
-  const [localReminder, setLocalReminder] = useState({
-    title: '',
-    category: categories[0].value, // Default to first category
-    date: new Date(),
-    color: 'gray',
+const AddQuestionModal = ({ setQuestions, visible, onSave, onClose }) => {
+  const [question, setQuestion] = useState({
+    question: "",
+    option_1: "",
+    option_2: "",
+    option_3: "",
+    r_answer: ""
   });
 
-  const [open, setOpen] = useState(false);
-
   const handleSave = () => {
-    onSave({ ...localReminder, date: localReminder.date.toISOString() });
+    setQuestions(prev => [...prev, question]);
+    setQuestion("")
+    onClose()
   };
 
   return (
@@ -43,47 +43,36 @@ const AddQuestionModal = ({ visible, onSave, onClose }) => {
           </View>
           <Text style={styles.label}>Question</Text>
           <TextInput
-            value={localReminder.title}
-            onChangeText={text => setLocalReminder({ ...localReminder, title: text })}
+            value={question.question}
+            onChangeText={text => setQuestion({ ...question, question: text })}
             style={styles.input}
             placeholder="Enter question"
           />
           <Text style={styles.label}>Answer</Text>
           <TextInput
-            value={localReminder.title}
-            onChangeText={text => setLocalReminder({ ...localReminder, title: text })}
+            value={question.r_answer}
+            onChangeText={text => setQuestion({ ...question, r_answer: text })}
             style={styles.input}
             placeholder="Enter answer"
           />
           <Text style={styles.label}>Options</Text>
           <TextInput
-            value={localReminder.title}
-            onChangeText={text => setLocalReminder({ ...localReminder, title: text })}
+            value={question.option_1}
+            onChangeText={text => setQuestion({ ...question, option_1: text })}
             style={styles.input}
             placeholder="Enter option"
           />
           <TextInput
-            value={localReminder.title}
-            onChangeText={text => setLocalReminder({ ...localReminder, title: text })}
+            value={question.option_2}
+            onChangeText={text => setQuestion({ ...question, option_2: text })}
             style={styles.input}
             placeholder="Enter option"
           />
           <TextInput
-            value={localReminder.title}
-            onChangeText={text => setLocalReminder({ ...localReminder, title: text })}
+            value={question.option_3}
+            onChangeText={text => setQuestion({ ...question, option_3: text })}
             style={styles.input}
             placeholder="Enter option"
-          />
-
-          <DatePicker
-            modal
-            open={open}
-            date={localReminder.date}
-            onConfirm={selectedDate => {
-              setOpen(false);
-              setLocalReminder({ ...localReminder, date: selectedDate });
-            }}
-            onCancel={() => setOpen(false)}
           />
 
           <ReminderBtn btnTitle="Add" handleAddReminder={handleSave} />

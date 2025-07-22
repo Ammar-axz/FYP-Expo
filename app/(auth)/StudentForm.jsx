@@ -1,23 +1,18 @@
+import { API } from '@/api';
 import ConfirmBtn from '@/components/ConfirmBtn';
 import FormField from '@/components/FormField';
 import Heading from '@/components/Heading';
 import Paragraph from '@/components/Paragraph';
 import { userData } from '@/Context/UserContext';
-import { API_URL, WEB_API_URL } from "@env";
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StudentForm = () => {
   const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
-
-  const baseURL =
-  Platform.OS === 'android'
-    ? API_URL  // Android emulator
-    : WEB_API_URL; // iOS simulator or Web
 
   const [error,setError] = useState()
   const [form, setForm] = useState({
@@ -35,7 +30,7 @@ const StudentForm = () => {
     // }
     // setIsSubmitting(true);
     try{
-      let response = await axios.post(`${baseURL}/api/Login`,form)
+      let response = await axios.post(`${API.BASE_URL}/api/Login`,form)
         console.log(response.data);
         
         setLoggedInUserId(response.data._id)

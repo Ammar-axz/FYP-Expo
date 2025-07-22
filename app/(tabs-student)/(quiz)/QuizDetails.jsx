@@ -1,11 +1,10 @@
 import { userData } from '@/Context/UserContext';
-import { API_URL, WEB_API_URL } from "@env";
+import { API } from '@/api';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
     Image,
-    Platform,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -32,12 +31,7 @@ const QuizDetails = () => {
     const [submitted,setSubmitted] = useState(false)
     const [correctButton,setCorrectButton] = useState(0)
     const [inCorrectButton,setInCorrectButton] = useState(0)
-
-    const baseURL =
-      Platform.OS === 'android'
-        ? API_URL
-        : WEB_API_URL;
-
+    
     
     console.log(courseData);
 
@@ -50,7 +44,7 @@ const QuizDetails = () => {
         let id = { id : courseData.quiz.Quiz_Questions[que_index]}
         console.log("HERE ->"+id);
         
-        let Question = await axios.post(`${baseURL}/api/getQuizQuestion`,id)
+        let Question = await axios.post(`${API.BASE_URL}/api/getQuizQuestion`,id)
         
         console.log(Question.data);
         setQuizQue(Question.data)
@@ -65,7 +59,7 @@ const QuizDetails = () => {
             quiz_id : courseData.quiz._id,
             completed : increment
         }
-        let Question = await axios.post(`${baseURL}/api/addIncompleteQuiz`,inc_quiz)
+        let Question = await axios.post(`${API.BASE_URL}/api/addIncompleteQuiz`,inc_quiz)
         
         if(increment < courseData.quiz.Quiz_Questions.length)
         {
@@ -91,7 +85,7 @@ const QuizDetails = () => {
                     flag : true,
                     points : 10
                 }
-                const updatedPoints = await axios.post(`${baseURL}http://10.0.2.2:5000/api/updatePoints`,inc_points)
+                const updatedPoints = await axios.post(`${API.BASE_URL}http://10.0.2.2:5000/api/updatePoints`,inc_points)
                 
                 setLoggedInUserPoints(updatedPoints.data.Points)
             }
@@ -123,7 +117,7 @@ const QuizDetails = () => {
                     flag : false,
                     points : 10
                 }
-                const updatedPoints = await axios.post(`${baseURL}/api/updatePoints`,dec_points)
+                const updatedPoints = await axios.post(`${API.BASE_URL}/api/updatePoints`,dec_points)
                 
                 setLoggedInUserPoints(updatedPoints.data.Points)
             }

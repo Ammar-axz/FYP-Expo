@@ -1,5 +1,7 @@
 import { BackButton } from '@/components/BackButton';
 import ReminderBtn from '@/components/ReminderBtn';
+import axios from 'axios';
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import {
   ScrollView,
@@ -8,6 +10,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { API } from '../../../api';
 import CreateQuizModal from './AddQuestionModal';
 
 const categories = [
@@ -16,10 +19,49 @@ const categories = [
   { label: 'Health', value: 'health' },
 ];
 
-const CreateQuizPg2 = ({ visible, onSave, onClose }) => {
+const CreateQuizPg2 = () => {
 
+  const {quiz} = useLocalSearchParams()
+  const quizData = JSON.parse(decodeURIComponent(quiz));
   const [modalVisible, setModalVisible] = useState(false);
+  const [quizQuestions,setQuizQuestions] = useState([])
+  const quizQuestionTemplate = {
+      question: "",
+      option_1: "",
+      option_2: "",
+      option_3: "",
+      r_answer: ""
+    }
 
+  const handleRemove = (indexToRemove)=> {
+    setQuizQuestions(prev =>
+      prev.filter((_, index) => index !== indexToRemove)
+    )
+  }
+
+  const handleSubmit = async()=> {
+    const submitQuiz = {
+      title: quizData.title,
+      class:quizData.class,
+      due_date: new Date(quizData.due_date),
+      t_questions: quizQuestions.length,
+      questions:quizQuestions
+    }
+    try
+    {
+      let resp = await axios.post(`${API.BASE_URL}/api/addQuiz`,submitQuiz)
+      console.log(resp);
+      
+    }
+    catch(e)
+    {
+      console.error("Submission failed:", e.response?.data || e.message);
+    }
+  }
+
+  // useEffect(() => {
+  //   console.log('Questions updated:', quizQuestions);
+  // }, [quizQuestions]);
 
   return (
     <ScrollView style={styles.mainContainer}>
@@ -28,24 +70,34 @@ const CreateQuizPg2 = ({ visible, onSave, onClose }) => {
             <BackButton/>
             <Text style={styles.modalTitle}>Create Quiz</Text>
           </View>
-          <Text style={styles.QuestionTxt}>Question 1</Text>
-        <View style={styles.modalContainer}>
-          <Text style={styles.label}>Question</Text>
-          <Text style={styles.textBox}>Which Surah is called the heart of Quran?</Text>
-          <Text style={styles.label}>Answer</Text>
-          <Text style={styles.textBox}>Surah Yaseen</Text>
-          <Text style={styles.label}>Options</Text>
-          <Text style={styles.textBox}>Surah Baqarah</Text>
-          <Text style={styles.textBox}>Surah Baqarah</Text>
-          <Text style={styles.textBox}>Surah Baqarah</Text>
+          {quizQuestions.map((item,i)=>{
+            return(
+              <View>
+                <Text style={styles.QuestionTxt}>Question {i+1}</Text>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.label}>Question</Text>
+                  <Text style={styles.textBox}>{item.question}</Text>
+                  <Text style={styles.label}>Answer</Text>
+                  <Text style={styles.textBox}>{item.r_answer}</Text>
+                  <Text style={styles.label}>Options</Text>
+                  <Text style={styles.textBox}>{item.option_1}</Text>
+                  <Text style={styles.textBox}>{item.option_2}</Text>
+                  <Text style={styles.textBox}>{item.option_3}</Text>
 
-          <ReminderBtn btnTitle="Remove" handleAddReminder={onClose} />
-        </View>
+                  <ReminderBtn btnTitle="Remove" handleAddReminder={() => handleRemove(i)} />
+                </View>
+              </View>)
+            })}
         <TouchableOpacity style={styles.btnAddQuiz} onPress={()=>setModalVisible(true)}>
-          <Text style={{fontSize:18,fontWeight:'400'}} >Add more questions</Text>
+          <Text style={{fontSize:18,fontWeight:'400'}} >Add question</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnAddQuiz} onPress={handleSubmit}>
+          <Text style={{fontSize:18,fontWeight:'400'}} >Submit</Text>
         </TouchableOpacity>
       </View>
         <CreateQuizModal
+            questions={quizQuestions}
+            setQuestions={setQuizQuestions}
             visible={modalVisible}
             // onSave={saveReminder}
             onClose={() => setModalVisible(false)}

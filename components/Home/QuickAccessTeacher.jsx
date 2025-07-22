@@ -1,36 +1,43 @@
+import { API } from "@/api";
 import TimeTableItem from "@/components/TimeTableItem";
+import { userData } from '@/Context/UserContext';
+import axios from "axios";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ViewAll from "./ViewAll";
 
 const QuickAccessTeacher = () => {
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const today = new Date();
+  const dayName = days[today.getDay()];
 
-  const schedule = [
+  const {loggedInUserId,loggedInUserRole} = userData()
+  const [schedule, setSchedule] = useState([])
+
+  async function getSchedule()
+  {
+    try
     {
-      id: "1",
-      day: 0,
-      startTime: "08:30 AM",
-      endTime: "09:30 AM",
-      courseText: "Surah Al-Baqarah, Ayah 183–186",
-      groupName: "Hifz Group A",
-    },
+      let userData = 
+      {
+        user_id : loggedInUserId,
+        role : loggedInUserRole
+      }
+      const schedule = await axios.post(`${API.BASE_URL}/api/getSchedule`,userData)
+      setSchedule(schedule.data)
+    }
+    catch(e)
     {
-      id: "2",
-      day: 0,
-      startTime: "09:45 AM",
-      endTime: "10:45 AM",
-      courseText: "Tajweed Rules Review",
-      groupName: "Tajweed Group B",
-    },
-    {
-      id: "3",
-      day: 0,
-      startTime: "11:00 AM",
-      endTime: "12:00 PM",
-      courseText: "Arabic Grammar Basics",
-      groupName: "Language Group",
-    },]
+      console.log(e)      
+    }
+  }
+
+  useEffect(() => {
+    getSchedule()
+  }, [])
+
+  const filteredSchedule = schedule.filter((item) => item.Day === dayName);
 
   return (
     <View style={styles.main}>
@@ -60,7 +67,7 @@ const QuickAccessTeacher = () => {
             router.push("Timetable");
           }}>
           <Image source={require("@/assets/icons/task.png")} />
-          <Text style={styles.SubTitle}> TimeTable </Text>
+          <Text style={styles.SubTitle}> Schedule </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.box}>
@@ -91,18 +98,18 @@ const QuickAccessTeacher = () => {
       
       <View style={styles.headingContainer}>
         <Text style={styles.DayHeading}>Today</Text>
-        <Text style={styles.DayHeading2}>Tue, 23 may</Text>
+        <Text style={styles.DayHeading2}>{dayName}</Text>
       </View>
 
       <FlatList
-        data={schedule}
-        keyExtractor={(item) => item.id}
+        data={filteredSchedule}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <TimeTableItem
-            startTime={item.startTime}
-            endTime={item.endTime}
-            courseText={item.courseText}
-            groupName={item.groupName}
+            startTime={item.Start_Time}
+            endTime={item.End_Time}
+            courseText={item.Class_Name.split(" - ")[0]}
+            groupName={item.Class_Name}
           />
         )}
         ListEmptyComponent={

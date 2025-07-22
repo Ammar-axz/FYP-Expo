@@ -1,3 +1,7 @@
+
+//table name (incomplete quiz) because it is used to show quizes in progress and are incomplete
+//this table is many to many relation table of quiz and users
+
 import mongoose from "mongoose";
 
 const incompleteQuizSchema = new mongoose.Schema(
