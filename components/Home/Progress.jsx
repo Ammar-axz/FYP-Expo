@@ -1,12 +1,31 @@
 import React from 'react';
-import { Dimensions, Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, ImageBackground, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
+import { router } from 'expo-router';
 
-const Progress = () => {
-  const progressValue = 0.25;
+export default function Progress ({quiz}){
+  const progressValue = quiz.quiz.T_Questions > 0 
+  ? (quiz.completed / quiz.quiz.T_Questions) * 100 
+  : 0;
 
+  const months = ["January","February","March","April","May","June",
+                  "July","August","September","October","November","December"
+                ]
+  const year = quiz.quiz.Due_Date.substring(0,4)
+  let month = Number(quiz.quiz.Due_Date.substring(5,7))
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+          style={styles.container}
+          // onPress={()=>{router.navigate('QuizDetails', {course:quiz})}}
+          onPress={()=>{
+            router.push({
+            pathname: 'QuizDetails',
+            params: {
+              course: encodeURIComponent(JSON.stringify(quiz)), // ← Encode it!
+            },
+          })}}
+          >
+    {/* <View style={styles.container}> */}
       <ImageBackground
       style={styles.cardImg}
       source={require('../../assets/images/QuizCardDesign.png')}
@@ -20,10 +39,10 @@ const Progress = () => {
         
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View style={styles.card}>
-          <Text style={styles.title}>Discover Quran Facts Quiz</Text>
-          <Text style={styles.questions}>Questions – 20</Text>
+          <Text style={styles.title}>{quiz.quiz.Title}</Text>
+          <Text style={styles.questions}>Questions – {quiz.quiz.T_Questions}</Text>
           <View style={styles.dueContainer}>
-            <Text style={styles.dueText}>⏰ Due: 25 Jan 2025</Text>
+            <Text style={styles.dueText}>⏰ Due: {months[month] +" "+ year}</Text>
           </View>
         </View>
         <Image
@@ -34,14 +53,17 @@ const Progress = () => {
 
       <View style={styles.progressWrapper}>
         <ProgressBar
-          progress={progressValue}
+          progress={progressValue/100}
           color={'rgb(30, 112, 68)'}
           style={styles.progressBar}
         />
-        <Text style={styles.percentageText}>{Math.round(progressValue * 100)}%</Text>
+        <View style={styles.progressTextBox}>
+          <Text style={[styles.percentageText,{left:`${progressValue}%`}]}>{progressValue}%</Text>
+        </View>
       </View>
       </ImageBackground>
-    </View>
+    {/* </View> */}
+    </TouchableOpacity>
   );
 };
 
@@ -53,7 +75,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 40,
     alignSelf: 'center',
     marginRight: 10,
-    marginVertical: 25
+    marginBottom: 25,
+    marginTop:5
   },
   card: {
     flex: 1,
@@ -98,6 +121,13 @@ const styles = StyleSheet.create({
   progressWrapper: {
     marginTop: 10,
     position: 'relative',
+    // borderWidth:1,
+    // borderColor:'black'
+  },
+  progressTextBox:{
+    position:'absolute',
+    width:'90%',
+    height:'100%',
   },
   progressBar: {
     height: 12,
@@ -110,12 +140,10 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
     top: -5,
-    left: 55,
+    // left: 55,
     backgroundColor: '#FFFFFF',
     padding: 3,
     paddingHorizontal:10,
     borderRadius: 100
   },
 });
-
-export default Progress;

@@ -4,7 +4,7 @@ import { userData } from '@/Context/UserContext';
 import axios from "axios";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ViewAll from "./ViewAll";
 
 const QuickAccessTeacher = () => {
@@ -100,24 +100,28 @@ const QuickAccessTeacher = () => {
         <Text style={styles.DayHeading}>Today</Text>
         <Text style={styles.DayHeading2}>{dayName}</Text>
       </View>
-
-      <FlatList
-        data={filteredSchedule}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <TimeTableItem
-            startTime={item.Start_Time}
-            endTime={item.End_Time}
-            courseText={item.Class_Name.split(" - ")[0]}
-            groupName={item.Class_Name}
-          />
-        )}
-        ListEmptyComponent={
-          <Text style={{ textAlign: "center", color: "gray", marginTop: 20 }}>
-            No schedule for this day.
-          </Text>
-        }
-      />
+      {
+        filteredSchedule.map((item)=>{
+          if(item != null)
+          {
+            return(
+            <TimeTableItem
+              key={item._id}
+              startTime={item.Start_Time}
+              endTime={item.End_Time}
+              courseText={item.Class_Name.split(" - ")[0]}
+              groupName={item.Class_Name}
+            />)
+          }
+          else
+          {
+            return(
+            <Text style={{ textAlign: "center", color: "gray", marginTop: 20 }}>
+              No schedule for this day.
+            </Text>)
+          }
+        })
+      }
     </View>
   );
 };

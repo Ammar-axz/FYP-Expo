@@ -4,7 +4,7 @@ const attendanceSchema = new mongoose.Schema(
     {
         Student_id:{type:mongoose.Schema.Types.ObjectID,required:[true,"Student id is Required"],ref:"Users"},
         Class_id:{type:mongoose.Schema.Types.ObjectID,required:[true,"Class id is Required"],ref:"Classes"},
-        Schedule_id:{type:mongoose.Schema.Types.ObjectID,required:[true,"Schedule id is Required"],ref:"Schedules"},
+        Day:{type:String,required:[true,"Day is Required"]},
         Date:{type:Date,required:[true,"Date is Required"]},
         Status:{type:Boolean,required:[true,"Status is Required"]}
     }

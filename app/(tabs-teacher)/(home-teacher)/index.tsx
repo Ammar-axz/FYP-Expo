@@ -20,6 +20,7 @@ const DATA = [
 
 const Home = () => {
   const { loggedInUser, loggedInUserPfp, loggedInUserId } = userData();
+  
   return (
     <>
       <ScrollView style={styles.mainContainer}>

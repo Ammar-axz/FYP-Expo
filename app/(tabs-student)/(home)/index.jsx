@@ -1,7 +1,9 @@
 import Progress from '@/components/Home/Progress';
 import QuickAccess from '@/components/Home/QuickAccess';
 import { userData } from '@/Context/UserContext';
-import React from 'react';
+import axios from 'axios';
+import { useState,useEffect } from 'react';
+import { API } from '@/api';
 import {
   FlatList,
   Image,
@@ -13,15 +15,55 @@ import {
   View,
 } from 'react-native';
 
-const DATA = [
-  {id: '1', title: 'Item 1', image: 'https://via.placeholder.com/150'},
-  {id: '2', title: 'Item 2', image: 'https://via.placeholder.com/150'},
-  {id: '3', title: 'Item 3', image: 'https://via.placeholder.com/150'},
-  {id: '4', title: 'Item 4', image: 'https://via.placeholder.com/150'},
-];
-
 const Home = () => {
-  const {loggedInUser,loggedInUserPfp, loggedInUserId} = userData()
+  const {loggedInUser,loggedInUserPfp,loggedInUserId,loggedInUserRole,loggedInUserClasses,setLoggedInUserClasses} = userData()
+    const [quizes,setQuizes] = useState([])
+    let incQuizes = []
+  
+    useEffect(()=>{
+      getClasses()
+    },[])
+  
+    useEffect(()=>{
+      if (loggedInUserClasses.length > 0) {
+        getQuizes()
+      }
+    },[loggedInUserClasses])
+    
+    async function getClasses()
+    {
+      try
+      {
+        let userData = { user_id : loggedInUserId , role : loggedInUserRole }
+        const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
+        setLoggedInUserClasses(classData.data)        
+      }
+      catch(e)
+      {
+        console.log(e)
+      }
+    }
+    async function getQuizes()
+    {
+      try
+      {        
+        let id = {user_id: loggedInUserId , class_id : loggedInUserClasses, role : loggedInUserRole}
+        let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
+        
+        Quizes.data.map((i)=>{
+          if(i.completed > 0)
+          {
+            incQuizes.push(i)
+          }
+        })
+        setQuizes(incQuizes)
+      }
+      catch(e)
+      {
+        console.log(e)
+      }
+    }
+
   return (
     <>
     <ScrollView style={{backgroundColor:'white'}}>
@@ -57,10 +99,10 @@ const Home = () => {
         {/* Progress List */}
         <View style={styles.progressContainer}>
           <FlatList
-            data={DATA}
-            keyExtractor={item => item.id}
+            data={quizes}
+            keyExtractor={item => item.quiz._id}
             renderItem={({item}) => (
-              <Progress title={item.title} image={item.image} />
+              <Progress quiz={item} />
             )}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -101,6 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(15,65,56,1)',
   },
   container: {
+    marginTop:25,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',

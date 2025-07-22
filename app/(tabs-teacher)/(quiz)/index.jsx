@@ -10,40 +10,28 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Image
 } from 'react-native';
 
 let image = 'https://via.placeholder.com/150';
-// const DATA = [
-//   {id: '1', title: 'Item 1', image: 'https://via.placeholder.com/150'},
-//   {id: '2', title: 'Item 2', image: 'https://via.placeholder.com/150'},
-//   {id: '3', title: 'Item 3', image: 'https://via.placeholder.com/150'},
-//   {id: '4', title: 'Item 4', image: 'https://via.placeholder.com/150'},
-// ];
-// const latestQuiz = [
-//   {id: '1', title: 'Quiz 1', questions: '20'},
-//   {id: '2', title: 'Quiz 2', questions: '20'},
-//   {id: '3', title: 'Quiz 3', questions: '20'},
-//   {id: '4', title: 'Quiz 4', questions: '20'},
-// ];
 
 const QuizCard = ({ quiz }) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      // onPress={()=>{router.navigate('QuizDetails', {course:quiz})}}
       onPress={()=>{
         router.push({
         pathname: 'QuizDetails',
         params: {
-          quizData: encodeURIComponent(JSON.stringify({quiz_id : quiz.quiz._id, title : quiz.quiz.Title})), // ← Encode it!
+          quizData: encodeURIComponent(JSON.stringify({quiz_id : quiz._id, title : quiz.Title})), // ← Encode it!
         },
       })}}
       >
-      {/* <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/> */}
+      <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
       <View style={styles.textView}>
-        <Text style={styles.title}>{quiz.quiz.Title}</Text>
-        <Text style={styles.questions}>{quiz.quiz.T_Questions} Questions</Text>
+        <Text style={styles.title}>{quiz.Title}</Text>
+        <Text style={styles.questions}>{quiz.T_Questions} Questions</Text>
         <Text style={styles.questions}>DueDate : 20/5/2025</Text>
       </View>
     </TouchableOpacity>
@@ -52,34 +40,55 @@ const QuizCard = ({ quiz }) => {
 
 
 const Quiz = () => {
-  const {loggedInUserId} = userData()
+  const {loggedInUserId,loggedInUserRole} = userData()
   const [quizes,setQuizes] = useState([])
-  const categories = ["Hifz Group 1", "Tajweed Group 2", "Taharat Group 2"];
-  const [selectedCourse, setSelectedCourse] = useState(categories[0]);
+  const [classes,setClasses] = useState([])
+  const [selectedClass, setSelectedClass] = useState();
   const isFocused = useIsFocused()
-  
+
+  useEffect(()=>{
+      getClasses()
+  },[])
+
   useEffect(()=>{
     if(isFocused)
-      getQuizes();
-  },[isFocused])
+      getQuizes()
+    
+  },[isFocused,selectedClass])
   
+  async function getClasses()
+  {
+    try
+    {
+      let userData = { user_id : loggedInUserId , role : loggedInUserRole }
+      const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
+      setClasses(classData.data)
+      setSelectedClass(classData.data[0])
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
   async function getQuizes()
   {
-    let id = {user_id: loggedInUserId}
-    let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
-    setQuizes(Quizes.data)
+    try
+    {
+      let id = {user_id: loggedInUserId , class_id : selectedClass, role : loggedInUserRole}
+      let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
+      setQuizes(Quizes.data)
+      
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
         
   }
   
   return (
     <>
     <View style={styles.mainContainer}>
-      
-      {/* <Image
-              style={styles.headerImg}
-              source={require('@/assets/images/QuizHeaderBG.png')}
-              /> */}
-        {/* Header Section */}
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <Text style={styles.name}>Quizes</Text>
@@ -87,36 +96,21 @@ const Quiz = () => {
 
         </View>
 
-        {/* Progress List */}
-        {/* <View style={styles.progressContainer}>
-          <FlatList
-            data={quizes}
-            keyExtractor={item => item.quiz._id}
-            renderItem={({item}) => (
-              <QuizProgressCard title={item.quiz.Title}  image={image}/>
-            )}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-        </View> */}
-        {/* <View style={styles.ltQuizHeadContainer}>
-          <Text style={styles.ltQuizHead}>Previous Quizes</Text>
-        </View> */}
         <View style={styles.pickerContainer}>
           <Picker
-            selectedValue={selectedCourse}
-            onValueChange={(itemValue) => setSelectedCourse(itemValue)}
+            selectedValue={selectedClass}
+            onValueChange={(itemValue) => setSelectedClass(itemValue)}
             style={styles.picker}
           >
-            {categories.map((item, index) => (
-              <Picker.Item key={index} label={item} value={item} />
+            {classes.map((item, index) => (
+              <Picker.Item key={index} label={item.Class} value={item._id} />
             ))}
           </Picker>
         </View>
         <View style={styles.latestQuiz}>
             <FlatList
             data={quizes}
-            keyExtractor={item => item.quiz._id}
+            keyExtractor={item => item._id}
             renderItem={({item})=>( <QuizCard quiz={item} /> )}
             />
         </View>
@@ -308,13 +302,11 @@ const styles = StyleSheet.create({
     alignItems:'flex-end'
   },
   newQuiz:{
-    backgroundColor:'black',
+    backgroundColor:'#36b295',
     height:70,
     width:70,
-    margin:10,
-    borderRadius:100,
-    justifyContent:'center',
-    alignItems:'center'
+    margin:20,
+    borderRadius:100
   },
   newQuizText:{
     color:'white',

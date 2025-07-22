@@ -1,3 +1,4 @@
+import Attendance from '../../Models/Attendance.model.js'
 import Class_Student from '../../Models/Class_Student.model.js'
 import Classes from '../../Models/Classes.model.js'
 import Contact from '../../Models/Contacts.model.js'
@@ -119,29 +120,45 @@ async function AddQuiz(req,res,next){
 async function getQuizes(req,res){
     try
     {
-        const quizes = await Quiz.Quiz.find()
-        let quiz = []
-        await Promise.all(
-        quizes.map(async(item,index)=>{
-            const inc_quiz = await IncompleteQuiz.incompleteQuiz.findOne({$and:[{"User_id":req.body.user_id},{"Quiz_id":item._id}]})
-            if(inc_quiz)
-            {
-                // quizes[index].completed=inc_quiz.Completed
-                quiz[index] = {
-                    quiz : item,
-                    completed : inc_quiz.Completed
+        if(req.body.role == "Student")
+        {
+            let classIds = []
+            req.body.class_id.map((i)=>(
+                classIds.push(new mongoose.Types.ObjectId(i.Class_id))
+            ))
+            console.log(classIds);
+            
+            const quizes = await Quiz.Quiz.find({"Class_id":classIds})
+            console.log(quizes)
+            let quiz = []
+            await Promise.all(
+            quizes.map(async(item,index)=>{
+                const inc_quiz = await IncompleteQuiz.incompleteQuiz.findOne({$and:[{"User_id":req.body.user_id},{"Quiz_id":item._id}]})
+                if(inc_quiz)
+                {
+                    // quizes[index].completed=inc_quiz.Completed
+                    quiz[index] = {
+                        quiz : item,
+                        completed : inc_quiz.Completed
+                    }
                 }
-            }
-            else
-            {
-                quiz[index] = {
-                    quiz : item,
-                    completed : 0
+                else
+                {
+                    quiz[index] = {
+                        quiz : item,
+                        completed : 0
+                    }
                 }
-            }
-        })
-        )
-        res.status(200).send(quiz)
+            })
+            )
+            res.status(200).send(quiz)
+        }
+        else
+        {
+            const quizes = await Quiz.Quiz.find({"Class_id":req.body.class_id})
+            res.status(200).send(quizes)
+        }
+
     }
     catch(error)
     {
@@ -198,6 +215,57 @@ async function getSchedule(req,res){
         let schedule = await Schedules.Schedules.find({"Class_id":{$in:classIds}})
         
         res.status(200).send(schedule)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+async function getScheduleForAttendance(req,res){
+    try
+    {
+        let schedule = await Schedules.Schedules.find({"Class_id":req.body.class_id})
+        
+        res.status(200).send(schedule)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+
+async function getClasses(req,res){
+    try
+    {
+        let classes
+        if(req.body.role == 'Student')
+        {
+            classes = await Class_Student.Class_Student.find({"Student_id":req.body.user_id})
+        }
+        else if(req.body.role == 'Teacher')
+        {
+            classes = await Classes.Classes.find({"Teacher_id":req.body.user_id})
+        }
+        
+        res.status(200).send(classes)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+
+async function getAttendance(req,res){
+    try
+    {
+        let attendance
+        
+        attendance = await Attendance.Attendance.find({"Class_id":req.body.class_id, "Date" : req.body.date})
+        
+        res.status(200).send(attendance)
     }
     catch(error)
     {
@@ -434,6 +502,6 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAllQuizQuestions,getSchedule,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
+export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
 
 

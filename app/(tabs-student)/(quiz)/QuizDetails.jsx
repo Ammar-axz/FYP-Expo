@@ -134,7 +134,7 @@ const QuizDetails = () => {
                     value={que_index+1}
                     radius={30}
                     progressValueColor='rgba(54,178,149,1)'
-                    maxValue={20}
+                    maxValue={courseData.quiz.T_Questions}
                     progressValueFontSize={18}
                     activeStrokeWidth={5}
                     activeStrokeColor='rgba(54,178,149,1)'

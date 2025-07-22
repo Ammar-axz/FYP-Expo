@@ -1,5 +1,8 @@
 import { Picker } from "@react-native-picker/picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { API } from "@/api";
+import { format } from 'date-fns';
+import { userData } from "@/Context/UserContext";
 import {
   FlatList,
   Image,
@@ -10,6 +13,7 @@ import {
   View,
 } from "react-native";
 import SwitchToggle from "react-native-switch-toggle";
+import axios from "axios";
 
 const StudentListComp = ({ student }) => {
   return (
@@ -46,10 +50,66 @@ const StudentListComp = ({ student }) => {
 };
 
 const Attendance = () => {
-  const [month, setMonth] = useState("January");
-  const [year, setYear] = useState("2025");
-  const [week, setWeek] = useState(1);
-  const [selectedDay, setSelectedDay] = useState(0);
+  const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
+  const today = new Date();
+  const [month, setMonth] = useState(format(today, 'MM'));
+  const [year, setYear] = useState(format(today, 'yyyy'));
+  const [selectedDay, setSelectedDay] = useState(format(today, 'dd'));
+  const [schedule, setSchedule] = useState([])
+  const [classes,setClasses] = useState([])
+  const [selectedClass, setSelectedClass] = useState()
+  let dayIndex
+  
+  useEffect(()=>{
+    getClasses()
+  },[])
+    
+  useEffect(() => {
+    getSchedule()
+  }, [])
+    
+  async function getClasses()
+  {
+    try
+    {
+      let userData = { user_id : loggedInUserId , role : loggedInUserRole }
+      const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
+      setClasses(classData.data)
+      setSelectedClass(classData.data[0])
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
+  
+  async function getSchedule()
+  {
+    try
+    {
+      let scheduleData = 
+      {
+        class_id : loggedInUserId
+      }
+      const schedule = await axios.post(`${API.BASE_URL}/api/getScheduleForAttendance`,scheduleData)
+      setSchedule(schedule.data)
+
+      const day = format(today, 'EEEE');
+
+      schedule.data.map((i,index)=>{
+        if(i.Day == day)
+        {
+          dayIndex = index
+        }
+      })
+    }
+    catch(e)
+    {
+      console.log(e)      
+    }
+  }
+
+  
 
   const days = [
     { no: 0, day: "MON", date: 24 },
@@ -60,9 +120,6 @@ const Attendance = () => {
     { no: 5, day: "SAT", date: 29 },
     { no: 6, day: "SUN", date: 30 },
   ];
-  const categories = ["Hifz Group 1", "Tajweed Group 2", "Taharat Group 2"];
-  const [selectedMonth, setSelectedMonth] = useState("2024-12");
-  const [selectedCourse, setSelectedCourse] = useState(categories[0]);
 
   const attendanceData = [
     {
@@ -155,12 +212,12 @@ const Attendance = () => {
     <View style={styles.container}>
       <View style={styles.pickerContainer}>
         <Picker
-          selectedValue={selectedCourse}
+          selectedValue={selectedClass}
           onValueChange={(itemValue) => setSelectedCourse(itemValue)}
           style={styles.picker}
         >
-          {categories.map((item, index) => (
-            <Picker.Item key={index} label={item} value={item} />
+          {classes.map((item, index) => (
+            <Picker.Item key={index} label={item.Class} value={item._id} />
           ))}
         </Picker>
       </View>
@@ -173,7 +230,7 @@ const Attendance = () => {
           ></Image>
         </TouchableOpacity>
         <View style={styles.DateMonth}>
-          <Text style={styles.DateMonthText}>{month + " " + year}</Text>
+          <Text style={styles.DateMonthText}>{selectedDay + " " + month + " " + year}</Text>
         </View>
         <TouchableOpacity style={styles.ArrowButton}>
           <Image
@@ -198,9 +255,9 @@ const Attendance = () => {
 
       <View style={{ height: 120 }}>
         <ScrollView horizontal={true} style={styles.daysContainer}>
-          {days.map((i) => (
+          {schedule.map((i) => (
             <TouchableOpacity
-              key={i.no}
+              key={i._id}
               style={(() => {
                 if (selectedDay == i.no) {
                   return styles.daysBoxSelected;

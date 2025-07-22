@@ -1,10 +1,11 @@
-import { API } from '@/api';
 import QuizProgressCard from '@/components/Home/Progress';
+import { API } from '@/api';
+import { Picker } from "@react-native-picker/picker";
 import { userData } from '@/Context/UserContext';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
-import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { router } from 'expo-router';
 import {
   FlatList,
   Image,
@@ -16,18 +17,7 @@ import {
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 let image = 'https://via.placeholder.com/150';
-// const DATA = [
-//   {id: '1', title: 'Item 1', image: 'https://via.placeholder.com/150'},
-//   {id: '2', title: 'Item 2', image: 'https://via.placeholder.com/150'},
-//   {id: '3', title: 'Item 3', image: 'https://via.placeholder.com/150'},
-//   {id: '4', title: 'Item 4', image: 'https://via.placeholder.com/150'},
-// ];
-// const latestQuiz = [
-//   {id: '1', title: 'Quiz 1', questions: '20'},
-//   {id: '2', title: 'Quiz 2', questions: '20'},
-//   {id: '3', title: 'Quiz 3', questions: '20'},
-//   {id: '4', title: 'Quiz 4', questions: '20'},
-// ];
+
 
 const QuizCard = ({ quiz }) => {
   const percent = quiz.quiz.T_Questions > 0 
@@ -70,30 +60,49 @@ const QuizCard = ({ quiz }) => {
 
 
 const Quiz = () => {
-  const {loggedInUser,loggedInUserPoints,loggedInUserId} = userData()
+  const {loggedInUser,loggedInUserPoints,loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
   const [quizes,setQuizes] = useState([])
-  const isFocused = useIsFocused()
-  
+  const [incompleteQuizes,setIncompleteQuizes] = useState([])
+  let incQuizes = []
+
   useEffect(()=>{
-    if(isFocused)
-      getQuizes();
-  },[isFocused])
+    if (loggedInUserClasses.length > 0) {
+      getQuizes()
+    }
+  },[])
   
   async function getQuizes()
   {
-    let id = {user_id: loggedInUserId}
-    let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
-    setQuizes(Quizes.data)
+    try
+    {      
+      let id = {user_id: loggedInUserId , class_id : loggedInUserClasses, role : loggedInUserRole}
+      let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
+      setQuizes(Quizes.data)
+      
+      Quizes.data.map((i)=>{
+        if(i.completed > 0)
+        {
+          incQuizes.push(i)
+        }
+      })
+      setIncompleteQuizes(incQuizes)
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
         
   }
   
   return (
     <>
     <View style={styles.mainContainer}>
-      <Image
-              style={styles.headerImg}
-              source={require('@/assets/images/QuizHeaderBG.png')}
-              />
+        <View style={styles.ImageContainer}>
+          <Image
+            style={styles.headerImg}
+            source={require('@/assets/images/QuizHeaderBG.png')}
+            />
+        </View>
         {/* Header Section */}
         <View style={styles.container}>
           <View style={styles.textContainer}>
@@ -110,26 +119,39 @@ const Quiz = () => {
         </View>
 
         {/* Progress List */}
+        {/* <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={selectedClass}
+            onValueChange={(itemValue) => {
+              console.log(itemValue+"Pick")              
+              setSelectedClass(itemValue)}}
+            style={styles.picker}
+          >
+            {classes.map((item, index) => (
+              <Picker.Item key={index} label={item.Class_Name} value={item.Class_id} />
+            ))}
+          </Picker>
+        </View> */}
         <View style={styles.progressContainer}>
           <FlatList
-            data={quizes}
+            data={incompleteQuizes}
             keyExtractor={item => item.quiz._id}
-            renderItem={({item}) => (
-              <QuizProgressCard title={item.quiz.Title}  image={image}/>
-            )}
+            renderItem={({item}) => { 
+            return(
+              <QuizProgressCard quiz={item}/>)
+            }}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
         </View>
         <View style={styles.ltQuizHeadContainer}>
-          <Text style={styles.ltQuizHead}>Latest Quizes</Text>
+          <Text style={styles.ltQuizHead}>All Quizes</Text>
         </View>
         <View style={styles.latestQuiz}>
             <FlatList
             data={quizes}
             keyExtractor={item => item.quiz._id}
-            renderItem={({item})=>( <QuizCard quiz={item} /> )}
-            />
+            renderItem={({item})=>(<QuizCard quiz={item} /> )}/>
         </View>
       </View>
       </>
@@ -152,8 +174,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  ImageContainer:{
+    position:'absolute',
+  },
   headerImg:{
-      position:'absolute'
+    height:350,
+    resizeMode:'stretch'
   },
   textContainer: {
     flex: 1,
@@ -191,7 +217,21 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     resizeMode: 'contain',
   },
+  pickerContainer: {
+    width: "90%",
+    alignSelf:'center',
+    height: 50,
+    borderRadius: 30,
+    justifyContent: "center",
+    // marginBottom: 20,
+    backgroundColor: "rgba(240,240,240,255)",
+  },
+  picker: {
+    width: "100%",
+    height: 50,
+  },
   progressContainer: {
+    marginLeft:20,
     flexDirection: 'row',
   },
   schedule: {
