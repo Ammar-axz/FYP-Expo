@@ -97,6 +97,10 @@ app.post('/api/addQuiz',UserControllers.AddQuiz)
 
 app.post('/api/getQuizes',UserControllers.getQuizes)
 
+app.post('/api/getAttendance',UserControllers.getAttendance)
+
+app.post('/api/getScheduleForAttendance',UserControllers.getScheduleForAttendance)
+
 app.post('/api/getQuizQuestion',UserControllers.getQuizQuestion)
 
 app.post('/api/getAllQuizQuestions',UserControllers.getAllQuizQuestions)

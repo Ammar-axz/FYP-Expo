@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { API } from "@/api";
 import { format } from 'date-fns';
 import { userData } from "@/Context/UserContext";
+import axios from "axios";
 import {
   FlatList,
   Image,
@@ -13,21 +14,38 @@ import {
   View,
 } from "react-native";
 import SwitchToggle from "react-native-switch-toggle";
-import axios from "axios";
 
-const StudentListComp = ({ student }) => {
+const StudentListComp = ({ student, attendanceMarking , setAttendanceMarking }) => {
+
+  const [status,setStatus] = useState(false)
+
+  const updateAttendanceStatus = (studentId, newStatus) => {
+    setAttendanceMarking((prev) =>
+      prev.map((student) =>
+        student.Student_id === studentId
+          ? { ...student, Status: newStatus }
+          : student
+      )
+    );
+  };
+
+
   return (
     <View style={styles.listItem}>
       <View style={{ flex: 1, flexDirection: "row" }}>
         {/* <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/> */}
         <View style={styles.avatar}>
-          <Text>{student.name.charAt(0)}</Text>
+          <Text>{student.Name.charAt(0)}</Text>
         </View>
-        <Text style={styles.listItemText}>{student.name}</Text>
+        <Text style={styles.listItemText}>{student.Name}</Text>
       </View>
       <SwitchToggle
-        switchOn={student.marked}
-        onPress={() => {}}
+        switchOn={status}
+        onPress={() => {
+          const newStatus = !status;
+          setStatus(newStatus);
+          updateAttendanceStatus(student.Student_id, newStatus);
+        }}
         backgroundColorOn="rgba(89,201,86,255)"
         backgroundColorOff="rgba(230,230,230,255)"
         circleColorOn="white"
@@ -54,33 +72,46 @@ const Attendance = () => {
   const today = new Date();
   const [month, setMonth] = useState(format(today, 'MM'));
   const [year, setYear] = useState(format(today, 'yyyy'));
-  const [selectedDay, setSelectedDay] = useState(format(today, 'dd'));
+  const [selectedDay, setSelectedDay] = useState(format(today, 'EEEE'));
+  const [selectedDate, setSelectedDate] = useState();
   const [schedule, setSchedule] = useState([])
-  const [classes,setClasses] = useState([])
-  const [selectedClass, setSelectedClass] = useState()
-  let dayIndex
+  const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
+  const [attendance,setAttendance] = useState([])
+  const [students,setStudents] = useState([])
+  const [attendanceMarking,setAttendanceMarking] = useState([])
+  const [days,setDays] = useState([])
+  const attendanceMarkingTemplate = {
+    Student_id : "",
+    Student_Name : "",
+    Status : false
+  }
+  let lengthOfDays
+  let tempDays = []
   
-  useEffect(()=>{
-    getClasses()
-  },[])
-    
+  Number.prototype.mod = function (n) {
+    "use strict";
+    return ((this % n) + n) % n;
+  };
+
+  
   useEffect(() => {
     getSchedule()
-  }, [])
-    
-  async function getClasses()
+  }, [selectedClass])
+
+  
+
+  function setupAttendanceMarking(studentsData)
   {
-    try
+    const initialAttendance = studentsData.map((i)=>(
     {
-      let userData = { user_id : loggedInUserId , role : loggedInUserRole }
-      const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
-      setClasses(classData.data)
-      setSelectedClass(classData.data[0])
+      Student_id : i._id,
+      Student_Name : i.Name,
+      Status : false
     }
-    catch(e)
-    {
-      console.log(e)
-    }
+  ))
+  setAttendanceMarking(initialAttendance)
+  console.log(initialAttendance);
+  
   }
   
   async function getSchedule()
@@ -89,19 +120,30 @@ const Attendance = () => {
     {
       let scheduleData = 
       {
-        class_id : loggedInUserId
+        class_id : selectedClass
       }
-      const schedule = await axios.post(`${API.BASE_URL}/api/getScheduleForAttendance`,scheduleData)
-      setSchedule(schedule.data)
-
+      const schedules = await axios.post(`${API.BASE_URL}/api/getScheduleForAttendance`,scheduleData)
+      setSchedule(schedules.data)
+      
       const day = format(today, 'EEEE');
-
-      schedule.data.map((i,index)=>{
+      let indexOfDay
+      schedules.data.map((i,index)=>{
         if(i.Day == day)
         {
-          dayIndex = index
+          indexOfDay = index
         }
       })
+      lengthOfDays = schedules.data.length
+
+      tempDays.push(indexOfDay)
+      let i 
+      for(i=1 ; i <= lengthOfDays ; i++)
+      {
+        tempDays.push((indexOfDay-i).mod(lengthOfDays))
+      }
+      tempDays.reverse()
+      setDays(tempDays)
+      
     }
     catch(e)
     {
@@ -109,17 +151,31 @@ const Attendance = () => {
     }
   }
 
+  async function getAttendance()
+  {
+    try
+    {
+      const attendanceData = {
+        class_id:selectedClass,
+        date:selectedDate
+      }
+      const attendanceResp = await axios.post(`${API.BASE_URL}/api/getAttendance`,attendanceData)
+      if(attendanceResp.data.marked == true)
+      {
+        setAttendance(attendanceResp.data.attendanceData)
+      }
+      else
+      {
+        setStudents(attendanceResp.data.studentsData)
+        setupAttendanceMarking(attendanceResp.data.studentsData)
+      }
+    }
+    catch(e)
+    {
+      console.log(e)      
+    }
+  }
   
-
-  const days = [
-    { no: 0, day: "MON", date: 24 },
-    { no: 1, day: "TUE", date: 25 },
-    { no: 2, day: "WED", date: 26 },
-    { no: 3, day: "THU", date: 27 },
-    { no: 4, day: "FRI", date: 28 },
-    { no: 5, day: "SAT", date: 29 },
-    { no: 6, day: "SUN", date: 30 },
-  ];
 
   const attendanceData = [
     {
@@ -213,10 +269,10 @@ const Attendance = () => {
       <View style={styles.pickerContainer}>
         <Picker
           selectedValue={selectedClass}
-          onValueChange={(itemValue) => setSelectedCourse(itemValue)}
+          onValueChange={(itemValue) => setSelectedClass(itemValue)}
           style={styles.picker}
         >
-          {classes.map((item, index) => (
+          {loggedInUserClasses.map((item, index) => (
             <Picker.Item key={index} label={item.Class} value={item._id} />
           ))}
         </Picker>
@@ -230,7 +286,7 @@ const Attendance = () => {
           ></Image>
         </TouchableOpacity>
         <View style={styles.DateMonth}>
-          <Text style={styles.DateMonthText}>{selectedDay + " " + month + " " + year}</Text>
+          <Text style={styles.DateMonthText}>{month + " " + year}</Text>
         </View>
         <TouchableOpacity style={styles.ArrowButton}>
           <Image
@@ -255,28 +311,34 @@ const Attendance = () => {
 
       <View style={{ height: 120 }}>
         <ScrollView horizontal={true} style={styles.daysContainer}>
-          {schedule.map((i) => (
+          {days.map((i) => (
             <TouchableOpacity
-              key={i._id}
+              key={schedule[i]._id}
               style={(() => {
-                if (selectedDay == i.no) {
+                if (selectedDay == schedule[i].Day) {
                   return styles.daysBoxSelected;
                 } else {
                   return styles.daysBoxUnselected;
                 }
               })()}
-              onPress={() => setSelectedDay(i.no)}
+              onPress={() => 
+              {
+                console.log(schedule[i].Day)
+                setSelectedDay(schedule[i].Day)
+                setSelectedDate(schedule[i].Date)
+                getAttendance()
+              }}
             >
               <Text
                 style={(() => {
-                  if (selectedDay == i.no) {
+                  if (selectedDay == schedule[i].Day) {
                     return styles.daysLabelSelected;
                   } else {
                     return styles.daysLabelUnselected;
                   }
                 })()}
               >
-                {i.day}
+                {schedule[i].Day.substring(0,3)}
               </Text>
               <Text
                 style={(() => {
@@ -295,9 +357,9 @@ const Attendance = () => {
       </View>
       <View style={{ flex: 1 }}>
         <FlatList
-          data={attendanceData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <StudentListComp student={item} />}
+          data={attendance}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => <StudentListComp student={item} attendanceMarking={attendanceMarking} setAttendanceMarking={setAttendanceMarking}/>}
         />
       </View>
     </View>

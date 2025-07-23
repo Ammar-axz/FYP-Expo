@@ -1,7 +1,9 @@
 import HomeNotification from "@/components/Home/HomeNotification";
 import QuickAccessTeacher from "@/components/Home/QuickAccessTeacher";
 import { userData } from "@/Context/UserContext";
-import React from "react";
+import axios from "axios";
+import { API } from "@/api";
+import React, { useState,useEffect } from "react";
 import {
   Image,
   ScrollView,
@@ -19,8 +21,27 @@ const DATA = [
 ];
 
 const Home = () => {
-  const { loggedInUser, loggedInUserPfp, loggedInUserId } = userData();
+  const { loggedInUser, loggedInUserPfp,loggedInUserRole, loggedInUserId,loggedInUserClasses,setLoggedInUserClasses } = userData();
   
+
+  useEffect(()=>{
+    getClasses()
+  },[])
+
+  async function getClasses()
+    {
+      try
+      {
+        let userData = { user_id : loggedInUserId , role : loggedInUserRole }
+        const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
+        setLoggedInUserClasses(classData.data)
+      }
+      catch(e)
+      {
+        console.log(e)
+      }
+    }
+
   return (
     <>
       <ScrollView style={styles.mainContainer}>

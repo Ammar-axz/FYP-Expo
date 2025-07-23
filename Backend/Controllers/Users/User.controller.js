@@ -262,10 +262,37 @@ async function getAttendance(req,res){
     try
     {
         let attendance
-        
+
         attendance = await Attendance.Attendance.find({"Class_id":req.body.class_id, "Date" : req.body.date})
         
-        res.status(200).send(attendance)
+        if(attendance.length === 0)
+        {
+            let students = await Class_Student.Class_Student.find({"Class_id":req.body.class_id},{"Student_id":1,"_id":0})
+            
+            let studentIds =[]
+            students.map((i)=>(
+                studentIds.push(new mongoose.Types.ObjectId(i.Student_id))
+            ))
+            
+            students = await User.User.find({"_id":{$in:studentIds}})
+            console.log(students);
+            let resp = 
+            {
+                studentsData : students,
+                marked:false
+            }
+            res.status(200).send(resp)
+        }
+        else
+        {
+            let resp = 
+            {
+                attendanceData : attendance,
+                marked:true
+            }
+            res.status(200).send(resp)
+        }
+
     }
     catch(error)
     {
@@ -502,6 +529,6 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
+export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
 
 
