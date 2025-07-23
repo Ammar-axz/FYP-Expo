@@ -1,7 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useEffect, useState } from "react";
 import { API } from "@/api";
-import { format } from 'date-fns';
+import { format,getDate } from 'date-fns';
 import { userData } from "@/Context/UserContext";
 import axios from "axios";
 import {
@@ -14,8 +14,9 @@ import {
   View,
 } from "react-native";
 import SwitchToggle from "react-native-switch-toggle";
+import ReminderBtn from '@/components/ReminderBtn';
 
-const StudentListComp = ({ student, attendanceMarking , setAttendanceMarking }) => {
+const StudentListComp = ({ student, setAttendanceMarking }) => {
 
   const [status,setStatus] = useState(false)
 
@@ -35,9 +36,9 @@ const StudentListComp = ({ student, attendanceMarking , setAttendanceMarking }) 
       <View style={{ flex: 1, flexDirection: "row" }}>
         {/* <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/> */}
         <View style={styles.avatar}>
-          <Text>{student.Name.charAt(0)}</Text>
+          <Text>{student.Student_Name.charAt(0)}</Text>
         </View>
-        <Text style={styles.listItemText}>{student.Name}</Text>
+        <Text style={styles.listItemText}>{student.Student_Name}</Text>
       </View>
       <SwitchToggle
         switchOn={status}
@@ -72,7 +73,7 @@ const Attendance = () => {
   const today = new Date();
   const [month, setMonth] = useState(format(today, 'MM'));
   const [year, setYear] = useState(format(today, 'yyyy'));
-  const [selectedDay, setSelectedDay] = useState(format(today, 'EEEE'));
+  const [selectedDay, setSelectedDay] = useState(0);
   const [selectedDate, setSelectedDate] = useState();
   const [schedule, setSchedule] = useState([])
   const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
@@ -80,13 +81,16 @@ const Attendance = () => {
   const [students,setStudents] = useState([])
   const [attendanceMarking,setAttendanceMarking] = useState([])
   const [days,setDays] = useState([])
+  const [dates,setDates] = useState([])
   const attendanceMarkingTemplate = {
     Student_id : "",
     Student_Name : "",
     Status : false
   }
+  let marked = false
   let lengthOfDays
   let tempDays = []
+  let tempDates = []
   
   Number.prototype.mod = function (n) {
     "use strict";
@@ -96,21 +100,26 @@ const Attendance = () => {
   
   useEffect(() => {
     getSchedule()
+
   }, [selectedClass])
 
   
 
   function setupAttendanceMarking(studentsData)
   {
+    let calcDate = new Date(today)
+    calcDate.setDate(calcDate.getDate()-selectedDay)
     const initialAttendance = studentsData.map((i)=>(
     {
       Student_id : i._id,
       Student_Name : i.Name,
-      Status : false
+      Status : false,
+      Class_id:selectedClass._id,
+      Day:schedule[tempDays[selectedDay]].Day,
+      Date:calcDate
     }
   ))
   setAttendanceMarking(initialAttendance)
-  console.log(initialAttendance);
   
   }
   
@@ -133,16 +142,25 @@ const Attendance = () => {
           indexOfDay = index
         }
       })
+      
       lengthOfDays = schedules.data.length
+      let todayDate = getDate(today)
 
       tempDays.push(indexOfDay)
+      tempDates.push(todayDate)
+      
       let i 
       for(i=1 ; i <= lengthOfDays ; i++)
       {
         tempDays.push((indexOfDay-i).mod(lengthOfDays))
+        tempDates.push(todayDate-i)
       }
       tempDays.reverse()
-      setDays(tempDays)
+      tempDates.reverse()
+      console.log(tempDays);
+      
+      // setDays(tempDays)
+      // setDates(tempDates)
       
     }
     catch(e)
@@ -160,6 +178,8 @@ const Attendance = () => {
         date:selectedDate
       }
       const attendanceResp = await axios.post(`${API.BASE_URL}/api/getAttendance`,attendanceData)
+      marked = attendanceResp.data.marked
+
       if(attendanceResp.data.marked == true)
       {
         setAttendance(attendanceResp.data.attendanceData)
@@ -174,6 +194,24 @@ const Attendance = () => {
     {
       console.log(e)      
     }
+  }
+
+  async function saveAttendance()
+  {
+    let Data = 
+    {
+      marked:marked,
+      attendanceData:attendanceMarking
+    }
+    try
+    {
+      let resp = await axios.post(`${API.BASE_URL}/api/setAttendance`,Data)
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+
   }
   
 
@@ -311,11 +349,11 @@ const Attendance = () => {
 
       <View style={{ height: 120 }}>
         <ScrollView horizontal={true} style={styles.daysContainer}>
-          {days.map((i) => (
+          {tempDays.map((i,index) => (
             <TouchableOpacity
-              key={schedule[i]._id}
+              key={tempDates[index]}
               style={(() => {
-                if (selectedDay == schedule[i].Day) {
+                if (selectedDay == index) {
                   return styles.daysBoxSelected;
                 } else {
                   return styles.daysBoxUnselected;
@@ -323,33 +361,34 @@ const Attendance = () => {
               })()}
               onPress={() => 
               {
-                console.log(schedule[i].Day)
-                setSelectedDay(schedule[i].Day)
+                console.log("Here");
+                
+                setSelectedDay(index)
                 setSelectedDate(schedule[i].Date)
                 getAttendance()
               }}
             >
               <Text
                 style={(() => {
-                  if (selectedDay == schedule[i].Day) {
+                  if (selectedDay == index) {
                     return styles.daysLabelSelected;
                   } else {
                     return styles.daysLabelUnselected;
                   }
                 })()}
               >
-                {schedule[i].Day.substring(0,3)}
+                {/* {schedule[i].Day.substring(0,3)} */}
               </Text>
               <Text
                 style={(() => {
-                  if (selectedDay == i.no) {
+                  if (selectedDay == index) {
                     return styles.daysValueSelected;
                   } else {
                     return styles.daysValueUnselected;
                   }
                 })()}
               >
-                {i.date}
+                {tempDates[index]}
               </Text>
             </TouchableOpacity>
           ))}
@@ -357,10 +396,11 @@ const Attendance = () => {
       </View>
       <View style={{ flex: 1 }}>
         <FlatList
-          data={attendance}
+          data={marked ? attendance : attendanceMarking}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => <StudentListComp student={item} attendanceMarking={attendanceMarking} setAttendanceMarking={setAttendanceMarking}/>}
+          renderItem={({ item }) => <StudentListComp student={item} setAttendanceMarking={setAttendanceMarking}/>}
         />
+        <ReminderBtn btnTitle={marked? "Update" : "Save"} handleAddReminder={saveAttendance} />
       </View>
     </View>
   );

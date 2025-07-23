@@ -12,4 +12,4 @@ const quizQuestionsSchema = new mongoose.Schema(
 )
 
 const QuizQuestions = new mongoose.model('QuizQuestions',quizQuestionsSchema)
-export default {QuizQuestions}
+export default QuizQuestions

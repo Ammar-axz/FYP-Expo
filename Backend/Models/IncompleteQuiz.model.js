@@ -12,5 +12,5 @@ const incompleteQuizSchema = new mongoose.Schema(
     }
 )
 
-const incompleteQuiz = new mongoose.model('IncompleteQuiz',incompleteQuizSchema)
-export default {incompleteQuiz}
+const IncompleteQuiz = new mongoose.model('IncompleteQuiz',incompleteQuizSchema)
+export default IncompleteQuiz

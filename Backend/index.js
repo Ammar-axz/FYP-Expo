@@ -6,8 +6,10 @@ import multer from 'multer'
 import { Server } from "socket.io"
 import UserControllers from './Controllers/Users/User.controller.js'
 import Message from './Models/Message.model.js'
+import { adminJs, adminRouter } from './Admin/admin.js'
 
-mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
+// await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
+
 
 const Storage = multer.diskStorage({
     destination:function(req,file,cb){
@@ -33,6 +35,8 @@ const port=5000
 app.use(cors())
 app.use(express.static('public'))
 app.use(express.json())
+
+app.use(adminJs.options.rootPath, adminRouter)
 
 const httpServer = createServer(app);
 const io = new Server(httpServer,{
@@ -98,6 +102,8 @@ app.post('/api/addQuiz',UserControllers.AddQuiz)
 app.post('/api/getQuizes',UserControllers.getQuizes)
 
 app.post('/api/getAttendance',UserControllers.getAttendance)
+
+app.post('/api/setAttendance',UserControllers.setAttendance)
 
 app.post('/api/getScheduleForAttendance',UserControllers.getScheduleForAttendance)
 

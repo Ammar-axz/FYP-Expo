@@ -9,4 +9,4 @@ const roomSchema = new mongoose.Schema(
 )
 
 const Room = new mongoose.model('room',roomSchema)
-export default {Room}
+export default Room

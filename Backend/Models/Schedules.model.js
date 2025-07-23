@@ -20,4 +20,4 @@ const schedulesSchema = new mongoose.Schema(
 )
 
 const Schedules = new mongoose.model('Schedules',schedulesSchema)
-export default {Schedules}
+export default Schedules
