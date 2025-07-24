@@ -18,7 +18,7 @@ import ReminderBtn from '@/components/ReminderBtn';
 
 const StudentListComp = ({ student, setAttendanceMarking }) => {
 
-  const [status,setStatus] = useState(false)
+  const [status,setStatus] = useState(student.Status)
 
   const updateAttendanceStatus = (studentId, newStatus) => {
     setAttendanceMarking((prev) =>
@@ -36,7 +36,7 @@ const StudentListComp = ({ student, setAttendanceMarking }) => {
       <View style={{ flex: 1, flexDirection: "row" }}>
         {/* <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/> */}
         <View style={styles.avatar}>
-          <Text>{student.Student_Name.charAt(0)}</Text>
+          <Text style={{fontSize:20}}>{student.Student_Name.charAt(0)}</Text>
         </View>
         <Text style={styles.listItemText}>{student.Student_Name}</Text>
       </View>
@@ -71,26 +71,22 @@ const StudentListComp = ({ student, setAttendanceMarking }) => {
 const Attendance = () => {
   const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
   const today = new Date();
-  const [month, setMonth] = useState(format(today, 'MM'));
-  const [year, setYear] = useState(format(today, 'yyyy'));
-  const [selectedDay, setSelectedDay] = useState(0);
-  const [selectedDate, setSelectedDate] = useState();
   const [schedule, setSchedule] = useState([])
   const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
-  const [attendance,setAttendance] = useState([])
-  const [students,setStudents] = useState([])
   const [attendanceMarking,setAttendanceMarking] = useState([])
-  const [days,setDays] = useState([])
-  const [dates,setDates] = useState([])
+  const [marked,setMarked] = useState(false)
   const attendanceMarkingTemplate = {
     Student_id : "",
     Student_Name : "",
     Status : false
   }
-  let marked = false
+  const [attendanceDate,setAttendanceDate] = useState()
+  // let marked = false
   let lengthOfDays
-  let tempDays = []
-  let tempDates = []
+  let day
+  let selectedDay
+  let days = []
+  let dates = []
   
   Number.prototype.mod = function (n) {
     "use strict";
@@ -100,23 +96,77 @@ const Attendance = () => {
   
   useEffect(() => {
     getSchedule()
-
+    
   }, [selectedClass])
 
-  
+  useEffect(() => {
+    if (attendanceDate) {
+      getAttendance();
+    }
+  }, [attendanceDate]);
+
+  function DaysToNumbers(day)
+  {
+    if(day == "Monday")
+      return 0
+    else if(day=="Tuesday")
+      return 1
+    else if(day=="Wednesday")
+      return 2
+    else if(day=="Thursday")
+      return 3
+    else if(day=="Friday")
+      return 4
+    else if(day=="Saturday")
+      return 5
+    else if(day=="Sunday")
+      return 6
+  }
+  function NumbersToDays(day)
+  {
+    if(day == 0)
+      return"Monday"
+      
+    else if(day== 1)
+      return"Tuesday"
+      
+    else if(day== 2)
+      return"Wednesday"
+      
+    else if(day== 3)
+      return"Thursday"
+      
+    else if(day== 4)
+      return"Friday"
+      
+    else if(day== 5)
+      return"Saturday"
+      
+    else if(day== 6)
+      return"Sunday"
+      
+  }
+  function calculateAttendanceDate(){
+    let difference = day-selectedDay
+
+    let todayDate = new Date(today)
+    todayDate.setDate(todayDate.getDate() - difference)
+    todayDate.setHours(0, 0, 0, 0);
+    setAttendanceDate(todayDate)
+
+  }
 
   function setupAttendanceMarking(studentsData)
-  {
-    let calcDate = new Date(today)
-    calcDate.setDate(calcDate.getDate()-selectedDay)
+  {        
+
     const initialAttendance = studentsData.map((i)=>(
     {
       Student_id : i._id,
       Student_Name : i.Name,
       Status : false,
       Class_id:selectedClass._id,
-      Day:schedule[tempDays[selectedDay]].Day,
-      Date:calcDate
+      Day:NumbersToDays(selectedDay),
+      Date:attendanceDate
     }
   ))
   setAttendanceMarking(initialAttendance)
@@ -129,44 +179,33 @@ const Attendance = () => {
     {
       let scheduleData = 
       {
-        class_id : selectedClass
+        class_id : selectedClass._id
       }
       const schedules = await axios.post(`${API.BASE_URL}/api/getScheduleForAttendance`,scheduleData)
-      setSchedule(schedules.data)
+      setSchedule(schedules.data)    
       
-      const day = format(today, 'EEEE');
-      let indexOfDay
+      day = format(today, 'EEEE');
+
+      day = DaysToNumbers(day)
+
       schedules.data.map((i,index)=>{
-        if(i.Day == day)
+        if(DaysToNumbers(i.Day) <= day)
         {
-          indexOfDay = index
+          selectedDay = index
         }
+        days.push(DaysToNumbers(i.Day))
       })
       
       lengthOfDays = schedules.data.length
-      let todayDate = getDate(today)
-
-      tempDays.push(indexOfDay)
-      tempDates.push(todayDate)
-      
-      let i 
-      for(i=1 ; i <= lengthOfDays ; i++)
-      {
-        tempDays.push((indexOfDay-i).mod(lengthOfDays))
-        tempDates.push(todayDate-i)
-      }
-      tempDays.reverse()
-      tempDates.reverse()
-      console.log(tempDays);
-      
-      // setDays(tempDays)
-      // setDates(tempDates)
-      
+      let lastDay = DaysToNumbers(schedules.data[lengthOfDays-1].Day)
     }
     catch(e)
     {
       console.log(e)      
     }
+    
+    calculateAttendanceDate()
+
   }
 
   async function getAttendance()
@@ -174,19 +213,20 @@ const Attendance = () => {
     try
     {
       const attendanceData = {
-        class_id:selectedClass,
-        date:selectedDate
+        class_id:selectedClass._id,
+        date:attendanceDate
       }
       const attendanceResp = await axios.post(`${API.BASE_URL}/api/getAttendance`,attendanceData)
-      marked = attendanceResp.data.marked
+      setMarked(attendanceResp.data.marked)
 
       if(attendanceResp.data.marked == true)
       {
-        setAttendance(attendanceResp.data.attendanceData)
+        // setAttendance(attendanceResp.data.attendanceData)
+        setAttendanceMarking(attendanceResp.data.attendanceData)
       }
       else
       {
-        setStudents(attendanceResp.data.studentsData)
+        // setStudents(attendanceResp.data.studentsData)
         setupAttendanceMarking(attendanceResp.data.studentsData)
       }
     }
@@ -203,6 +243,7 @@ const Attendance = () => {
       marked:marked,
       attendanceData:attendanceMarking
     }
+    
     try
     {
       let resp = await axios.post(`${API.BASE_URL}/api/setAttendance`,Data)
@@ -215,92 +256,92 @@ const Attendance = () => {
   }
   
 
-  const attendanceData = [
-    {
-      id: "0",
-      name: "Qari Fahad",
-      date: "2024-12-01",
-      marked: false,
-      status: "Absent",
-    },
-    {
-      id: "1",
-      name: "Qari Ehtisham",
-      date: "2024-12-08",
-      marked: true,
-      status: "Present",
-    },
-    {
-      id: "2",
-      name: "Qari Allama Fahad",
-      date: "2024-12-10",
-      marked: true,
-      status: "Present",
-    },
-    {
-      id: "3",
-      name: "Qari Fahad",
-      date: "2024-12-18",
-      marked: false,
-      status: "Absent",
-    },
-    {
-      id: "4",
-      name: "Qari Fahad",
-      date: "2024-12-26",
-      marked: true,
-      status: "Present",
-    },
-    {
-      id: "5",
-      name: "Qari Fahad",
-      date: "2024-12-27",
-      marked: false,
-      status: "Absent",
-    },
-    {
-      id: "6",
-      name: "Qari Fahad",
-      date: "2024-12-27",
-      marked: false,
-      status: "Absent",
-    },
-    {
-      id: "7",
-      name: "Qari Fahad",
-      date: "2024-12-27",
-      marked: false,
-      status: "Absent",
-    },
-    {
-      id: "8",
-      name: "Qari Fahad",
-      date: "2024-12-27",
-      marked: true,
-      status: "Present",
-    },
-    {
-      id: "9",
-      name: "Qari Fahad",
-      date: "2024-12-27",
-      marked: true,
-      status: "Present",
-    },
-    {
-      id: "10",
-      name: "Qari Fahad",
-      date: "2024-12-27",
-      marked: false,
-      status: "Absent",
-    },
-    {
-      id: "11",
-      name: "Qari Fahad",
-      date: "2024-12-27",
-      marked: true,
-      status: "Present",
-    },
-  ];
+  // const attendanceData = [
+  //   {
+  //     id: "0",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-01",
+  //     marked: false,
+  //     status: "Absent",
+  //   },
+  //   {
+  //     id: "1",
+  //     name: "Qari Ehtisham",
+  //     date: "2024-12-08",
+  //     marked: true,
+  //     status: "Present",
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "Qari Allama Fahad",
+  //     date: "2024-12-10",
+  //     marked: true,
+  //     status: "Present",
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-18",
+  //     marked: false,
+  //     status: "Absent",
+  //   },
+  //   {
+  //     id: "4",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-26",
+  //     marked: true,
+  //     status: "Present",
+  //   },
+  //   {
+  //     id: "5",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-27",
+  //     marked: false,
+  //     status: "Absent",
+  //   },
+  //   {
+  //     id: "6",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-27",
+  //     marked: false,
+  //     status: "Absent",
+  //   },
+  //   {
+  //     id: "7",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-27",
+  //     marked: false,
+  //     status: "Absent",
+  //   },
+  //   {
+  //     id: "8",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-27",
+  //     marked: true,
+  //     status: "Present",
+  //   },
+  //   {
+  //     id: "9",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-27",
+  //     marked: true,
+  //     status: "Present",
+  //   },
+  //   {
+  //     id: "10",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-27",
+  //     marked: false,
+  //     status: "Absent",
+  //   },
+  //   {
+  //     id: "11",
+  //     name: "Qari Fahad",
+  //     date: "2024-12-27",
+  //     marked: true,
+  //     status: "Present",
+  //   },
+  // ];
 
   return (
     <View style={styles.container}>
@@ -311,7 +352,7 @@ const Attendance = () => {
           style={styles.picker}
         >
           {loggedInUserClasses.map((item, index) => (
-            <Picker.Item key={index} label={item.Class} value={item._id} />
+            <Picker.Item key={index} label={item.Class} value={item} />
           ))}
         </Picker>
       </View>
@@ -324,7 +365,7 @@ const Attendance = () => {
           ></Image>
         </TouchableOpacity>
         <View style={styles.DateMonth}>
-          <Text style={styles.DateMonthText}>{month + " " + year}</Text>
+          <Text style={styles.DateMonthText}>{attendanceDate ? attendanceDate.toDateString() : null }</Text>
         </View>
         <TouchableOpacity style={styles.ArrowButton}>
           <Image
@@ -347,8 +388,8 @@ const Attendance = () => {
         </TouchableOpacity>
       </View> */}
 
-      <View style={{ height: 120 }}>
-        <ScrollView horizontal={true} style={styles.daysContainer}>
+      {/*<View style={{ height: 120 }}>
+         <ScrollView horizontal={true} style={styles.daysContainer}>
           {tempDays.map((i,index) => (
             <TouchableOpacity
               key={tempDates[index]}
@@ -377,7 +418,7 @@ const Attendance = () => {
                   }
                 })()}
               >
-                {/* {schedule[i].Day.substring(0,3)} */}
+                 {schedule[i].Day.substring(0,3)}
               </Text>
               <Text
                 style={(() => {
@@ -392,11 +433,11 @@ const Attendance = () => {
               </Text>
             </TouchableOpacity>
           ))}
-        </ScrollView>
-      </View>
+        </ScrollView> 
+      </View>*/}
       <View style={{ flex: 1 }}>
         <FlatList
-          data={marked ? attendance : attendanceMarking}
+          data={attendanceMarking}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => <StudentListComp student={item} setAttendanceMarking={setAttendanceMarking}/>}
         />
@@ -534,7 +575,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
     textAlignVertical: "center",
-    fontWeight: "bold",
+    fontWeight: 500,
   },
   ltQuizIcon: {
     width: 50,

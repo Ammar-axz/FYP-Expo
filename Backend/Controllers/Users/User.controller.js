@@ -264,6 +264,7 @@ async function getAttendance(req,res){
         let attendance
 
         attendance = await Attendance.find({"Class_id":req.body.class_id, "Date" : req.body.date})
+        console.log(attendance);
         
         if(attendance.length === 0)
         {
@@ -280,6 +281,7 @@ async function getAttendance(req,res){
                 studentsData : students,
                 marked:false
             }
+            console.log(resp)
             res.status(200).send(resp)
         }
         else
@@ -289,6 +291,7 @@ async function getAttendance(req,res){
                 attendanceData : attendance,
                 marked:true
             }
+            console.log(resp)
             res.status(200).send(resp)
         }
 
@@ -307,14 +310,25 @@ async function setAttendance(req,res){
         
         if(req.body.marked != true)
         {
-            const attendance = await Attendance.insertMany(req.body.attendanceData)
-            console.log(req.body.attendanceData);
-            
+            const attendance = await Attendance.insertMany(req.body.attendanceData)            
             res.status(201).send(attendance)
         }
         else
         {
-            const updateAttendance = await Attendance.updateMany(req.body.attendanceData)
+            let updateData=[]
+            req.body.attendanceData.map((i)=>(
+                updateData.push(
+                    {
+                        updateOne:{
+                            filter:{_id:i._id},
+                            update:{$set:{Status:i.Status}}
+                        }
+                    }
+                )
+            ))
+
+            const updateAttendance = await Attendance.bulkWrite(updateData)
+            // const updateAttendance = await Attendance.updateMany(req.body.attendanceData)
             res.status(201).send(updateAttendance)
         }
             
