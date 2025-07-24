@@ -20,7 +20,7 @@ const CourseStack = () => {
         name="StudentDetails"
         options={({route,navigation}) => ({
           headerShown: true,
-          headerTitle: route.params?.course.title,
+          headerTitle: "student details",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: 'center',
           headerStyle: {backgroundColor: '#fff'},

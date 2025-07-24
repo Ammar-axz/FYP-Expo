@@ -12,9 +12,10 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: '#121212',
     height: 57,
-    width: 357,
+    width: "90%",
     borderRadius: 100,
     alignItems: 'center',
+    alignSelf:'center',
     marginTop: 20,
     justifyContent: 'center'
   },

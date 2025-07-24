@@ -1,5 +1,6 @@
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
   FlatList,
@@ -11,13 +12,22 @@ import {
 } from 'react-native';
 
 const StudentListComp = ({student}) => {
+
   return(
     <View style={styles.listItem}>
       <View style={{flex:1, flexDirection:'row'}}>
         <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
         <Text style={styles.listItemText}>{student.name}</Text>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={()=>{
+        router.push({
+        pathname: 'StudentDetails',
+        params: {
+          quizData: encodeURIComponent(JSON.stringify({id : student.id, title : student.name})), // ← Encode it!
+        },
+      })}}  
+      >
         <Image style={styles.DateArrow} source={require('@/assets/icons/DateRightArrow.png')}></Image>
       </TouchableOpacity>
     </View>
@@ -33,6 +43,8 @@ const Courses = () => {
       'Taharat Group 2',
     ];
     const [selectedCourse, setSelectedCourse] = useState(categories[0])
+
+   
 
   const attendanceData = [
     {id: '0', name:'abcd', date: '2024-12-01', marked: false,  status: 'Absent' },

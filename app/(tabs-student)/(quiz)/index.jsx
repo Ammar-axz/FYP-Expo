@@ -132,6 +132,9 @@ const Quiz = () => {
             ))}
           </Picker>
         </View> */}
+        <View style={styles.ltQuizHeadContainer}>
+          <Text style={styles.ltQuizHead}>Quizes in progress</Text>
+        </View>
         <View style={styles.progressContainer}>
           <FlatList
             data={incompleteQuizes}

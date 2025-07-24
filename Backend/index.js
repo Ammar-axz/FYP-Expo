@@ -103,6 +103,8 @@ app.post('/api/getQuizes',UserControllers.getQuizes)
 
 app.post('/api/getAttendance',UserControllers.getAttendance)
 
+app.post('/api/getStudentAttendance',UserControllers.getStudentAttendance)
+
 app.post('/api/setAttendance',UserControllers.setAttendance)
 
 app.post('/api/getScheduleForAttendance',UserControllers.getScheduleForAttendance)

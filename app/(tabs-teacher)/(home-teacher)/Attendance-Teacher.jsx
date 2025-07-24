@@ -71,6 +71,7 @@ const StudentListComp = ({ student, setAttendanceMarking }) => {
 const Attendance = () => {
   const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
   const today = new Date();
+  
   const [schedule, setSchedule] = useState([])
   const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
   const [attendanceMarking,setAttendanceMarking] = useState([])
@@ -81,12 +82,9 @@ const Attendance = () => {
     Status : false
   }
   const [attendanceDate,setAttendanceDate] = useState()
-  // let marked = false
-  let lengthOfDays
-  let day
-  let selectedDay
-  let days = []
-  let dates = []
+  const [day,setDay] = useState()
+  const [selectedDay,setSelectedDay] = useState()
+  const [days,setDays] = useState([])
   
   Number.prototype.mod = function (n) {
     "use strict";
@@ -105,55 +103,142 @@ const Attendance = () => {
     }
   }, [attendanceDate]);
 
+  // useEffect(()=> {
+  //   if(selectedDay)
+  //     calculateAttendanceDate(day,selectedDay)
+  // },[selectedDay])
+
   function DaysToNumbers(day)
   {
     if(day == "Monday")
-      return 0
-    else if(day=="Tuesday")
       return 1
-    else if(day=="Wednesday")
+    else if(day=="Tuesday")
       return 2
-    else if(day=="Thursday")
+    else if(day=="Wednesday")
       return 3
-    else if(day=="Friday")
+    else if(day=="Thursday")
       return 4
-    else if(day=="Saturday")
+    else if(day=="Friday")
       return 5
-    else if(day=="Sunday")
+    else if(day=="Saturday")
       return 6
+    else if(day=="Sunday")
+      return 7
   }
   function NumbersToDays(day)
   {
-    if(day == 0)
+    if(day == 1)
       return"Monday"
       
-    else if(day== 1)
+    else if(day== 2)
       return"Tuesday"
       
-    else if(day== 2)
+    else if(day== 3)
       return"Wednesday"
       
-    else if(day== 3)
+    else if(day== 4)
       return"Thursday"
       
-    else if(day== 4)
+    else if(day== 5)
       return"Friday"
       
-    else if(day== 5)
+    else if(day== 6)
       return"Saturday"
       
-    else if(day== 6)
+    else if(day== 7)
       return"Sunday"
       
   }
-  function calculateAttendanceDate(){
-    let difference = day-selectedDay
 
-    let todayDate = new Date(today)
-    todayDate.setDate(todayDate.getDate() - difference)
+  function calculateDifference(num1,num2,change)
+  {
+    if(num1 == num2)
+    {
+      return 0
+    }
+    else
+    {
+      let difference = 0
+      if(change == true )
+      {
+        num1 = num1-1
+        num2 = num2-1
+        for(let i =num1+6 ; i>=num1 ; i--)
+        {
+          difference = difference+1
+          if(i.mod(7) == num2)
+          {
+            break
+          }
+        }
+      }
+      else
+      {
+        num2=num2-1
+        for(let i =num1 ; i<=num1+6 ; i++)
+        {
+          difference = difference+1
+          if(i.mod(7) == num2)
+          {
+            break
+          }
+        }
+      }
+      return difference
+    }
+  }
+
+  function calculateAttendanceDate( currentDate , currentDay , calculateDay,change )
+  {  
+    
+    let difference = calculateDifference(currentDay,calculateDay,change)
+
+    let todayDate = new Date(currentDate)
     todayDate.setHours(0, 0, 0, 0);
-    setAttendanceDate(todayDate)
+    
+    let newDate
+    if(change == true )
+    {
+      newDate = new Date(todayDate.setDate(todayDate.getDate() - difference))
+    }
+    else
+    {
+      newDate = new Date(todayDate.setDate(todayDate.getDate() + difference))
+    }
+    
+    setAttendanceDate(newDate)
 
+  }
+
+  function changeDay(change)
+  {
+    let calculateDay
+    if(change)
+    {     
+      calculateDay = days.indexOf(selectedDay)
+      calculateDay = (calculateDay - 1).mod(days.length)
+      setSelectedDay(days[calculateDay])
+      calculateAttendanceDate(attendanceDate, selectedDay,days[calculateDay],change)
+    }
+    else
+    {
+      calculateDay = days.indexOf(selectedDay)
+      calculateDay = (calculateDay + 1).mod(days.length)
+      
+      let difference = calculateDifference(selectedDay,days[calculateDay],change)
+
+      let todayDate = new Date(attendanceDate)
+      todayDate.setHours(0, 0, 0, 0);
+      let newDate = new Date(todayDate.setDate(todayDate.getDate() + difference))
+
+      
+      if(newDate <= new Date(today))
+      {
+        setSelectedDay(days[calculateDay])
+        calculateAttendanceDate(attendanceDate, selectedDay,days[calculateDay],change)
+      }
+
+    } 
   }
 
   function setupAttendanceMarking(studentsData)
@@ -184,28 +269,29 @@ const Attendance = () => {
       const schedules = await axios.post(`${API.BASE_URL}/api/getScheduleForAttendance`,scheduleData)
       setSchedule(schedules.data)    
       
-      day = format(today, 'EEEE');
+      let tempday = format(today, 'EEEE');
 
-      day = DaysToNumbers(day)
+      setDay(DaysToNumbers(tempday))
+      tempday = DaysToNumbers(tempday)
+      let tempdays = []
 
+      let tempSelectedDay
       schedules.data.map((i,index)=>{
-        if(DaysToNumbers(i.Day) <= day)
+        if(DaysToNumbers(i.Day) <= tempday)
         {
-          selectedDay = index
+          tempSelectedDay = DaysToNumbers(i.Day)
+          setSelectedDay(DaysToNumbers(i.Day))
         }
-        days.push(DaysToNumbers(i.Day))
+        tempdays.push(DaysToNumbers(i.Day))  
+        setDays(tempdays)
       })
+      calculateAttendanceDate(today,tempday,tempSelectedDay,true)
       
-      lengthOfDays = schedules.data.length
-      let lastDay = DaysToNumbers(schedules.data[lengthOfDays-1].Day)
     }
     catch(e)
     {
       console.log(e)      
     }
-    
-    calculateAttendanceDate()
-
   }
 
   async function getAttendance()
@@ -256,93 +342,6 @@ const Attendance = () => {
   }
   
 
-  // const attendanceData = [
-  //   {
-  //     id: "0",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-01",
-  //     marked: false,
-  //     status: "Absent",
-  //   },
-  //   {
-  //     id: "1",
-  //     name: "Qari Ehtisham",
-  //     date: "2024-12-08",
-  //     marked: true,
-  //     status: "Present",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Qari Allama Fahad",
-  //     date: "2024-12-10",
-  //     marked: true,
-  //     status: "Present",
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-18",
-  //     marked: false,
-  //     status: "Absent",
-  //   },
-  //   {
-  //     id: "4",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-26",
-  //     marked: true,
-  //     status: "Present",
-  //   },
-  //   {
-  //     id: "5",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-27",
-  //     marked: false,
-  //     status: "Absent",
-  //   },
-  //   {
-  //     id: "6",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-27",
-  //     marked: false,
-  //     status: "Absent",
-  //   },
-  //   {
-  //     id: "7",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-27",
-  //     marked: false,
-  //     status: "Absent",
-  //   },
-  //   {
-  //     id: "8",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-27",
-  //     marked: true,
-  //     status: "Present",
-  //   },
-  //   {
-  //     id: "9",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-27",
-  //     marked: true,
-  //     status: "Present",
-  //   },
-  //   {
-  //     id: "10",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-27",
-  //     marked: false,
-  //     status: "Absent",
-  //   },
-  //   {
-  //     id: "11",
-  //     name: "Qari Fahad",
-  //     date: "2024-12-27",
-  //     marked: true,
-  //     status: "Present",
-  //   },
-  // ];
-
   return (
     <View style={styles.container}>
       <View style={styles.pickerContainer}>
@@ -358,7 +357,9 @@ const Attendance = () => {
       </View>
 
       <View style={[styles.DateContainer, { marginBottom: 10 }]}>
-        <TouchableOpacity style={styles.ArrowButton}>
+        <TouchableOpacity style={styles.ArrowButton}
+          onPress={()=>changeDay(true)}
+        >          
           <Image
             style={styles.DateArrow}
             source={require("@/assets/icons/DateLeftArrow.png")}
@@ -367,78 +368,21 @@ const Attendance = () => {
         <View style={styles.DateMonth}>
           <Text style={styles.DateMonthText}>{attendanceDate ? attendanceDate.toDateString() : null }</Text>
         </View>
-        <TouchableOpacity style={styles.ArrowButton}>
+        <TouchableOpacity style={styles.ArrowButton}
+          onPress={()=>changeDay(false)}
+        >
           <Image
             style={styles.DateArrow}
             source={require("@/assets/icons/DateRightArrow.png")}
           ></Image>
         </TouchableOpacity>
       </View>
-      {/* <View style={styles.DateContainer}>
-        <TouchableOpacity style={styles.ArrowButton}>
-          <Image style={styles.DateArrow} source={require('@/assets/icons/DateLeftArrow.png')}></Image>
-        </TouchableOpacity>
-        <View style={styles.DateMonth}>
-          <Text style={styles.DateMonthText}>
-            Week {week}
-          </Text>
-        </View>
-        <TouchableOpacity style={styles.ArrowButton}>
-          <Image style={styles.DateArrow} source={require('@/assets/icons/DateRightArrow.png')}></Image>
-        </TouchableOpacity>
-      </View> */}
-
-      {/*<View style={{ height: 120 }}>
-         <ScrollView horizontal={true} style={styles.daysContainer}>
-          {tempDays.map((i,index) => (
-            <TouchableOpacity
-              key={tempDates[index]}
-              style={(() => {
-                if (selectedDay == index) {
-                  return styles.daysBoxSelected;
-                } else {
-                  return styles.daysBoxUnselected;
-                }
-              })()}
-              onPress={() => 
-              {
-                console.log("Here");
-                
-                setSelectedDay(index)
-                setSelectedDate(schedule[i].Date)
-                getAttendance()
-              }}
-            >
-              <Text
-                style={(() => {
-                  if (selectedDay == index) {
-                    return styles.daysLabelSelected;
-                  } else {
-                    return styles.daysLabelUnselected;
-                  }
-                })()}
-              >
-                 {schedule[i].Day.substring(0,3)}
-              </Text>
-              <Text
-                style={(() => {
-                  if (selectedDay == index) {
-                    return styles.daysValueSelected;
-                  } else {
-                    return styles.daysValueUnselected;
-                  }
-                })()}
-              >
-                {tempDates[index]}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView> 
-      </View>*/}
       <View style={{ flex: 1 }}>
         <FlatList
           data={attendanceMarking}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => (
+            item._id == null ? item.Student_id : item._id
+          )}
           renderItem={({ item }) => <StudentListComp student={item} setAttendanceMarking={setAttendanceMarking}/>}
         />
         <ReminderBtn btnTitle={marked? "Update" : "Save"} handleAddReminder={saveAttendance} />

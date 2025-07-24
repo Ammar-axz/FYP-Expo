@@ -302,6 +302,18 @@ async function getAttendance(req,res){
         res.status(400).send(error)
     }
 }
+async function getStudentAttendance(req,res){
+    try
+    {
+        const attendance = await Attendance.find({"Class_id":req.body.class_id, "Student_id" : req.body.student_id})
+        res.status(200).send(attendance)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
 
 async function setAttendance(req,res){
     try
@@ -567,6 +579,6 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAttendance,setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
+export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAttendance,getStudentAttendance,setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
 
 
