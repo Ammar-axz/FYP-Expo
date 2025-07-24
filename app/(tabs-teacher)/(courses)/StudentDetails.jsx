@@ -10,120 +10,60 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useLocalSearchParams } from 'expo-router';
+import Exam from './Exam'
+import Sabaq from './Sabaq';
+import Attendance from './Attendance'
+import { useState,useEffect } from "react";
+import axios from 'axios'
+import {API} from '@/api'
 
 const Tab = createMaterialTopTabNavigator();
 
-// Sample data for Exam and Sabaq
-const examData = [
-  { id: "1", month: "Feb", day: "Mon 12", title: "Sabaq (سبق)", marks: "0 / 20 Marks" },
-  { id: "2", month: "Feb", day: "Tue 13", title: "Manzil (منزل)", marks: "15 / 20 Marks" },
-  { id: "3", month: "Feb", day: "Wed 14", title: "Sabaqi (سباقی)", marks: "18 / 20 Marks" },
-];
-
-const sabaqData = [
-  { id: "1", month: "Mar", day: "Thu 21", title: "Sabaq (سبق)", marks: "10 / 20 Marks" },
-  { id: "2", month: "Mar", day: "Fri 22", title: "Sabaqi (سباقی)", marks: "16 / 20 Marks" },
-];
-
-// Tab Screens
-function Exam() {
-  const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <View style={{ flexDirection: "column", gap: 5 }}>
-        <Text style={styles.month}>{item.month}</Text>
-        <Text style={styles.day}>{item.day}</Text>
-      </View>
-      <View style={{ flexDirection: "column", gap: 5 }}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.marks}>{item.marks}</Text>
-      </View>
-      <TouchableOpacity style={styles.uploadBtn}>
-        <Text style={styles.uploadText}>Upload</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  return (
-    <View style={styles.tabScreen}>
-      <FlatList
-        data={examData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
-  );
-}
-
-function Sabaq() {
-  const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <View style={{ flexDirection: "column", gap: 5 }}>
-        <Text style={styles.month}>{item.month}</Text>
-        <Text style={styles.day}>{item.day}</Text>
-      </View>
-      <View style={{ flexDirection: "column", gap: 5 }}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.marks}>{item.marks}</Text>
-      </View>
-      
-    </View>
-  );
-
-  return (
-    <View style={styles.tabScreen}>
-      <FlatList
-        data={sabaqData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
-  );
-}
-
-function Attendance() {
-  return (
-    <View style={styles.tabScreen}>
-      <Text>📊 Attendance Tab</Text>
-    </View>
-  );
-}
 
 // Main Content with Profile and Tabs
-export default function MainScreen() {
+export default function StudentDetails() {
+
+  const {studentData} = useLocalSearchParams()
+  const StudentDetail = JSON.parse(decodeURIComponent(studentData))
+  const [attendancePercent,setAttendancePercent] = useState()
+  
+
   return (
     <View style={{ flex: 1 }}>
-      <SecondScreen />
+      <SecondScreen studentDetail={StudentDetail} attendancePercent={attendancePercent}/>
       <Tab.Navigator
         screenOptions={{
           tabBarInactiveTintColor: "#000",
           tabBarActiveTintColor: "#36B295",
-          tabBarLabelStyle: { fontSize: 14, fontWeight: "600" },
+          tabBarLabelStyle: { fontSize: 18, fontWeight: '600' },
           tabBarIndicatorStyle: { backgroundColor: "#36B295" },
         }}
       >
         <Tab.Screen name="Exam" component={Exam} />
         <Tab.Screen name="Sabaq" component={Sabaq} />
-        <Tab.Screen name="Attendance" component={Attendance} />
+        <Tab.Screen name="Attendance">
+          {() => <Attendance studentData={StudentDetail} setAttendancePercent={setAttendancePercent}/>}
+        </Tab.Screen>
       </Tab.Navigator>
     </View>
   );
 }
 
 // Header/Profile Section
-function SecondScreen() {
+function SecondScreen({studentDetail, attendancePercent}) {
+  
   return (
     <View style={styles.container}>
       <Image
         source={require("@/assets/icons/user-pic.png")}
-        style={{ width: 80, height: 80, marginBottom: 10 }}
+        style={{ width: 100, height: 100, marginBottom: 10 }}
       />
-      <Text style={styles.heading}>Fahad Khalique</Text>
+      <Text style={styles.heading}>{studentDetail.student.Name}</Text>
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
-          <Text style={styles.statValue}>74%</Text>
-          <Text style={styles.statLabel}>Average Attendance</Text>
+          <Text style={styles.statValue}>{attendancePercent}%</Text>
+          <Text style={styles.statLabel}>Attendance</Text>
         </View>
         <View style={styles.statBox}>
           <Text style={styles.statValue}>89%</Text>
@@ -135,18 +75,15 @@ function SecondScreen() {
   );
 }
 
-
-// Styles
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingTop: 20,
     backgroundColor: "#fff",
   },
   heading: {
     color: "#121212",
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "600",
     marginBottom: 10,
   },
@@ -160,26 +97,30 @@ const styles = StyleSheet.create({
   statBox: {
     backgroundColor: "rgba(43, 48, 50, 0.05)",
     borderRadius: 16,
-    padding: 20,
-    alignItems: "center",
+    padding: 10,
+    // alignItems: "center",
     width: "45%",
   },
   statValue: {
     fontWeight: "600",
     fontSize: 22,
+    marginLeft:10
   },
   statLabel: {
     fontWeight: "500",
     fontSize: 12,
+    marginLeft:10,
     color: "rgba(43, 48, 50, 0.5)",
-    textAlign: "center",
+    // textAlign: "center",
     marginTop: 5,
   },
   overview: {
-    fontWeight: "700",
-    fontSize: 20,
+    fontWeight: "600",
+    fontSize: 22,
     color: "#2B3032",
     marginTop: 20,
+    marginLeft:30,
+    alignSelf:'flex-start'
   },
   tabScreen: {
     flex: 1,

@@ -1,7 +1,10 @@
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { userData } from '@/Context/UserContext';
+import axios from 'axios';
+import {API} from '@/api'
 import {
   FlatList,
   Image,
@@ -11,55 +14,82 @@ import {
   View
 } from 'react-native';
 
-const StudentListComp = ({student}) => {
+const StudentListComp = ({studentData}) => {
+  const [student,setStudent] = useState()
+  
+    async function getStudent()
+    {
+      try
+      {
+        let Data = {
+          student_id : studentData.Student_id
+        }
+        let student = await axios.post(`${API.BASE_URL}/api/getStudent`,Data)
+        setStudent(student.data)
+      }
+      catch(e)
+      {
+        console.log(e)
+      }
+    }
+  
+    useEffect(() => {
+      getStudent()
+    }, [])
+
+  if (!student) return null;
 
   return(
-    <View style={styles.listItem}>
-      <View style={{flex:1, flexDirection:'row'}}>
-        <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
-        <Text style={styles.listItemText}>{student.name}</Text>
+    <TouchableOpacity
+      onPress={()=>{
+      router.push({
+      pathname: 'StudentDetails',
+      params: {
+        studentData: encodeURIComponent(JSON.stringify({student:student, Class_id : studentData.Class_id})),
+      },
+    })}}  
+    >
+      <View style={styles.listItem}>
+        <View style={{flex:1, flexDirection:'row'}}>
+          <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
+          <Text style={styles.listItemText}>{student.Name}</Text>
+        </View>
+          <Image style={styles.DateArrow} source={require('@/assets/icons/DateRightArrow.png')}></Image>
       </View>
-      <TouchableOpacity
-        onPress={()=>{
-        router.push({
-        pathname: 'StudentDetails',
-        params: {
-          quizData: encodeURIComponent(JSON.stringify({id : student.id, title : student.name})), // ← Encode it!
-        },
-      })}}  
-      >
-        <Image style={styles.DateArrow} source={require('@/assets/icons/DateRightArrow.png')}></Image>
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   )
 }
 
 const Courses = () => {
   const navigation = useNavigation(); 
 
-    const categories = [
-      'Hifz Group 1',
-      'Tajweed Group 2',
-      'Taharat Group 2',
-    ];
-    const [selectedCourse, setSelectedCourse] = useState(categories[0])
+  const {loggedInUserId,loggedInUserClasses} = userData()
+  const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
+  const [students,setStudents] = useState([])
 
-   
 
-  const attendanceData = [
-    {id: '0', name:'abcd', date: '2024-12-01', marked: false,  status: 'Absent' },
-    {id: '1', name:'abcd', date: '2024-12-08', marked: true,  status: 'Present' },
-    {id: '2', name:'abcd', date: '2024-12-10', marked: true,  status: 'Present' },
-    {id: '3', name:'abcd', date: '2024-12-18', marked: false,  status: 'Absent' },
-    {id: '4', name:'abcd', date: '2024-12-26', marked: true,  status: 'Present' },
-    {id: '5', name:'abcd', date: '2024-12-27', marked: false,  status: 'Absent' },
-    {id: '6', name:'abcd', date: '2024-12-27', marked: false,  status: 'Absent' },
-    {id: '7', name:'abcd', date: '2024-12-27', marked: false,  status: 'Absent' },
-    {id: '8', name:'abcd', date: '2024-12-27', marked: true,  status: 'Present' },
-    {id: '9', name:'abcd', date: '2024-12-27', marked: true,  status: 'Present' },
-    {id: '10', name:'abcd', date: '2024-12-27', marked: false,  status: 'Absent' },
-    {id: '11', name:'abcd', date: '2024-12-27', marked: true,  status: 'Present' },
-  ];
+  useEffect(()=>{
+    getStudentsOfClass()
+  },[selectedClass])
+
+  async function getStudentsOfClass()
+    {
+      let Data = 
+      {
+        class_id:selectedClass
+      }
+      
+      try
+      {
+        let resp = await axios.post(`${API.BASE_URL}/api/getStudentsOfClass`,Data)
+        setStudents(resp.data)
+      }
+      catch(e)
+      {
+        console.log(e)
+      }
+  
+    }
 
   return (
     <View style={styles.container}>
@@ -68,23 +98,23 @@ const Courses = () => {
 
       <View style={styles.pickerContainer}>
         <Picker
-          selectedValue={selectedCourse}
-          onValueChange={(itemValue) => setSelectedCourse(itemValue)}
+          selectedValue={selectedClass}
+          onValueChange={(itemValue) => setSelectedClass(itemValue)}
           style={styles.picker}
         >
-          {categories.map((item, index) => (
-            <Picker.Item key={index} label={item} value={item} />
+          {loggedInUserClasses.map((item, index) => (
+            <Picker.Item key={index} label={item.Class} value={item._id} />
           ))}
         </Picker>
       </View>
 
-      <Text style={styles.label}>Students List</Text>
+      <Text style={styles.label}>Students</Text>
 
       <View style={{flex:1}}>
         <FlatList
-          data={attendanceData}
-          keyExtractor={item => item.id}
-          renderItem={({item})=>( <StudentListComp student={item} /> )}
+          data={students}
+          keyExtractor={item => item._id}
+          renderItem={({item})=>( <StudentListComp studentData={item} /> )}
           />
       </View>
 
@@ -99,8 +129,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   mainHeading:{
-    fontSize:22,
-    fontWeight:'bold',
+    fontSize:24,
+    fontWeight:'500',
     textAlign:'center',
     marginTop:30
   },
@@ -144,11 +174,12 @@ const styles = StyleSheet.create({
     marginHorizontal:5
   },
   label: {
+    marginLeft:5,
     color: '#000000',
     height:40,
     fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom:20
+    fontWeight: '500',
+    marginBottom:10
   },
 });
 

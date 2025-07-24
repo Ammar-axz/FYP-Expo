@@ -257,6 +257,29 @@ async function getClasses(req,res){
         res.status(400).send(error)
     }
 }
+async function getStudentsOfClass(req,res){
+    try
+    {
+        let students = await Class_Student.find({"Class_id":req.body.class_id})
+        res.status(200).send(students)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getStudent(req,res){
+    try
+    {
+        let student = await User.findOne({"_id":req.body.student_id})
+        res.status(200).send(student)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
 
 async function getAttendance(req,res){
     try
@@ -579,6 +602,6 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getAttendance,getStudentAttendance,setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
+export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getStudent,getStudentsOfClass,getAttendance,getStudentAttendance,setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
 
 
