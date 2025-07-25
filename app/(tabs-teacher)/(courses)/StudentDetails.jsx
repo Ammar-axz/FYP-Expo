@@ -26,6 +26,8 @@ export default function StudentDetails() {
 
   const {studentData} = useLocalSearchParams()
   const StudentDetail = JSON.parse(decodeURIComponent(studentData))
+  console.log(StudentDetail);
+  
   const [attendancePercent,setAttendancePercent] = useState()
   
 
@@ -40,7 +42,9 @@ export default function StudentDetails() {
           tabBarIndicatorStyle: { backgroundColor: "#36B295" },
         }}
       >
-        <Tab.Screen name="Exam" component={Exam} />
+        <Tab.Screen name="Exam" >
+          {() => <Exam studentData={StudentDetail}/>}
+        </Tab.Screen>
         <Tab.Screen name="Sabaq" component={Sabaq} />
         <Tab.Screen name="Attendance">
           {() => <Attendance studentData={StudentDetail} setAttendancePercent={setAttendancePercent}/>}
@@ -56,8 +60,9 @@ function SecondScreen({studentDetail, attendancePercent}) {
   return (
     <View style={styles.container}>
       <Image
-        source={require("@/assets/icons/user-pic.png")}
-        style={{ width: 100, height: 100, marginBottom: 10 }}
+        // source={require("@/assets/icons/user-pic.png")}
+        source={{uri:`${API.BASE_URL}/Images/ProfilePictures/${studentDetail.student.pfp}`}}
+        style={styles.prof_pic}
       />
       <Text style={styles.heading}>{studentDetail.student.Name}</Text>
       <View style={styles.statsContainer}>
@@ -86,6 +91,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "600",
     marginBottom: 10,
+  },
+  prof_pic:{
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+    borderRadius:100
   },
   statsContainer: {
     flexDirection: "row",

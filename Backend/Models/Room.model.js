@@ -4,7 +4,7 @@ const roomSchema = new mongoose.Schema(
     {
         RoomName:{type:String},
         pfp:{type:String},
-        Members:[mongoose.Schema.Types.ObjectID]
+        Members:[mongoose.Schema.Types.ObjectId]
     }
 )
 

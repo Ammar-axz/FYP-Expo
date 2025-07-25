@@ -9,8 +9,11 @@ import QuizQuestions from '../../Models/QuizQuestions.model.js'
 import Room from '../../Models/Room.model.js'
 import Schedules from '../../Models/Schedules.model.js'
 import User from '../../Models/Users.model.js'
+import Exam from '../../Models/Exam.model.js'
+import Exam_Student from '../../Models/Exam_Student.model.js'
 
 import mongoose from 'mongoose'
+const ObjectId = mongoose.Types.ObjectId;
 
 async function AddUser(req,res,next){
     try
@@ -75,10 +78,10 @@ async function AddQuiz(req,res,next){
     {
         let resp;
         let id_arr=[];
-        console.log("ADD QUIZ CALLED");
         
-        if(req.body.title == null || req.body.class == null || req.body.due_date == null || req.body.t_questions == null)
-        {
+        if(req.body == null || req.body.title == null || req.body.class_id == null || req.body.due_date == null || req.body.t_questions == 0)
+        {      
+            console.log(req.body)         
             res.status(400).send("Missing required fields")
         }
         else
@@ -93,7 +96,6 @@ async function AddQuiz(req,res,next){
                         "R_Answer":item.r_answer
                     })
                     id_arr.push(resp._id)
-                    console.log(resp._id)  
                 }
             )
             //wait for all promises to resolve before contnuing below code
@@ -102,7 +104,8 @@ async function AddQuiz(req,res,next){
             let resp2 = await Quiz.create(
                 {
                     "Title":req.body.title,
-                    "Class":req.body.class,
+                    "Class_id":req.body.class_id,
+                    "Class_Name":req.body.class_name,
                     "Due_Date":req.body.due_date,
                     "T_Questions":req.body.t_questions,
                     "Quiz_Questions":id_arr
@@ -124,7 +127,7 @@ async function getQuizes(req,res){
         {
             let classIds = []
             req.body.class_id.map((i)=>(
-                classIds.push(new mongoose.Types.ObjectId(i.Class_id))
+                classIds.push(i.Class_id)
             ))
             console.log(classIds);
             
@@ -166,6 +169,88 @@ async function getQuizes(req,res){
         res.status(400).send(error)
     }
 }
+async function getExams(req,res){
+    try
+    {
+            const exams = await Exam.find({"Class_id":req.body.class_id})
+            res.status(200).send(exams)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+
+async function createExam(req,res){
+    try
+    {
+        const exam = await Exam.create(req.body)
+
+        const students = await Class_Student.find({"Class_id":req.body.Class_id},{"Student_id":1,"_id":0})
+
+        students.map(async(student)=>{
+            await Exam_Student.create({
+                "Student_id":student.Student_id,
+                "Exam_id":exam._id
+            })
+        })
+
+        res.status(200).send(exam)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+
+async function getStudentExam(req,res){
+    try
+    {
+        const exams = await Exam.find({"Class_id":req.body.class_id})
+        res.status(200).send(exams)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+
+async function getStudentExamMarks(req,res)
+{
+    try
+    {
+        const {exam_id,student_id} = req.query
+
+        let Marks = await Exam_Student.findOne({"Exam_id":exam_id,"Student_id":student_id},{"Obtained_Marks":1,"_id":0})
+        res.status(200).send(Marks)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
+}
+
+async function uploadExamMarks(req,res)
+{
+    try
+    {
+        console.log(req.body)
+        
+        let Marks = await Exam_Student.findOneAndUpdate({Exam_id:req.body.Exam_id,Student_id:req.body.Student_id},{$set:{Obtained_Marks:req.body.Obtained_Marks}},{ new: true })
+        console.log(Marks)
+        
+        res.status(200).send(Marks)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
+}
 
 async function getQuizQuestion(req,res){
     try
@@ -202,14 +287,14 @@ async function getSchedule(req,res){
         {
             classes = await Class_Student.find({"Student_id":req.body.user_id},{"Class_id":1,"_id":0})
             classes.map((i)=>(
-                classIds.push(new mongoose.Types.ObjectId(i.Class_id))
+                classIds.push(i.Class_id)
             ))
         }
         else if(req.body.role == 'Teacher')
         {
             classes = await Classes.find({"Teacher_id":req.body.user_id},{"_id":1,"Class":1})
             classes.map((i)=>(
-                classIds.push(new mongoose.Types.ObjectId(i._id))
+                classIds.push(i._id)
             ))  
         }
         let schedule = await Schedules.find({"Class_id":{$in:classIds}})
@@ -295,7 +380,7 @@ async function getAttendance(req,res){
             
             let studentIds =[]
             students.map((i)=>(
-                studentIds.push(new mongoose.Types.ObjectId(i.Student_id))
+                studentIds.push(i.Student_id)
             ))
             
             students = await User.find({"_id":{$in:studentIds}})
@@ -602,6 +687,4 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getStudent,getStudentsOfClass,getAttendance,getStudentAttendance,setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
-
-
+export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getExams,getStudentExam,uploadExamMarks,getStudentExamMarks,createExam,getStudent,getStudentsOfClass,getAttendance,getStudentAttendance,setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}

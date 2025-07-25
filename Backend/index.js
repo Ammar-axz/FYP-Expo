@@ -101,6 +101,16 @@ app.post('/api/addQuiz',UserControllers.AddQuiz)
 
 app.post('/api/getQuizes',UserControllers.getQuizes)
 
+app.post('/api/getExams',UserControllers.getExams)
+
+app.post('/api/uploadExamMarks',UserControllers.uploadExamMarks)
+
+app.get('/api/getStudentExamMarks',UserControllers.getStudentExamMarks)
+
+app.post('/api/createExam',UserControllers.createExam)
+
+app.post('/api/getStudentExam',UserControllers.getStudentExam)
+
 app.post('/api/getStudent',UserControllers.getStudent)
 
 app.post('/api/getStudentsOfClass',UserControllers.getStudentsOfClass)

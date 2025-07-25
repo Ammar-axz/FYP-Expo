@@ -89,9 +89,14 @@ const QuickAccessTeacher = () => {
           <Image source={require("@/assets/icons/book.png")} />
           <Text style={styles.SubTitle}> Books </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.innerBox}>
+        <TouchableOpacity 
+          style={styles.innerBox}
+          onPress={() => {
+            router.navigate("Exam");
+          }}
+        >
           <Image source={require("@/assets/icons/donate.png")} />
-          <Text style={styles.SubTitle}> Donate </Text>
+          <Text style={styles.SubTitle}> Exams </Text>
         </TouchableOpacity>
       </View>
       <ViewAll title="Schedule" PageLink="(home-teacher)/Timetable"/>

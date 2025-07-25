@@ -5,6 +5,7 @@ import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 import {
   FlatList,
   StyleSheet,
@@ -14,68 +15,42 @@ import {
   Image
 } from 'react-native';
 
-let image = 'https://via.placeholder.com/150';
 
-const QuizCard = ({ quiz }) => {
+const QuizCard = ({ exam }) => {
   return (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={()=>{
-        router.push({
-        pathname: 'QuizDetails',
-        params: {
-          quizData: encodeURIComponent(JSON.stringify({quiz_id : quiz._id, title : quiz.Title})), // ← Encode it!
-        },
-      })}}
-      >
-      <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
-      <View style={styles.textView}>
-        <Text style={styles.title}>{quiz.Title}</Text>
-        <Text style={styles.questions}>{quiz.T_Questions} Questions</Text>
-        <Text style={styles.questions}>DueDate : 20/5/2025</Text>
+    <View style={styles.item}>
+      <View style={{ flexDirection: "column", gap: 5 ,width:'30%'}}>
+        <Text style={styles.month}>{format(new Date (exam.Date),"EEEE")}</Text>
+        <Text style={styles.day}>{format(new Date (exam.Date),"MMM dd yyyy")}</Text>
       </View>
-    </TouchableOpacity>
+      <View style={styles.uploadContainer}>
+        <View style={{ flexDirection: "column", gap: 5 }}>
+          <Text style={styles.title}>{exam.Title}</Text>
+          <Text style={styles.marks}>Total Marks : {exam.Total_Marks}</Text>
+        </View>
+      </View>
+    </View>
   );
 };
 
 
-const Quiz = () => {
+const Exam = () => {
   const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
-  const [quizes,setQuizes] = useState([])
+  const [exams,setExams] = useState([])
   const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
-  const isFocused = useIsFocused()
 
-  // useEffect(()=>{
-  //     getClasses()
-  // },[])
 
   useEffect(()=>{
-    if(isFocused)
-      getQuizes()
-    
-  },[isFocused,selectedClass])
+    getExams()
+  },[selectedClass])
   
-  // async function getClasses()
-  // {
-  //   try
-  //   {
-  //     let userData = { user_id : loggedInUserId , role : loggedInUserRole }
-  //     const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
-  //     setClasses(classData.data)
-  //     setSelectedClass(classData.data[0])
-  //   }
-  //   catch(e)
-  //   {
-  //     console.log(e)
-  //   }
-  // }
-  async function getQuizes()
+  async function getExams()
   {
     try
-    {
-      let id = {user_id: loggedInUserId , class_id : selectedClass, role : loggedInUserRole}
-      let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
-      setQuizes(Quizes.data)
+    {      
+      let data = {class_id : selectedClass._id}
+      let Exams = await axios.post(`${API.BASE_URL}/api/getExams`,data)
+      setExams(Exams.data)
       
     }
     catch(e)
@@ -88,13 +63,7 @@ const Quiz = () => {
   return (
     <>
     <View style={styles.mainContainer}>
-        <View style={styles.container}>
-          <View style={styles.textContainer}>
-            <Text style={styles.name}>Quizes</Text>
-          </View>
-
-        </View>
-
+        
         <View style={styles.pickerContainer}>
           <Picker
             selectedValue={selectedClass}
@@ -102,26 +71,28 @@ const Quiz = () => {
             style={styles.picker}
           >
             {loggedInUserClasses.map((item, index) => (
-              <Picker.Item key={index} label={item.Class} value={item._id} />
+              <Picker.Item key={index} label={item.Class} value={item} />
             ))}
           </Picker>
         </View>
         <View style={styles.latestQuiz}>
             <FlatList
-            data={quizes}
+            data={exams}
             keyExtractor={item => item._id}
-            renderItem={({item})=>( <QuizCard quiz={item} /> )}
+            renderItem={({item})=>( <QuizCard exam={item} /> )}
             />
         </View>
         <View style={styles.newQuizContainer}>
-          <TouchableOpacity style={styles.newQuiz} onPress={()=>{
-            router.push({
-            pathname: 'CreateQuizPg1',
-            params: {
-              Class: encodeURIComponent(JSON.stringify({Class:selectedClass})), // ← Encode it!
-            }
-            })
-          }}>
+          <TouchableOpacity style={styles.newQuiz} 
+            onPress={()=>{
+              router.push({
+              pathname: 'CreateExam',
+              params: {
+                Class: encodeURIComponent(JSON.stringify({Class:selectedClass})), // ← Encode it!
+              }
+              })
+            }}>
+              
             <Text style={styles.newQuizText} >+</Text>
           </TouchableOpacity>
         </View>
@@ -153,6 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     marginBottom: 20,
+    marginTop:20,
     backgroundColor: "rgba(247,247,247,255)",
   },
   picker: {
@@ -319,7 +291,63 @@ const styles = StyleSheet.create({
     fontSize:50,
     fontWeight:'300',
     textAlign:'center'
+  },
+
+
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f4f4f4",
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    borderRadius: 8,
+    justifyContent: "space-between",
+  },
+  month: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#36B295",
+    textAlign:'center'
+  },
+  day: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "rgba(0, 0, 0, 0.50)",
+    textAlign:'center'
+  },
+  title: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#000",
+  },
+  marks: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "rgba(54, 178, 149, 0.50)",
+  },
+  uploadBtn: {
+    backgroundColor: "#36B295",
+    borderRadius: 100,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  uploadText: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "#fff",
+  },
+  uploadContainer:
+  {
+    flexDirection:'row',
+    alignItems:'center',
+    flex:1,
+    justifyContent:'space-between',
+    borderLeftWidth:3,
+    borderColor:'#eaebea',
+    padding:5,
+    paddingLeft:10
   }
 });
 
-export default Quiz;
+export default Exam

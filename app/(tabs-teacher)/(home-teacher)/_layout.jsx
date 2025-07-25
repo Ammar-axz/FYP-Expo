@@ -88,6 +88,26 @@ const HomeStack = () => {
         })}
       />
       <Stack.Screen
+        name="Exam"
+        options={({route, navigation}) => ({
+          headerShown: true,
+          headerTitle: 'Exams',
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#fff'},
+        })}
+      />
+      <Stack.Screen
+        name="CreateExam"
+        options={({route, navigation}) => ({
+          headerShown: true,
+          headerTitle: 'Create Exam',
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#fff'},
+        })}
+      />
+      <Stack.Screen
         name="Timetable"
         options={({route, navigation}) => ({
           headerShown: false,

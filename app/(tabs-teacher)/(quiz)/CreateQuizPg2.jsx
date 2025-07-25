@@ -1,8 +1,8 @@
 import { BackButton } from '@/components/BackButton';
 import ReminderBtn from '@/components/ReminderBtn';
 import axios from 'axios';
-import { useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useLocalSearchParams ,useRouter} from 'expo-router';
+import { useState,useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -13,18 +13,16 @@ import {
 import { API } from '../../../api';
 import CreateQuizModal from './AddQuestionModal';
 
-const categories = [
-  { label: 'Quran', value: 'Quran' },
-  { label: 'Duas', value: 'Duas' },
-  { label: 'Health', value: 'health' },
-];
 
 const CreateQuizPg2 = () => {
 
+  const router = useRouter()
   const {quiz} = useLocalSearchParams()
   const quizData = JSON.parse(decodeURIComponent(quiz));
   const [modalVisible, setModalVisible] = useState(false);
   const [quizQuestions,setQuizQuestions] = useState([])
+  const [error,setError] = useState()
+  const [success,setSuccess] = useState()
   const quizQuestionTemplate = {
       question: "",
       option_1: "",
@@ -42,7 +40,8 @@ const CreateQuizPg2 = () => {
   const handleSubmit = async()=> {
     const submitQuiz = {
       title: quizData.title,
-      class:quizData.class,
+      class_id:quizData.class_id,
+      class_name:quizData.class_name,
       due_date: new Date(quizData.due_date),
       t_questions: quizQuestions.length,
       questions:quizQuestions
@@ -50,18 +49,29 @@ const CreateQuizPg2 = () => {
     try
     {
       let resp = await axios.post(`${API.BASE_URL}/api/addQuiz`,submitQuiz)
-      console.log(resp);
-      
+      setQuizQuestions([])      
+      setSuccess("Quiz added successfully !")
     }
     catch(e)
     {
-      console.error("Submission failed:", e.response?.data || e.message);
+      setError("Submission Failed:"+ e.response?.data || e.message)
     }
   }
 
-  // useEffect(() => {
-  //   console.log('Questions updated:', quizQuestions);
-  // }, [quizQuestions]);
+  useEffect(()=>{    
+    if(error)
+    {
+      setTimeout(() => {
+        setError()
+      }, 5000);
+    }
+    else if(success)
+    {
+      setTimeout(() => {
+        router.dismissTo('/(quiz)')
+      }, 3000);
+    }
+  },[error,success])
 
   return (
     <ScrollView style={styles.mainContainer}>
@@ -70,6 +80,12 @@ const CreateQuizPg2 = () => {
             <BackButton/>
             <Text style={styles.modalTitle}>Create Quiz</Text>
           </View>
+          {error || success ?
+          <View style={ error ? styles.errorBox : styles.successBox}>
+            <Text style={{color:'white',fontSize:16}}>{error  ? error : success}</Text>
+          </View>
+          : null
+          }
           {quizQuestions.map((item,i)=>{
             return(
               <View>
@@ -110,22 +126,35 @@ const styles = StyleSheet.create({
   mainContainer:{
     backgroundColor:'white'
   },
+  errorBox:{
+    backgroundColor:'#e03c3cff',
+    padding:10,
+    marginBottom:10
+  },
+  successBox:{
+    backgroundColor:'#36b295',
+    padding:10,
+    marginBottom:10
+  },
   modalOverlay: {
     flex: 1,
-    alignItems: 'center',
-    marginTop:40,
+    marginTop:10,
+    marginBottom:120,
     backgroundColor:'white'
   },
   modalContainer: {
     backgroundColor: 'rgba(247,247,247,255)',
     padding: 20,
+    marginHorizontal:10,
     borderRadius: 10,
   },
   headerContainer:{
+    paddingTop:30,
     width:'100%',
     flexDirection:'row',
     alignItems:'center',
-    marginLeft:10
+    paddingLeft:10,
+    backgroundColor:'white'
   },
   modalTitle: {
     fontSize: 28,
@@ -167,6 +196,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 10,
     marginVertical:10,
+    alignSelf:'center',
     justifyContent: 'center',
     alignItems:'center'
   },

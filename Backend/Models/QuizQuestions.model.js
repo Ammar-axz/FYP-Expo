@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const quizQuestionsSchema = new mongoose.Schema(
         {
-            Quiz_id:[{type:mongoose.Schema.Types.ObjectID,required:[true,"Quiz id is required"],ref:"Quiz"}],
+            Quiz_id:[{type:mongoose.Schema.Types.ObjectId,required:[true,"Quiz id is required"],ref:"Quiz"}],
             Question:{type:String,required:[true,"Question is Required"]},
             Answer_1:{type:String,required:[true,"Answer_1 is Required"]},
             Answer_2:{type:String,required:[true,"Answer_2 is Required"]},

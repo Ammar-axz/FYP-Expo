@@ -1,8 +1,10 @@
 import { BackButton } from '@/components/BackButton';
 import ReminderBtn from '@/components/ReminderBtn';
 import { Picker } from '@react-native-picker/picker';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useState,useEffect } from 'react';
+import axios from 'axios'
+import {API} from '@/api'
 import {
   StyleSheet,
   Text,
@@ -12,26 +14,38 @@ import {
 } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 BackButton
-import { useLocalSearchParams } from 'expo-router';
 
-const categories = [
-  { label: 'Quran', value: 'Quran' },
-  { label: 'Duas', value: 'Duas' },
-  { label: 'Health', value: 'health' },
-];
-
-const CreateQuizPg1 = () => {
+const CreateExam = () => {
 
   const {Class} = useLocalSearchParams()
   const selectedClass = JSON.parse(decodeURIComponent(Class));
   
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [quiz, setQuiz] = useState({
-    title: '',
-    class_id: selectedClass.Class._id,
-    class_name: selectedClass.Class.Class,
-    due_date: new Date(),
+  const [error,setError] = useState()
+  const [success,setSuccess] = useState()
+  const [exam, setExam] = useState({
+    Title: '',
+    Class_id: selectedClass.Class._id,
+    Class_Name: selectedClass.Class.Class,
+    Total_Marks: 0,
+    Date: new Date(),
   });
+
+  useEffect(()=>{    
+    if(error)
+    {
+      setTimeout(() => {
+        setError()
+      }, 5000);
+    }
+    else if(success)
+    {
+      setTimeout(() => {
+        router.dismissTo('/Exam')
+      }, 3000);
+    }
+  },[error,success])
+
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -42,37 +56,52 @@ const CreateQuizPg1 = () => {
   };
 
    const handleConfirm = (date) => {
-    setQuiz({...quiz,due_date:date})
+    setExam({...exam,Date:date})
     hideDatePicker();
   };
 
-  const handleNext = () => {
-    router.push({
-        pathname: 'CreateQuizPg2',
-        params: {
-          quiz: encodeURIComponent(JSON.stringify(quiz))
-        },
-      })
+  const handleNext = async () => {
+    try
+    {
+      let examResp = await axios.post(`${API.BASE_URL}/api/createExam`,exam)
+      setSuccess('Exam Added Successfully')
+    }
+    catch(e)
+    {
+      setError("Submission Failed:"+ e.response?.data || e.message)
+      console.log(e)
+    }
+
   }
 
   return (
       <View style={styles.modalOverlay}>
-        <View style={styles.headerContainer}>
-            <BackButton/>
-        </View>
         <View style={styles.modalContainer}>
-                <Text style={styles.modalTitle}>Create Quiz</Text>
+          {error || success ?
+          <View style={ error ? styles.errorBox : styles.successBox}>
+            <Text style={{color:'white',fontSize:16}}>{error  ? error : success}</Text>
+          </View>
+          : null
+          }
           <Text style={styles.label}>Title</Text>
           <TextInput
-            value={quiz.title}
-            onChangeText={text => setQuiz({ ...quiz, title: text })}
+            value={exam.Title}
+            onChangeText={value => setExam({ ...exam, Title: value })}
             style={styles.input}
-            placeholder="Enter quiz title"
+            placeholder="Enter exam title"
+          />
+          <Text style={styles.label}>Marks</Text>
+          <TextInput
+            value={exam.Total_Marks}
+            inputMode='numeric'
+            onChangeText={value => setExam({ ...exam, Total_Marks: value })}
+            style={styles.input}
+            placeholder="Enter Total Marks"
           />
 
-          <Text style={styles.label}>Due Date</Text>
+          <Text style={styles.label}>Date</Text>
           <TouchableOpacity onPress={showDatePicker} style={styles.input}>
-            <Text>{quiz.due_date.toLocaleDateString()}</Text>
+            <Text>{exam.Date.toLocaleDateString()}</Text>
           </TouchableOpacity>
 
           <DateTimePickerModal
@@ -82,7 +111,7 @@ const CreateQuizPg1 = () => {
             onCancel={hideDatePicker}
           />    
 
-          <ReminderBtn btnTitle="Next" handleAddReminder={handleNext} />
+          <ReminderBtn btnTitle="Submit" handleAddReminder={handleNext} />
         </View>
       </View>
   );
@@ -92,6 +121,16 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor:'white'
+  },
+  errorBox:{
+    backgroundColor:'#e03c3cff',
+    padding:10,
+    marginBottom:10
+  },
+  successBox:{
+    backgroundColor:'#36b295',
+    padding:10,
+    marginBottom:10
   },
   modalContainer: {
     marginTop:30,
@@ -146,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateQuizPg1;
+export default CreateExam;

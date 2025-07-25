@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const schedulesSchema = new mongoose.Schema(
     {
-        Class_id:{type:mongoose.Schema.Types.ObjectID,required:[true,"Class id is Required"],ref:"Classes"},
+        Class_id:{type:mongoose.Schema.Types.ObjectId,required:[true,"Class id is Required"],ref:"Classes"},
         Day:{type:String,required:[true,"Day is Required"]},
         Start_Time:
         {

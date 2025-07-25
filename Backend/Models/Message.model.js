@@ -6,9 +6,9 @@ const messageSchema = new mongoose.Schema(
         Type:{type:Boolean},
         Text:{type:String},
         Sender:{type:String},
-        SocketId:mongoose.Schema.Types.ObjectID,
-        SenderId:mongoose.Schema.Types.ObjectID,
-        ReceiverId:[mongoose.Schema.Types.ObjectID]
+        SocketId:mongoose.Schema.Types.ObjectId,
+        SenderId:mongoose.Schema.Types.ObjectId,
+        ReceiverId:[mongoose.Schema.Types.ObjectId]
     }
 )
 

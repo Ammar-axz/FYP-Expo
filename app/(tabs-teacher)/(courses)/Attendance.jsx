@@ -55,7 +55,6 @@ const Attendance = ({studentData, setAttendancePercent}) => {
       }
       const attendanceResp = await axios.post(`${API.BASE_URL}/api/getStudentAttendance`,attendanceData)
       setAttendance(attendanceResp.data)
-      console.log(attendanceResp.data)
     }
     catch(e)
     {

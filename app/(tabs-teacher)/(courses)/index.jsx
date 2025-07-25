@@ -51,7 +51,7 @@ const StudentListComp = ({studentData}) => {
     >
       <View style={styles.listItem}>
         <View style={{flex:1, flexDirection:'row'}}>
-          <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
+          <Image source={{uri:`${API.BASE_URL}/Images/ProfilePictures/${student.pfp}`}} style={styles.ltQuizIcon}/>
           <Text style={styles.listItemText}>{student.Name}</Text>
         </View>
           <Image style={styles.DateArrow} source={require('@/assets/icons/DateRightArrow.png')}></Image>
