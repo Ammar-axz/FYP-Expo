@@ -11,8 +11,11 @@ import Schedules from '../../Models/Schedules.model.js'
 import User from '../../Models/Users.model.js'
 import Exam from '../../Models/Exam.model.js'
 import Exam_Student from '../../Models/Exam_Student.model.js'
+import Reminder from '../../Models/Reminder.model.js'
+import Sabaq from '../../Models/Sabaq.model.js'
 
 import mongoose from 'mongoose'
+import Courses from '../../Models/Courses.model.js'
 const ObjectId = mongoose.Types.ObjectId;
 
 async function AddUser(req,res,next){
@@ -129,10 +132,8 @@ async function getQuizes(req,res){
             req.body.class_id.map((i)=>(
                 classIds.push(i.Class_id)
             ))
-            console.log(classIds);
             
             const quizes = await Quiz.find({"Class_id":classIds})
-            console.log(quizes)
             let quiz = []
             await Promise.all(
             quizes.map(async(item,index)=>{
@@ -479,6 +480,85 @@ async function addIncompleteQuiz(req,res){
     }
 }
 
+
+
+async function addReminder(req,res){
+    try
+    {
+        const quiz = await Reminder.create({
+            User_id:req.body.user_id,
+            Title:req.body.title,
+            Date:req.body.date,
+            Color:req.body.color
+        })
+        
+        res.status(200).send(quiz)
+    }
+    catch(err)
+    {
+        console.log(err);
+    }
+}
+
+async function getReminders(req,res)
+{
+    try
+    {
+        let reminders = await Reminder.find({"User_id":req.query.user_id})
+        res.status(200).send(reminders)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
+}
+
+async function removeReminder(req,res)
+{
+    try
+    {
+        const { id } = req.body;
+        let remove = await Reminder.deleteOne({"_id":id})
+        console.log(remove)
+        res.status(200).send(remove)
+    }
+    catch(e)
+    {console.log(e)}
+}
+
+
+async function getCourse(req,res)
+{
+    try
+    {        
+        let course = await Classes.findOne({"_id":req.query.class_id},{"Course_id":1,"_id":0})
+        
+        res.status(200).send(course)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
+}
+async function getSabaqs(req,res)
+{
+    try
+    {
+        let sabaqs = await Sabaq.find({"Course_id":req.query.course_id}).sort({Lesson:1})
+        
+        res.status(200).send(sabaqs)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
+}
+
+
+
 async function loginUser(req, res, next) {
     try {
         let user = await User.findOne({
@@ -687,4 +767,8 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getExams,getStudentExam,uploadExamMarks,getStudentExamMarks,createExam,getStudent,getStudentsOfClass,getAttendance,getStudentAttendance,setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,addIncompleteQuiz,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
+export default {AddUser,AddQuiz,getQuizes,getQuizQuestion,getCourse,getSabaqs,getExams,getStudentExam,uploadExamMarks,
+    getStudentExamMarks,createExam,getStudent,getStudentsOfClass,getAttendance,getStudentAttendance,
+    setAttendance,getScheduleForAttendance,getAllQuizQuestions,getSchedule,getClasses,UpdatePoints,
+    addIncompleteQuiz,addReminder,getReminders,removeReminder,checkInput,getAllUsers,findUser,loginUser,
+    SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}

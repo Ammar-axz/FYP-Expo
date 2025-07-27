@@ -98,6 +98,16 @@ const HomeStack = () => {
         })}
       />
       <Stack.Screen
+        name="Sabaq"
+        options={({route, navigation}) => ({
+          headerShown: true,
+          headerTitle: 'Sabaqs',
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#fff'},
+        })}
+      />
+      <Stack.Screen
         name="CreateExam"
         options={({route, navigation}) => ({
           headerShown: true,

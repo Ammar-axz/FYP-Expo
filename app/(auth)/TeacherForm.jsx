@@ -39,6 +39,7 @@ const StudentForm = () => {
         setLoggedInUser(response.data.Name)
         setLoggedInUserRole(response.data.Role)
         setLoggedInUserPoints(response.data.Points)
+        setLoggedInUserPfp(response.data.pfp)
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
       }

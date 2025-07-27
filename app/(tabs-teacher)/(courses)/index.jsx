@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     textAlign:'center',
     marginTop:30
   },
-    pickerContainer: {
+  pickerContainer: {
     width: '100%',
     height: 50,
     borderRadius: 30,

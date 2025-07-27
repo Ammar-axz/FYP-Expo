@@ -134,3 +134,13 @@ app.post('/api/getClasses',UserControllers.getClasses)
 app.post('/api/updatePoints',UserControllers.UpdatePoints)
 
 app.post('/api/addIncompleteQuiz',UserControllers.addIncompleteQuiz)
+
+app.post('/api/addReminder',UserControllers.addReminder)
+
+app.get('/api/getReminders',UserControllers.getReminders)
+
+app.delete('/api/removeReminder',UserControllers.removeReminder)
+
+app.get('/api/getSabaqs',UserControllers.getSabaqs)
+
+app.get('/api/getCourse',UserControllers.getCourse)

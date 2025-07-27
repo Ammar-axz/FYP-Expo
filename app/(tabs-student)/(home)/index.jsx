@@ -4,6 +4,8 @@ import { userData } from '@/Context/UserContext';
 import axios from 'axios';
 import { useState,useEffect } from 'react';
 import { API } from '@/api';
+import { useIsFocused } from '@react-navigation/native';
+import { format } from 'date-fns';
 import {
   FlatList,
   Image,
@@ -13,16 +15,27 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Modal,
+  Button
 } from 'react-native';
+import { router } from 'expo-router';
 
 const Home = () => {
   const {loggedInUser,loggedInUserPfp,loggedInUserId,loggedInUserRole,loggedInUserClasses,setLoggedInUserClasses} = userData()
-    const [quizes,setQuizes] = useState([])
+  const [quizes,setQuizes] = useState([])
+  const [reminder, setReminder] = useState();
+  const [show,setShow] = useState(false)
+  const isFocused = useIsFocused()
     let incQuizes = []
   
     useEffect(()=>{
       getClasses()
     },[])
+
+    useEffect(()=>{
+      if(isFocused)
+        getReminder()
+    },[isFocused])
   
     useEffect(()=>{
       if (loggedInUserClasses.length > 0) {
@@ -43,6 +56,7 @@ const Home = () => {
         console.log(e)
       }
     }
+
     async function getQuizes()
     {
       try
@@ -64,6 +78,44 @@ const Home = () => {
       }
     }
 
+  async function getReminder()
+  {    
+    try{
+      let reminders = []
+      let resp = await axios.get(`${API.BASE_URL}/api/getReminders`,
+        {
+          params:{
+            user_id:loggedInUserId
+        }}
+      )
+      reminders = resp.data
+      console.log(reminders);
+      
+    const today = new Date();
+    let closestReminder = null;
+    let minDiff = Infinity;
+
+    reminders.forEach((reminder) => {
+      const reminderDate = new Date(reminder.Date)
+      if (reminderDate > today) {
+        const diff = reminderDate - today
+        if (diff < minDiff) {
+          minDiff = diff
+          closestReminder = reminder
+        }
+      }
+    });
+
+    if (closestReminder) {
+      setReminder(closestReminder)
+    }
+
+    }
+    catch(e)
+    {console.log(e)}
+  }
+
+
   return (
     <>
     <ScrollView style={{backgroundColor:'white'}}>
@@ -79,7 +131,7 @@ const Home = () => {
           </View>
 
           <View style={styles.iconsContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.bellButton}
               onPress={() => alert('Notifications Pressed')}>
               <Image
@@ -87,7 +139,7 @@ const Home = () => {
                 resizeMode="contain"
               />
               <View style={styles.notificationDot} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <Image
               source={require('@/assets/icons/user-pic.png')}
@@ -113,15 +165,16 @@ const Home = () => {
         <View style={styles.schedule}>
           <TouchableOpacity
             style={styles.scheduleBtn}
-            onPress={() => alert('Schedule Pressed')}>
-            <View style={styles.clockIcon}>
+            onPress={() => setShow(true)}>
+            {/* <View style={styles.clockIcon}> */}
               <Image
-                source={require('@/assets/icons/clock.png')}
+                source={require('@/assets/icons/clock2.png')}
                 resizeMode="contain"
+                style={{height:28,width:28,tintColor:'#35b170'}}
               />
-            </View>
+            {/* </View> */}
             <Text style={styles.scheduleText}>
-              You have scheduled for reading Saba’q
+              {reminder?reminder.Title:"No Upcoming Reminders"}
             </Text>
             <Image
               source={require('@/assets/icons/arrow.png')}
@@ -129,6 +182,23 @@ const Home = () => {
               style={styles.arrowIcon}
             />
           </TouchableOpacity>
+
+          {reminder?
+          <Modal style={styles.modal} visible={show} transparent={true}>
+            <View style={styles.overlay}>
+              <View style={styles.dialog}>
+                <Text style={{fontSize:22,fontWeight:'bold',textAlign:'center',marginBottom:10}}>Upcoming Reminder</Text>
+                <Text style={{fontSize:20}}>{reminder.Title}</Text>
+                <Text style={{fontSize:18}}>Date : {format(reminder.Date,'dd MMM yyyy')}</Text>
+                <Text style={{fontSize:18}}>Time : {format(reminder.Date,'hh:mm a')}</Text>
+                <TouchableOpacity style={{backgroundColor:'#3dc29aff',padding:8,borderRadius:100,marginTop:10}}  onPress={() => setShow(false)} >
+                    <Text style={{textAlign:'center',color:'white',fontSize:18,fontWeight:'bold'}}>OK</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          :null}
+
         </View>
       </ImageBackground>
       <QuickAccess />
@@ -148,6 +218,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  modal:{
+    position:'absolute',
+  },
+  overlay:{
+    height:'120%',
+    width:'100%',
+    backgroundColor:'#000000a8'
+  },
+  dialog:{
+    top:'25%',
+    backgroundColor:'white',
+    padding:20
   },
   textContainer: {
     flex: 1,
@@ -201,7 +284,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   clockIcon: {
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     borderRadius: 30,
     padding: 7,
   },
@@ -211,7 +294,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 20,
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 15,
   },
   arrowIcon: {
     marginTop: 5,

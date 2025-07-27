@@ -4,6 +4,13 @@ import mongoose from 'mongoose'
 import AdminJS from 'adminjs'
 import AdminJSExpress from '@adminjs/express'
 import * as AdminJSMongoose from '@adminjs/mongoose'
+import { ComponentLoader } from 'adminjs'
+import { fileURLToPath } from 'url' // Import for __filename and __dirname
+import path from 'path' // Import for path manipulation
+
+// Get __filename and __dirname for ES Modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Register the AdminJS adapter
 AdminJS.registerAdapter(AdminJSMongoose)
@@ -18,13 +25,29 @@ import QuizQuestions from '../Models/QuizQuestions.model.js'
 import Schedules from '../Models/Schedules.model.js'
 import User from '../Models/Users.model.js'
 import Courses from '../Models/Courses.model.js'
+import Exam from '../Models/Exam.model.js'
+import Exam_Student from '../Models/Exam_Student.model.js'
+import Reminder from '../Models/Reminder.model.js'
+import Sabaq from '../Models/Sabaq.model.js'
+
 
 const db = await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
+
+const componentLoader = new ComponentLoader()
+
+const Components = {
+  // CORRECTED LINE: Use path.join to create an absolute path
+  Dashboard: componentLoader.add('Dashboard', path.join(__dirname, 'components', 'Dashboard.jsx')),
+  // other custom components
+}
 
 //Create AdminJS instance
 const adminJs = new AdminJS({
   rootPath: '/admin',
-  dashboard:{component:null},
+  dashboard:{
+    component:Components.Dashboard
+  },
+  componentLoader,
   resources: [
     {
       resource: User
@@ -52,6 +75,18 @@ const adminJs = new AdminJS({
     },
     {
       resource: Courses
+    },
+    {
+      resource: Exam
+    },
+    {
+      resource: Exam_Student
+    },
+    {
+      resource: Reminder
+    },
+    {
+      resource: Sabaq
     }
   ],
   branding: {
@@ -61,14 +96,6 @@ const adminJs = new AdminJS({
     softwareBrothers: false, // removes "SoftwareBrothers" branding
   }
 })
-
-
-
-// const adminJs = new AdminJS({
-//     databases: [db],
-// })
-
-
 
 //Add admin panel router with login
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
@@ -82,10 +109,9 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
   cookiePassword: 'some-secret-password',
 },null,
 {
-    resave:false,
-    saveUninitialized:false
+  resave:false,
+  saveUninitialized:false
 }
 )
-
 
 export { adminJs, adminRouter }

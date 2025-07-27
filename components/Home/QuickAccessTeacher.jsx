@@ -50,7 +50,7 @@ const QuickAccessTeacher = () => {
           style={styles.innerBox}
         >
           <Image source={require("@/assets/icons/clock1.png")} />
-          <Text style={styles.SubTitle}> Classes </Text>
+          <Text style={styles.SubTitle}> Reminder </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.innerBox}
@@ -74,20 +74,20 @@ const QuickAccessTeacher = () => {
         <TouchableOpacity
           style={styles.innerBox}
           onPress={() => {
-            router.navigate("DuaDhikr");
+            router.navigate("QuranHadith");
           }}
         >
           <Image source={require("@/assets/icons/dua.png")} />
-          <Text style={styles.SubTitle}> Dua Q&A </Text>
+          <Text style={styles.SubTitle}> Books </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.innerBox}
           onPress={() => {
-            router.navigate("QuranHadith");
+            router.navigate("Sabaq");
           }}
         >
           <Image source={require("@/assets/icons/book.png")} />
-          <Text style={styles.SubTitle}> Books </Text>
+          <Text style={styles.SubTitle}> Sabaq </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.innerBox}
@@ -106,9 +106,11 @@ const QuickAccessTeacher = () => {
         <Text style={styles.DayHeading2}>{dayName}</Text>
       </View>
       {
+        filteredSchedule.length == 0 ?
+        (<Text style={{ textAlign: "center", color: "gray", marginTop: 20 }}>
+          No Classes Today.
+        </Text>):
         filteredSchedule.map((item)=>{
-          if(item != null)
-          {
             return(
             <TimeTableItem
               key={item._id}
@@ -117,14 +119,6 @@ const QuickAccessTeacher = () => {
               courseText={item.Class_Name.split(" - ")[0]}
               groupName={item.Class_Name}
             />)
-          }
-          else
-          {
-            return(
-            <Text style={{ textAlign: "center", color: "gray", marginTop: 20 }}>
-              No schedule for this day.
-            </Text>)
-          }
         })
       }
     </View>

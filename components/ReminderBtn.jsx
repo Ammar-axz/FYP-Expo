@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-const ReminderBtn = ({btnTitle, handleAddReminder}) => {
+const ReminderBtn = ({btnTitle, handleAddReminder, style}) => {
   return (
-    <TouchableOpacity style={styles.addButton} onPress={handleAddReminder}>
-            <Text style={styles.addButtonText}>{btnTitle}</Text>
-          </TouchableOpacity>
+    <TouchableOpacity style={[styles.addButton,style]} onPress={handleAddReminder}>
+      <Text style={styles.addButtonText}>{btnTitle}</Text>
+    </TouchableOpacity>
   )
 }
 

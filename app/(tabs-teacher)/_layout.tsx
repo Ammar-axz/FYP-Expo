@@ -59,7 +59,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="(courses)"
         options={{
-          tabBarLabel: 'Courses',
+          tabBarLabel: 'Classes',
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/library.png')}

@@ -12,7 +12,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StudentForm = () => {
-  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
+  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints,} = userData()
 
   const [error,setError] = useState()
   const [form, setForm] = useState({
@@ -37,6 +37,7 @@ const StudentForm = () => {
         setLoggedInUser(response.data.Name)
         setLoggedInUserPoints(response.data.Points)
         setLoggedInUserRole(response.data.Role)
+        setLoggedInUserPfp(response.data.pfp)
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
       }

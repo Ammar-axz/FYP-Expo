@@ -58,7 +58,7 @@ const Home = () => {
           </View>
 
           <View style={styles.iconsContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.bellButton}
               onPress={() => alert("Notifications Pressed")}
             >
@@ -67,10 +67,10 @@ const Home = () => {
                 style={styles.topNotiIcon}
               />
               <View style={styles.notificationDot} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <Image
-              source={require("@/assets/icons/user-pic.png")}
+              source={loggedInUserPfp?{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}:require("@/assets/icons/user-pic.png")}
               style={styles.profileImage}
             />
           </View>
@@ -128,10 +128,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 18,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
     marginLeft: 10,
+    marginRight:10,
     resizeMode: "contain",
   },
   bellButton: {

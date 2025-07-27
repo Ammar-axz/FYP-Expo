@@ -201,7 +201,7 @@ const Timetable = () => {
         )}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", color: "gray", marginTop: 20 }}>
-            No schedule for this day.
+            No Classes for this day.
           </Text>
         }
       />
