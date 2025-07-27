@@ -1,50 +1,75 @@
+import { API } from '@/api';
 import ConfirmBtn from '@/components/ConfirmBtn';
 import FormField from '@/components/FormField';
 import Heading from '@/components/Heading';
 import Paragraph from '@/components/Paragraph';
-import React, { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { userData } from '@/Context/UserContext';
+import axios from 'axios';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const ParentForm = ({ navigation }) => {
+const StudentForm = () => {
+  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
+  const API_URL = process.env.API_URL
+  const WEB_API_URL = process.env.WEB_API_URL
+
+  const [error,setError] = useState()
   const [form, setForm] = useState({
-    studentId: '',
+    // studentId: '',
     email: '',
-    password: '',
+    pass: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    if (!form.studentId || !form.email || !form.password) {
-      Alert.alert('Error', 'All fields are required!');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      Alert.alert('Success', 'Registration completed!');
-      navigation.replace('(tabs)'); // Navigate to the main app
-    }, 1500);
+  const handleSubmit = async () => {
+    // if (!form.studentId || !form.email || !form.password) {
+    //   Alert.alert('Error', 'All fields are required!');
+    //   return;
+    // }
+    // setIsSubmitting(true);
+    try{
+      let response = await axios.post(`${API.BASE_URL}/api/login`,form)
+        console.log(response.data);
+        
+        setLoggedInUserId(response.data._id)
+        setLoggedInUser(response.data.Name)
+        setLoggedInUserRole(response.data.Role)
+        setLoggedInUserPoints(response.data.Points)
+        // setIsSubmitting(false);
+        // navigation.replace('(tabs)');
+      }
+      catch(err)
+      {
+        // setError(err.response.data)
+        console.log("err"+err)
+      }
   };
+
+  useEffect(() => {
+    if (loggedInUser !== 'Demo User') {
+      console.log(loggedInUser);      
+      router.replace('(tabs-parent)/(home-parent)');
+    }
+  }, [loggedInUser]);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <Heading heading="Enter Information Parent" />
+          <Heading heading="Enter Information" />
           <Paragraph paragraph="Provide your details to continue" />
 
-          <FormField
+          {/* <FormField
             title="Student ID"
             value={form.studentId}
             handleChangeText={(e) => setForm({ ...form, studentId: e })}
             keyboardType="numeric"
             placeholder="ex. 232435"
-          />
+          /> */}
 
           <FormField
             title="Email"
@@ -56,8 +81,8 @@ const ParentForm = ({ navigation }) => {
 
           <FormField
             title="Password"
-            value={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
+            value={form.pass}
+            handleChangeText={(e) => setForm({ ...form, pass: e })}
             placeholder="Enter your password"
             secureTextEntry={true} // Hides password
           />
@@ -67,6 +92,7 @@ const ParentForm = ({ navigation }) => {
             isLoading={isSubmitting}
             handlePress={handleSubmit}
           />
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -81,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ParentForm;
+export default StudentForm;
