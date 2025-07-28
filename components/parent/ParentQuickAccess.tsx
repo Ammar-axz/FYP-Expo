@@ -1,4 +1,3 @@
-import Courses from "@/app/(tabs-student)/(course)/index";
 import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -8,7 +7,7 @@ import CourseData from "@/components/Home/CourseData";
 import ViewAll from "@/components/Home/ViewAll";
 import Quiz from "@/app/(tabs-parent)/(home-parent)/QuizParent";
 
-const QuickAccess = () => {
+const ParentQuickAccess = () => {
   return (
     <>
       <View style={styles.main}>
@@ -16,30 +15,25 @@ const QuickAccess = () => {
         <View style={styles.box}>
           <TouchableOpacity
             onPress={() => {
-              router.push("Attendance");
+              router.push("Exams");
             }}
             style={styles.innerBox}
           >
             <Image source={require("@/assets/icons/clock1.png")} />
-            <Text style={styles.SubTitle}> Attendance </Text>
+            <Text style={styles.SubTitle}> Exams </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.innerBox}
             onPress={() => {
-              router.navigate("Timetable");
+              router.navigate("Sabaq");
             }}
           >
             <Image source={require("@/assets/icons/attendance.png")} />
-            <Text style={styles.SubTitle}> Schedule </Text>
+            <Text style={styles.SubTitle}> Sabaq </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.innerBox}
-            onPress={() => {
-              router.navigate("QuizParent");
-            }}
-          >
+          <TouchableOpacity style={styles.innerBox}>
             <Image source={require("@/assets/icons/task.png")} />
-            <Text style={styles.SubTitle}> Quizes </Text>
+            <Text style={styles.SubTitle}> Donate </Text>
           </TouchableOpacity>
         </View>
         {/* <ViewAll title="Quiz results" PageLink="Courses" PageLink={Courses} /> */}
@@ -79,7 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 9,
     height: 80,
-    // width: 109,
+    width: 109,
     marginHorizontal: 10,
     marginVertical: 10,
     alignContent: "center",
@@ -98,4 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QuickAccess;
+export default ParentQuickAccess;

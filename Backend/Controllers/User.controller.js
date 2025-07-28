@@ -6,6 +6,8 @@ import Room from '../Models/Room.model.js'
 import User from '../Models/Users.model.js'
 import Parent_Student from '../Models/Parent_Student.model.js'
 
+import bcrypt from "bcrypt";
+
 
 async function AddUser(req,res,next){
     try
@@ -403,6 +405,38 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export default {AddUser,getStudent,getParentStudent,getStudentsOfClass,getAttendance,getStudentAttendance,
+export const updateUserProfile = async (req, res) => {
+  const { id } = req.params;
+  const { name, email, phone, gender, password, pfp } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.phone = phone || user.phone;
+    user.gender = gender || user.gender;
+    user.pfp = pfp || user.pfp;
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    await user.save();
+
+    res.status(200).json({ success: true, user });
+  } catch (err) {
+    console.error("Update Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
+
+
+
+export default {AddUser,getStudent,getParentStudent,getStudentsOfClass,getAttendance,getStudentAttendance,updateUserProfile,
     setAttendance,UpdatePoints,checkInput,getAllUsers,findUser,loginUser,
     SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}

@@ -2,7 +2,7 @@ import HomeNotification from "@/components/Home/HomeNotification";
 import { userData } from "@/Context/UserContext";
 import axios from "axios";
 import { API } from "@/api";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import {
   Image,
@@ -12,8 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ViewAll from "@/components/Home/ViewAll";
-import QuickAccess from "@/components/parent/QuickAccess";
+import QuickAccess from "@/components/parent/ParentQuickAccess";
 
 const DATA = [
   { id: "1", title: "Item 1", image: "https://via.placeholder.com/150" },
@@ -23,27 +22,35 @@ const DATA = [
 ];
 
 const Home = () => {
-  const { loggedInUser, loggedInUserPfp,loggedInUserRole,loggedInUserChild, loggedInUserId,loggedInUserClasses,setLoggedInUserClasses } = userData();
-  const isFocused = useIsFocused()
+  const {
+    loggedInUser,
+    loggedInUserPfp,
+    loggedInUserRole,
+    loggedInUserChild,
+    loggedInUserId,
+    loggedInUserClasses,
+    setLoggedInUserClasses,
+  } = userData();
+  const isFocused = useIsFocused();
 
-  useEffect(()=>{
-    if(isFocused)
-    getClasses()
-  },[isFocused])
+  useEffect(() => {
+    if (isFocused) getClasses();
+  }, [isFocused]);
 
-  async function getClasses()
-    {
-      try
-      {
-        let userData = { user_id : loggedInUserChild , role : "Student" }
-        const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
-        setLoggedInUserClasses(classData.data)
-      }
-      catch(e)
-      {
-        console.log(e)
-      }
+  async function getClasses() {
+    try {
+      let userData = { user_id: loggedInUserChild, role: "Student" };
+      const classData = await axios.post(
+        `${API.BASE_URL}/api/getClasses`,
+        userData
+      );
+      setLoggedInUserClasses(classData.data);
+    } catch (e) {
+      console.log(e);
     }
+  }
+      console.log("image uri",loggedInUserPfp);
+
 
   return (
     <>
@@ -73,9 +80,13 @@ const Home = () => {
             </TouchableOpacity>
 
             <Image
-              source={require("@/assets/icons/user-pic.png")}
-              style={styles.profileImage}
-            />
+        source={
+          loggedInUserPfp
+            ? { uri: loggedInUserPfp }
+            : require('@/assets/icons/user-pic.png')
+        }
+        style={styles.avatar}
+      />
           </View>
         </View>
 

@@ -119,6 +119,8 @@ app.post('/api/setAttendance',UserControllers.setAttendance)
 
 app.post('/api/updatePoints',UserControllers.UpdatePoints)
 
+app.put('/api/updateUserProfile/:id', UserControllers.updateUserProfile);
+
 
 //Quiz 
 app.post('/api/addQuiz',QuizController.AddQuiz)

@@ -1,14 +1,23 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+// import CourseDetails from '@/app/Course/CourseDetails';
+import { BackButton } from '@/components/BackButton';
+import { Stack } from 'expo-router';
+import React from 'react';
 
-const _layout = () => {
-  return (
-    <View>
-      <Text>_layout</Text>
-    </View>
+const CourseStack = () => {
+  return(
+    <Stack>
+      <Stack.Screen 
+      name="EditProfileScreen"
+      options={({navigation}) => ({
+        headerShown: false,
+        headerTitle: '',
+        headerLeft: () => <BackButton navigation={navigation} />,
+        headerTitleAlign: 'center',
+        headerStyle: {backgroundColor: '#fff'},
+      })}
+      />
+    </Stack>
   )
-}
+};
 
-export default _layout
-
-const styles = StyleSheet.create({})
+export default CourseStack
