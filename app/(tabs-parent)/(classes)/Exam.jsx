@@ -58,20 +58,19 @@ const QuizCard = ({ exam , student_id}) => {
 };
 
 
-const Exam = () => {
-  const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
+const Exam = ({Class}) => {
+  const {loggedInUserId,loggedInUserChild,loggedInUserRole} = userData()
   const [exams,setExams] = useState([])
-  const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
   
   useEffect(()=>{
     getExams()
-  },[selectedClass])
+  },[])
   
   async function getExams()
   {
     try
     {      
-      let data = {class_id : selectedClass.Class_id}
+      let data = {class_id : Class.Class_id}
       
       let Exams = await axios.post(`${API.BASE_URL}/api/getExams`,data)
       
@@ -87,27 +86,15 @@ const Exam = () => {
   return (
     <>
     <View style={styles.mainContainer}>
-        
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedClass}
-            onValueChange={(itemValue) => setSelectedClass(itemValue)}
-            style={styles.picker}
-          >
-            {loggedInUserClasses.map((item, index) => (
-              <Picker.Item key={index} label={item.Class_Name} value={item} />
-            ))}
-          </Picker>
-        </View>
-        <View style={styles.latestQuiz}>
-            <FlatList
-            data={exams}
-            keyExtractor={item => item._id}
-            renderItem={({item})=>( <QuizCard exam={item} student_id={loggedInUserId}/> )}
-            />
-        </View>
+      <View style={styles.latestQuiz}>
+          <FlatList
+          data={exams}
+          keyExtractor={item => item._id}
+          renderItem={({item})=>( <QuizCard exam={item} student_id={loggedInUserChild}/> )}
+          />
       </View>
-      </>
+    </View>
+    </>
   );
 };
 

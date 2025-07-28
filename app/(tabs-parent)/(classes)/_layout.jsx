@@ -18,11 +18,11 @@ const CourseStack = () => {
       />
       
       <Stack.Screen
-        name="CourseDetails"
+        name="ClassDetails"
         // component={CourseDetails}
         options={({route,navigation}) => ({
-          headerShown: true,
-          headerTitle: route.params?.course.title,
+          headerShown: false,
+          // headerTitle: route.params?.course.title,
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: 'center',
           headerStyle: {backgroundColor: '#fff'},

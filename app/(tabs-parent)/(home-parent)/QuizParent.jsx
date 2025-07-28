@@ -67,12 +67,14 @@ const Quiz = () => {
     loggedInUser,
     loggedInUserPoints,
     loggedInUserId,
+    loggedInUserChild,
     loggedInUserRole,
     loggedInUserClasses,
   } = userData();
   const [quizes, setQuizes] = useState([]);
   const [incompleteQuizes, setIncompleteQuizes] = useState([]);
   let incQuizes = [];
+  
 
   useEffect(() => {
     if (loggedInUserClasses.length > 0) {
@@ -83,9 +85,9 @@ const Quiz = () => {
   async function getQuizes() {
     try {
       let id = {
-        user_id: loggedInUserId,
+        user_id: loggedInUserChild,
         class_id: loggedInUserClasses,
-        role: loggedInUserRole,
+        role: "Student",
       };
       let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`, id);
       setQuizes(Quizes.data);

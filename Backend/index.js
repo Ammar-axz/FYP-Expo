@@ -4,7 +4,12 @@ import { createServer } from "http"
 import mongoose from 'mongoose'
 import multer from 'multer'
 import { Server } from "socket.io"
-import UserControllers from './Controllers/Users/User.controller.js'
+
+import UserControllers from './Controllers/User.controller.js'
+import QuizController from './Controllers/Quiz.controller.js'
+import ClassesController from './Controllers/Classes.controller.js'
+import ReminderController from './Controllers/Reminder.controller.js'
+
 import Message from './Models/Message.model.js'
 import { adminJs, adminRouter } from './Admin/admin.js'
 
@@ -73,6 +78,9 @@ httpServer.listen(port,()=>{
 app.get('/',(req,res)=>{
     res.send("Hello World")
 })
+
+
+//User
 app.get('/api/user/:User',UserControllers.findUser)
 
 app.post('/api/search-user',UserControllers.SearchUser)
@@ -97,21 +105,9 @@ app.post('/api/createGroup',upload.single('pfp'),UserControllers.createGroup)
 
 app.post('/api/getGroupMembers',UserControllers.getGroupMembers)
 
-app.post('/api/addQuiz',UserControllers.AddQuiz)
-
-app.post('/api/getQuizes',UserControllers.getQuizes)
-
-app.post('/api/getExams',UserControllers.getExams)
-
-app.post('/api/uploadExamMarks',UserControllers.uploadExamMarks)
-
-app.get('/api/getStudentExamMarks',UserControllers.getStudentExamMarks)
-
-app.post('/api/createExam',UserControllers.createExam)
-
-app.post('/api/getStudentExam',UserControllers.getStudentExam)
-
 app.post('/api/getStudent',UserControllers.getStudent)
+
+app.get('/api/getParentStudent',UserControllers.getParentStudent)
 
 app.post('/api/getStudentsOfClass',UserControllers.getStudentsOfClass)
 
@@ -121,26 +117,47 @@ app.post('/api/getStudentAttendance',UserControllers.getStudentAttendance)
 
 app.post('/api/setAttendance',UserControllers.setAttendance)
 
-app.post('/api/getScheduleForAttendance',UserControllers.getScheduleForAttendance)
-
-app.post('/api/getQuizQuestion',UserControllers.getQuizQuestion)
-
-app.post('/api/getAllQuizQuestions',UserControllers.getAllQuizQuestions)
-
-app.post('/api/getSchedule',UserControllers.getSchedule)
-
-app.post('/api/getClasses',UserControllers.getClasses)
-
 app.post('/api/updatePoints',UserControllers.UpdatePoints)
 
-app.post('/api/addIncompleteQuiz',UserControllers.addIncompleteQuiz)
 
-app.post('/api/addReminder',UserControllers.addReminder)
+//Quiz 
+app.post('/api/addQuiz',QuizController.AddQuiz)
 
-app.get('/api/getReminders',UserControllers.getReminders)
+app.post('/api/getQuizes',QuizController.getQuizes)
 
-app.delete('/api/removeReminder',UserControllers.removeReminder)
+app.post('/api/getQuizQuestion',QuizController.getQuizQuestion)
 
-app.get('/api/getSabaqs',UserControllers.getSabaqs)
+app.post('/api/getAllQuizQuestions',QuizController.getAllQuizQuestions)
 
-app.get('/api/getCourse',UserControllers.getCourse)
+app.post('/api/addIncompleteQuiz',QuizController.addIncompleteQuiz)
+
+
+//Classes
+app.post('/api/getExams',ClassesController.getExams)
+
+app.post('/api/uploadExamMarks',ClassesController.uploadExamMarks)
+
+app.get('/api/getStudentExamMarks',ClassesController.getStudentExamMarks)
+
+app.post('/api/createExam',ClassesController.createExam)
+
+app.post('/api/getStudentExam',ClassesController.getStudentExam)
+
+app.post('/api/getScheduleForAttendance',ClassesController.getScheduleForAttendance)
+
+app.post('/api/getSchedule',ClassesController.getSchedule)
+
+app.post('/api/getClasses',ClassesController.getClasses)
+
+app.get('/api/getSabaqs',ClassesController.getSabaqs)
+
+app.get('/api/getCourse',ClassesController.getCourse)
+
+
+//Reminder
+app.post('/api/addReminder',ReminderController.addReminder)
+
+app.get('/api/getReminders',ReminderController.getReminders)
+
+app.delete('/api/removeReminder',ReminderController.removeReminder)
+

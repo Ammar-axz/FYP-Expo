@@ -1,9 +1,9 @@
 import HomeNotification from "@/components/Home/HomeNotification";
-import Courses from "@/app/(tabs-student)/(course)/index";
 import { userData } from "@/Context/UserContext";
 import axios from "axios";
 import { API } from "@/api";
 import React, { useState,useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import {
   Image,
   ScrollView,
@@ -13,7 +13,6 @@ import {
   View,
 } from "react-native";
 import ViewAll from "@/components/Home/ViewAll";
-import Quiz from "./QuizParent";
 import QuickAccess from "@/components/parent/QuickAccess";
 
 const DATA = [
@@ -24,18 +23,19 @@ const DATA = [
 ];
 
 const Home = () => {
-  const { loggedInUser, loggedInUserPfp,loggedInUserRole, loggedInUserId,loggedInUserClasses,setLoggedInUserClasses } = userData();
-  
+  const { loggedInUser, loggedInUserPfp,loggedInUserRole,loggedInUserChild, loggedInUserId,loggedInUserClasses,setLoggedInUserClasses } = userData();
+  const isFocused = useIsFocused()
 
   useEffect(()=>{
+    if(isFocused)
     getClasses()
-  },[])
+  },[isFocused])
 
   async function getClasses()
     {
       try
       {
-        let userData = { user_id : loggedInUserId , role : loggedInUserRole }
+        let userData = { user_id : loggedInUserChild , role : "Student" }
         const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
         setLoggedInUserClasses(classData.data)
       }
@@ -87,8 +87,8 @@ const Home = () => {
         <QuickAccess />
 
         <View style={{ padding: 16, backgroundColor: "white" }}>
-          <ViewAll title="Quiz results" PageLink="Courses" PageLink={Courses} />
-          <Quiz />
+          {/* <ViewAll title="Quiz results" PageLink="Courses" PageLink={Courses} /> */}
+          {/* <Quiz /> */}
         </View>
       </ScrollView>
     </>

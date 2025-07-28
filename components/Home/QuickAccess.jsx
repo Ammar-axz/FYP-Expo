@@ -1,4 +1,3 @@
-import Courses from '@/app/(tabs-student)/(course)/index';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -66,13 +65,9 @@ const QuickAccess = () => {
           <Image source={require('@/assets/icons/dua.png')} />
           <Text style={styles.SubTitle} > Books </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Sabaq')}}>
-          <Image source={require('@/assets/icons/book.png')} />
-          <Text style={styles.SubTitle} > Sabaq </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Exam')}}>
-          <Image source={require('@/assets/icons/donate.png')} />
-          <Text style={styles.SubTitle}> Exam </Text>
+        <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('DuaDhikr')}}>
+          <Image source={require('@/assets/icons/dua.png')} />
+          <Text style={styles.SubTitle} > Duas </Text>
         </TouchableOpacity>
       </View>
       <ViewAll title="Schedule" PageLink="(home-teacher)/Timetable"/>

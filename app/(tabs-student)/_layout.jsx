@@ -2,6 +2,7 @@ import { userData } from '@/Context/UserContext';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
+import { BackButton } from '@/components/BackButton';
 
 // Screens
 // import ReminderLayout from '../(Reminder)/_layout';
@@ -24,7 +25,7 @@ const TabsLayout = () => {
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="(home-parent)"
+        name="(home)"
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({focused}) => (
@@ -39,9 +40,30 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="(chat)"
+        name="(quiz)"
         options={{
-          tabBarLabel: 'Chat',
+          tabBarLabel: 'Quiz',
+          tabBarIcon: ({focused}) => (
+            <Image
+              source={require('@/assets/icons/courses.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C'},
+              ]}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(classes)"
+        options={({navigation})=>({
+          headerShown: true,
+          headerTitle: 'Classes',
+          headerTitleStyle:{fontSize:28,fontWeight:'bold'},
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#fff'},
+          tabBarLabel: 'Classes',
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/Chat.svg')}
@@ -51,24 +73,9 @@ const TabsLayout = () => {
               ]}
             />
           ),
-        }}
+        })}
       />
-       <Tabs.Screen
-        name="(profile)"
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({focused}) => (
-            <Image
-              source={require('@/assets/icons/profile.svg')}
-              style={[
-                styles.tabIcon,
-                {tintColor: focused ? '#36B295' : '#0000008C'},
-              ]}
-            />
-          ),
-        }}
-      /> 
-      {/*<Tabs.Screen
+      <Tabs.Screen
         name="Leaderboard"
         options={{
           tabBarIcon: ({focused}) => (
@@ -97,7 +104,7 @@ const TabsLayout = () => {
             />
           ),
         }}
-      />*/}
+      />
     </Tabs>
   );
 };

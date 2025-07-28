@@ -16,25 +16,30 @@ const QuickAccess = () => {
         <View style={styles.box}>
           <TouchableOpacity
             onPress={() => {
-              router.push("Exams");
+              router.push("Attendance");
             }}
             style={styles.innerBox}
           >
             <Image source={require("@/assets/icons/clock1.png")} />
-            <Text style={styles.SubTitle}> Exams </Text>
+            <Text style={styles.SubTitle}> Attendance </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.innerBox}
             onPress={() => {
-              router.navigate("Sabaq");
+              router.navigate("Timetable");
             }}
           >
             <Image source={require("@/assets/icons/attendance.png")} />
-            <Text style={styles.SubTitle}> Sabaq </Text>
+            <Text style={styles.SubTitle}> Schedule </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.innerBox}>
+          <TouchableOpacity
+            style={styles.innerBox}
+            onPress={() => {
+              router.navigate("QuizParent");
+            }}
+          >
             <Image source={require("@/assets/icons/task.png")} />
-            <Text style={styles.SubTitle}> Donate </Text>
+            <Text style={styles.SubTitle}> Quizes </Text>
           </TouchableOpacity>
         </View>
         {/* <ViewAll title="Quiz results" PageLink="Courses" PageLink={Courses} /> */}
@@ -74,7 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 9,
     height: 80,
-    width: 109,
+    // width: 109,
     marginHorizontal: 10,
     marginVertical: 10,
     alignContent: "center",

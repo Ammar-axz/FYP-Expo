@@ -29,6 +29,7 @@ import Exam from '../Models/Exam.model.js'
 import Exam_Student from '../Models/Exam_Student.model.js'
 import Reminder from '../Models/Reminder.model.js'
 import Sabaq from '../Models/Sabaq.model.js'
+import Parent_Student from '../Models/Parent_Student.model.js'
 
 
 const db = await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
@@ -51,6 +52,9 @@ const adminJs = new AdminJS({
   resources: [
     {
       resource: User
+    },
+    {
+      resource: Parent_Student
     },
     {
       resource: Quiz

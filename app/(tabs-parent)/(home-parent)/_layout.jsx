@@ -15,20 +15,26 @@ const HomeStack = () => {
       <Stack.Screen name="index" />
       {/* <Stack.Screen name="Courses"  /> */}
       <Stack.Screen
-        name="Sabaq"
+        name="QuizParent"
         options={({navigation}) => ({
           headerShown: true,
-          headerTitle: 'Sabaq',
+          headerTitle: 'Quiz',
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: 'center',
           headerStyle: {backgroundColor: 'white',elevation: 0},
         })}
       />
       <Stack.Screen
-        name="Exams"
+        name="Timetable"
+        options={({navigation}) => ({
+          headerShown: false
+        })}
+      />
+      <Stack.Screen
+        name="Attendance"
         options={({navigation}) => ({
           headerShown: true,
-          headerTitle: 'Exams',
+          headerTitle: 'Attendance',
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: 'center',
           headerStyle: {backgroundColor: 'white',elevation: 0},

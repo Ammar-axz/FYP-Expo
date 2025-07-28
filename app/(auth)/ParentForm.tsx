@@ -12,7 +12,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StudentForm = () => {
-  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
+  const {loggedInUser,setLoggedInUserChild,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
   const API_URL = process.env.API_URL
   const WEB_API_URL = process.env.WEB_API_URL
 
@@ -33,14 +33,21 @@ const StudentForm = () => {
     // setIsSubmitting(true);
     try{
       let response = await axios.post(`${API.BASE_URL}/api/login`,form)
-        console.log(response.data);
         
         setLoggedInUserId(response.data._id)
         setLoggedInUser(response.data.Name)
         setLoggedInUserRole(response.data.Role)
         setLoggedInUserPoints(response.data.Points)
-        // setIsSubmitting(false);
-        // navigation.replace('(tabs)');
+        setLoggedInUserPfp(response.data.pfp)
+
+      response = await axios.get(`${API.BASE_URL}/api/getParentStudent`,{
+        params:
+        {
+          parent_id:response.data._id
+        }})
+        
+      setLoggedInUserChild(response.data.Student_id)
+
       }
       catch(err)
       {

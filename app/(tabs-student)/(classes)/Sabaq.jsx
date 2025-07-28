@@ -15,95 +15,57 @@ import {
 } from 'react-native';
 
 
-const QuizCard = ({ exam , student_id}) => {
-  const [marks,setMarks] = useState()
-
-  useEffect(()=>{
-    getExamMarks()
-  },[])
-
-  async function getExamMarks()
-    {
-      try
-      {
-        let examMarks = await axios.get(`${API.BASE_URL}/api/getStudentExamMarks`,
-        {
-        params:{
-          student_id:student_id,
-          exam_id:exam._id
-        } 
-        })
-        setMarks(examMarks.data.Obtained_Marks)
-      }
-      catch(e)
-      {
-        console.log(e)
-      }
-    }
-
+const QuizCard = ({ sabaq }) => {
   return (
     <View style={styles.item}>
-      <View style={{ flexDirection: "column", gap: 5 ,width:'30%'}}>
-        <Text style={styles.month}>{format(new Date (exam.Date),"EEEE")}</Text>
-        <Text style={styles.day}>{format(new Date (exam.Date),"MMM dd yyyy")}</Text>
-      </View>
-      <View style={styles.uploadContainer}>
-        <View style={{ flexDirection: "column", gap: 5 }}>
-          <Text style={styles.title}>{exam.Title}</Text>
-          <Text style={styles.marks}>{marks?marks+" /": "Total Marks"} {exam.Total_Marks}</Text>
-        </View>
+      <View style={{  alignItems:'flex-start',gap: 5,marginLeft:10}}>
+        <Text style={styles.month}>Lesson {sabaq.Lesson}</Text>
+        <Text style={styles.day}>{sabaq.Title}</Text>
       </View>
     </View>
   );
 };
 
 
-const Exam = () => {
+const Sabaq = ({Class}) => {
   const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
-  const [exams,setExams] = useState([])
-  const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
+  const [sabaqs,setSabaqs] = useState([])
   
   useEffect(()=>{
-    getExams()
-  },[selectedClass])
-  
-  async function getExams()
+    getSabaqs()
+  },[])
+
+  async function getSabaqs()
   {
     try
-    {      
-      let data = {class_id : selectedClass.Class_id}
+    {
+      let course = await axios.get(`${API.BASE_URL}/api/getCourse`,{
+        params:{
+          class_id:Class.Class_id
+        }
+      })
+      course = course.data
       
-      let Exams = await axios.post(`${API.BASE_URL}/api/getExams`,data)
-      
-      setExams(Exams.data)
+      let sabaqs = await axios.get(`${API.BASE_URL}/api/getSabaqs`,{
+        params:{
+          course_id:course.Course_id
+        }
+      })
+
+      setSabaqs(sabaqs.data)
     }
     catch(e)
-    {
-      console.log(e)
-    }
-        
+    {console.log(e)}
   }
   
   return (
     <>
     <View style={styles.mainContainer}>
-        
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedClass}
-            onValueChange={(itemValue) => setSelectedClass(itemValue)}
-            style={styles.picker}
-          >
-            {loggedInUserClasses.map((item, index) => (
-              <Picker.Item key={index} label={item.Class_Name} value={item} />
-            ))}
-          </Picker>
-        </View>
         <View style={styles.latestQuiz}>
             <FlatList
-            data={exams}
+            data={sabaqs}
             keyExtractor={item => item._id}
-            renderItem={({item})=>( <QuizCard exam={item} student_id={loggedInUserId}/> )}
+            renderItem={({item})=>( <QuizCard sabaq={item} /> )}
             />
         </View>
       </View>
@@ -155,13 +117,11 @@ const styles = StyleSheet.create({
 
   item: {
     flexDirection: "row",
-    alignItems: "center",
     backgroundColor: "#f4f4f4",
     padding: 10,
     marginVertical: 5,
     marginHorizontal: 10,
     borderRadius: 8,
-    justifyContent: "space-between",
   },
   month: {
     fontWeight: "600",
@@ -209,4 +169,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Exam
+export default Sabaq
