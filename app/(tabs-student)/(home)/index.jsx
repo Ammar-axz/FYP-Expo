@@ -21,62 +21,64 @@ import {
 import { router } from 'expo-router';
 
 const Home = () => {
-  const {loggedInUser,loggedInUserPfp,loggedInUserId,loggedInUserRole,loggedInUserClasses,setLoggedInUserClasses} = userData()
-  const [quizes,setQuizes] = useState([])
+  const {loggedInUser,loggedInUserPfp,loggedInUserId,loggedInUserRole,loggedInUserClasses,setLoggedInUserClasses,
+    incQuizes,setIncQuizes } = userData()
+  // const [quizes,setQuizes] = useState([])
   const [reminder, setReminder] = useState();
   const [show,setShow] = useState(false)
   const isFocused = useIsFocused()
-    let incQuizes = []
-  
-    useEffect(()=>{
-      getClasses()
-    },[])
+  let incQuizesData = []
 
-    useEffect(()=>{
-      if(isFocused)
-        getReminder()
-    },[isFocused])
-  
-    useEffect(()=>{
-      if (loggedInUserClasses.length > 0) {
-        getQuizes()
-      }
-    },[loggedInUserClasses])
-    
-    async function getClasses()
-    {
-      try
-      {
-        let userData = { user_id : loggedInUserId , role : loggedInUserRole }
-        const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
-        setLoggedInUserClasses(classData.data)        
-      }
-      catch(e)
-      {
-        console.log(e)
-      }
-    }
+  useEffect(()=>{
+    getClasses()
+  },[loggedInUserRole])
 
-    async function getQuizes()
-    {
-      try
-      {        
-        let id = {user_id: loggedInUserId , class_id : loggedInUserClasses, role : loggedInUserRole}
-        let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
-        
-        Quizes.data.map((i)=>{
-          if(i.completed > 0)
-          {
-            incQuizes.push(i)
-          }
-        })
-        setQuizes(incQuizes)
-      }
-      catch(e)
-      {
-        console.log(e)
-      }
+  useEffect(()=>{
+    if(isFocused)
+      getReminder()
+  },[isFocused])
+
+  useEffect(()=>{
+    if (loggedInUserClasses.length > 0) {
+      getQuizes()
     }
+  },[loggedInUserClasses])
+
+  async function getClasses()
+  {
+    try
+    {
+      let userData = { user_id : loggedInUserId , role : loggedInUserRole }
+      const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
+      setLoggedInUserClasses(classData.data)        
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
+  
+
+  async function getQuizes()
+  {
+    try
+    {        
+      let id = {user_id: loggedInUserId , class_id : loggedInUserClasses, role : loggedInUserRole}
+      let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
+      
+      Quizes.data.map((i)=>{
+        if(i.completed > 0)
+        {
+          incQuizesData.push(i)
+        }
+      })
+      setIncQuizes(incQuizesData)
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
 
   async function getReminder()
   {    
@@ -89,7 +91,11 @@ const Home = () => {
         }}
       )
       reminders = resp.data
-      console.log(reminders);
+      
+      if(reminders.length == 0)
+      {
+        setReminder()
+      }
       
     const today = new Date();
     let closestReminder = null;
@@ -142,7 +148,7 @@ const Home = () => {
             </TouchableOpacity> */}
 
             <Image
-              source={require('@/assets/icons/user-pic.png')}
+              source={loggedInUserPfp?{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}:require("@/assets/icons/user-pic.png")}
               style={styles.profileImage}
             />
           </View>
@@ -151,7 +157,7 @@ const Home = () => {
         {/* Progress List */}
         <View style={styles.progressContainer}>
           <FlatList
-            data={quizes}
+            data={incQuizes}
             keyExtractor={item => item.quiz._id}
             renderItem={({item}) => (
               <Progress quiz={item} />
@@ -263,14 +269,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 18,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
     marginLeft: 10,
     resizeMode: 'contain',
   },
   progressContainer: {
     flexDirection: 'row',
+    marginLeft:10
   },
   schedule: {
     backgroundColor: '#0F2823',

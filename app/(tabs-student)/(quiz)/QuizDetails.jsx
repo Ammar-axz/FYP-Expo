@@ -31,10 +31,9 @@ const QuizDetails = () => {
     const [submitted,setSubmitted] = useState(false)
     const [correctButton,setCorrectButton] = useState(0)
     const [inCorrectButton,setInCorrectButton] = useState(0)
+    const [correct,setCorrect] = useState(courseData.correct)
     
     
-    console.log(courseData);
-
     useEffect(()=>{
         getQuesion();   
     },[que_index])
@@ -42,23 +41,26 @@ const QuizDetails = () => {
     async function getQuesion()
     {
         let id = { id : courseData.quiz.Quiz_Questions[que_index]}
-        console.log("HERE ->"+id);
         
         let Question = await axios.post(`${API.BASE_URL}/api/getQuizQuestion`,id)
         
-        console.log(Question.data);
         setQuizQue(Question.data)
         
     }
 
     async function handleNext()
     {
+        console.log(correct);
+        
         let increment = que_index+1
         let inc_quiz = {
             user_id : loggedInUserId,
             quiz_id : courseData.quiz._id,
-            completed : increment
+            completed : increment,
+            correct : correct
         }
+        console.log(inc_quiz)
+        
         let Question = await axios.post(`${API.BASE_URL}/api/addIncompleteQuiz`,inc_quiz)
         
         if(increment < courseData.quiz.Quiz_Questions.length)
@@ -85,7 +87,8 @@ const QuizDetails = () => {
                     flag : true,
                     points : 10
                 }
-                const updatedPoints = await axios.post(`${API.BASE_URL}http://10.0.2.2:5000/api/updatePoints`,inc_points)
+                setCorrect(correct+1)
+                const updatedPoints = await axios.post(`${API.BASE_URL}/api/updatePoints`,inc_points)
                 
                 setLoggedInUserPoints(updatedPoints.data.Points)
             }

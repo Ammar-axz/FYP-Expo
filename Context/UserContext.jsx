@@ -12,10 +12,11 @@ export const UserContextProvider = ({children})=>{
     const [loggedInUserPfp, setLoggedInUserPfp] = useState("")
     const [loggedInUserPoints, setLoggedInUserPoints] = useState(0)
     const [loggedInUserClasses, setLoggedInUserClasses] = useState([])
+    const [incQuizes,setIncQuizes] = useState([])
     return(
     <UserContext.Provider value={{loggedInUser,loggedInUserId,loggedInUserChild,loggedInUserRole,
     loggedInUserPfp,loggedInUserPoints,loggedInUserClasses,setLoggedInUser, setLoggedInUserPfp,
-    setLoggedInUserId,setLoggedInUserChild,setLoggedInUserRole,setLoggedInUserPoints, setLoggedInUserClasses}}>
+    setLoggedInUserId,setLoggedInUserChild,setLoggedInUserRole,setLoggedInUserPoints, setLoggedInUserClasses,incQuizes,setIncQuizes}}>
         {children}
     </UserContext.Provider>
     )

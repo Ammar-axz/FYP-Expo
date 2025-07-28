@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
     {
-        Id:{type:String},
-        Type:{type:Boolean},
-        Text:{type:String},
-        Sender:{type:String},
-        SocketId:mongoose.Schema.Types.ObjectId,
-        SenderId:mongoose.Schema.Types.ObjectId,
-        ReceiverId:[mongoose.Schema.Types.ObjectId]
+        Id:{type:String,required:[true,"Id is Required"]},
+        Type:{type:Boolean,required:[true,"Type is Required"]},
+        Text:{type:String,required:[true,"Text is Required"]},
+        Sender:{type:String,required:[true,"Sender is Required"]},
+        SocketId:{type:mongoose.Schema.Types.ObjectId,required:[true,"Socket Id is Required"]},
+        SenderId:{type:mongoose.Schema.Types.ObjectId,required:[true,"Sender Id is Required"]},
+        ReceiverId:[{type:mongoose.Schema.Types.ObjectId,required:[true,"Receiver Id is Required"]}]
     }
 )
 

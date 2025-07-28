@@ -5,7 +5,7 @@ import Message from '../Models/Message.model.js'
 import Room from '../Models/Room.model.js'
 import User from '../Models/Users.model.js'
 import Parent_Student from '../Models/Parent_Student.model.js'
-
+import Classes from '../Models/Classes.model.js'
 import bcrypt from "bcrypt";
 
 
@@ -84,6 +84,102 @@ async function getStudent(req,res){
     {
         let student = await User.findOne({"_id":req.body.student_id})
         res.status(200).send(student)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getParentsfromStudents(req,res){
+    try
+    {
+        let parents = await Parent_Student.find({"Student_id":{$in:req.body}})
+        res.status(200).send(parents)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getStudentsfromClasses(req,res){
+    try
+    {
+        let students = await Class_Student.find({"Class_id":{$in:req.body}})
+        res.status(200).send(students)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getTeachersfromClasses(req,res){
+    try
+    {
+        let teachers = await Classes.find({"_id":{$in:req.body}})
+        res.status(200).send(teachers)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getTeacherfromClass(req,res){
+    try
+    {
+        let teacher = await Classes.findOne({"_id":req.query.Class_id})
+        res.status(200).send(teacher)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getParentsfromStudents(req,res){
+    try
+    {
+        let parents = await Parent_Student.find({"Student_id":{$in:req.body}})
+        res.status(200).send(parents)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getStudentsfromClasses(req,res){
+    try
+    {
+        let students = await Class_Student.find({"Class_id":{$in:req.body}})
+        res.status(200).send(students)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getTeachersfromClasses(req,res){
+    try
+    {
+        let teachers = await Classes.find({"_id":{$in:req.body}})
+        res.status(200).send(teachers)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+async function getTeacherfromClass(req,res){
+    try
+    {
+        let teacher = await Classes.findOne({"_id":req.query.Class_id})
+        res.status(200).send(teacher)
     }
     catch(e)
     {
@@ -244,7 +340,39 @@ async function findUser(req,res,next){
 
     try
     {
+        console.log(req.params);
+        
+        console.log(req.params);
+        
         let user = await User.findOne({'_id':req.params.User})
+        
+        res.status(200).send(user)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+async function getUser(req,res,next){
+
+    try
+    {
+        let user = await User.findOne({'_id':req.query.User})
+        
+        res.status(200).send(user)
+    }
+    catch(error)
+    {
+        console.log(error)
+        res.status(400).send(error)
+    }
+}
+async function getUser(req,res,next){
+
+    try
+    {
+        let user = await User.findOne({'_id':req.query.User})
         
         res.status(200).send(user)
     }
@@ -274,6 +402,36 @@ async function SearchUser(req,res,next){
     }
 }
 
+async function addMultipleContacts(req,res,next){
+    try
+    {
+        console.log(req.body)
+        
+        let resp = await Contact.insertMany(req.body)
+        res.status(200).send(resp.message)
+    }
+    catch(error)
+    {
+        console.log(error.message);
+        // res.status(400).send(error.name)
+    }
+}
+
+async function addMultipleContacts(req,res,next){
+    try
+    {
+        console.log(req.body)
+        
+        let resp = await Contact.insertMany(req.body)
+        res.status(200).send(resp.message)
+    }
+    catch(error)
+    {
+        console.log(error.message);
+        // res.status(400).send(error.name)
+    }
+}
+
 async function addContact(req,res,next){
     try
     {
@@ -292,8 +450,11 @@ async function addContact(req,res,next){
     }
     next()
 }
+
+
 async function getContacts(req,res,next){
-    const socket = req.app.get('Socket')
+    // const socket = req.app.get('Socket')
+    // const socket = req.app.get('Socket')
     try
     {
         let currentUser = req.body.id
@@ -316,7 +477,8 @@ async function getContacts(req,res,next){
                 commonId : user._id
             }
             
-            socket.join(user._id.valueOf())
+            // socket.join(user._id.valueOf())
+            // socket.join(user._id.valueOf())
         }))
         res.status(200).send(contacts)
     }
@@ -352,9 +514,12 @@ async function getMessages(req,res,next){
     
     try
     {
-        let currentUser = req.body.user
-        let messages = await Message.find({$and:[{"Type":false},
-        {$or:[{'SenderId':currentUser},{ReceiverId:{$in:[currentUser]}}]}]})
+        // let currentUser = req.body.user
+        // let messages = await Message.find({$and:[{"Type":false},
+        // {$or:[{'SenderId':currentUser},{ReceiverId:{$in:[currentUser]}}]}]})
+
+        let messages = await Message.find({"SocketId":req.body.SocketId})
+
         res.status(200).send(messages)
     }
     catch(error)
@@ -405,7 +570,7 @@ async function getGroupMembers(req,res){
     res.status(200).send(members)
 }
 
-export const updateUserProfile = async (req, res) => {
+const updateUserProfile = async (req, res) => {
   const { id } = req.params;
   const { name, email, phone, gender, password, pfp } = req.body;
 
@@ -437,6 +602,7 @@ export const updateUserProfile = async (req, res) => {
 
 
 
-export default {AddUser,getStudent,getParentStudent,getStudentsOfClass,getAttendance,getStudentAttendance,updateUserProfile,
-    setAttendance,UpdatePoints,checkInput,getAllUsers,findUser,loginUser,
-    SearchUser,addContact,getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}
+export default {getUser,AddUser,getStudent,getParentsfromStudents,getTeachersfromClasses,getTeacherfromClass,
+    getStudentsfromClasses,getParentStudent,getStudentsOfClass,getAttendance,getStudentAttendance,updateUserProfile,
+    setAttendance,UpdatePoints,checkInput,getAllUsers,findUser,loginUser,SearchUser,addContact,addMultipleContacts,
+    getContacts,getMessages,getGroupMessages,createGroup,getGroups,getGroupMembers}

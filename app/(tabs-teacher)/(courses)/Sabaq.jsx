@@ -1,60 +1,128 @@
+import { userData } from '@/Context/UserContext';
+import { API } from '@/api';
+import { Picker } from "@react-native-picker/picker";
+import axios from 'axios';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
   FlatList,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-} from "react-native";
+  View,
+  Image
+} from 'react-native';
 
 
-const sabaqData = [
-  { id: "1", month: "Mar", day: "Thu 21", title: "Sabaq (سبق)", marks: "10 / 20 Marks" },
-  { id: "2", month: "Mar", day: "Fri 22", title: "Sabaqi (سباقی)", marks: "16 / 20 Marks" },
-];
-
-export default function Sabaq() {
-  const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <View style={{ flexDirection: "column", gap: 5 ,width:'22%'}}>
-        <Text style={styles.month}>{item.month}</Text>
-        <Text style={styles.day}>{item.day}</Text>
-      </View>
-      <View style={styles.uploadContainer}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.marks}>{item.marks}</Text>
-      </View>
-      
-    </View>
-  );
-
+const QuizCard = ({ sabaq }) => {
   return (
-    <View style={styles.tabScreen}>
-      <FlatList
-        data={sabaqData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-      />
+    <View style={styles.item}>
+      <View style={{  alignItems:'flex-start',gap: 5,marginLeft:10}}>
+        <Text style={styles.month}>Lesson {sabaq.Lesson}</Text>
+        <Text style={styles.day}>{sabaq.Title}</Text>
+      </View>
     </View>
   );
-}
+};
+
+
+const Sabaq = ({studentData}) => {
+  const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
+  const [sabaqs,setSabaqs] = useState([])
+  
+  useEffect(()=>{
+    getSabaqs()
+  },[])
+
+  async function getSabaqs()
+  {
+    try
+    {
+      let course = await axios.get(`${API.BASE_URL}/api/getCourse`,{
+        params:{
+          class_id:studentData.Class_id
+        }
+      })
+      course = course.data
+      
+      let sabaqs = await axios.get(`${API.BASE_URL}/api/getSabaqs`,{
+        params:{
+          course_id:course.Course_id
+        }
+      })
+
+      setSabaqs(sabaqs.data)
+    }
+    catch(e)
+    {console.log(e)}
+  }
+  
+  return (
+    <>
+    <View style={styles.mainContainer}>
+        <View style={styles.latestQuiz}>
+            <FlatList
+            data={sabaqs}
+            keyExtractor={item => item._id}
+            renderItem={({item})=>( <QuizCard sabaq={item} /> )}
+            />
+        </View>
+      </View>
+      </>
+  );
+};
 
 const styles = StyleSheet.create({
-  tabScreen: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 10,
+  mainContainer:{
+    flex:1,
+    backgroundColor:'white',
+    marginTop:10
   },
+  wrapper: {
+    minHeight:100,
+    backgroundColor: 'white',
+  },
+  container: {
+    padding: 16,
+    marginTop:30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  pickerContainer: {
+    width: "90%",
+    alignSelf:'center',
+    height: 50,
+    borderRadius: 30,
+    justifyContent: "center",
+    marginBottom: 20,
+    marginTop:20,
+    backgroundColor: "rgba(247,247,247,255)",
+  },
+  picker: {
+    width: "100%",
+    height: 50,
+  },
+  // arrowIcon: {
+  //   marginTop: 5,
+  // },
+  latestQuiz:{
+    flex:1,
+  },
+  title: {
+    color:'rgb(53, 53, 53)',
+    fontSize: 19,
+    fontWeight: '500',
+  },
+
   item: {
     flexDirection: "row",
-    alignItems: "center",
     backgroundColor: "#f4f4f4",
     padding: 10,
     marginVertical: 5,
     marginHorizontal: 10,
     borderRadius: 8,
-    justifyContent: "space-between",
   },
   month: {
     fontWeight: "600",
@@ -91,13 +159,15 @@ const styles = StyleSheet.create({
   },
   uploadContainer:
   {
-    flexDirection: "column",
-    gap: 5 ,
+    flexDirection:'row',
+    alignItems:'center',
     flex:1,
     justifyContent:'space-between',
     borderLeftWidth:3,
     borderColor:'#eaebea',
-    paddingLeft:15,
-    padding:5
+    padding:5,
+    paddingLeft:10
   }
-})
+});
+
+export default Sabaq

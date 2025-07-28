@@ -7,12 +7,14 @@ import { userData } from '@/Context/UserContext';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert,StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
 const StudentForm = () => {
-  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints,} = userData()
+  const {loggedInUser,loggedInUserId,loggedInUserRole,setLoggedInUser,setLoggedInUserId,
+    setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints,setLoggedInUserClasses} = userData()
 
   const [error,setError] = useState()
   const [form, setForm] = useState({
@@ -29,9 +31,22 @@ const StudentForm = () => {
     //   return;
     // }
     // setIsSubmitting(true);
-    try{
+    try
+    {
       let response = await axios.post(`${API.BASE_URL}/api/Login`,form)
-        console.log(response.data);
+      
+      if(response.data.Role != 'Student')
+      {
+        Alert.alert(
+          "Wrong Sign in",
+          `Sign in ${response.data.Role} Module`,
+          [
+            {text:'Ok',onPress:()=>(router.back())}
+          ]
+        )
+      }
+      else
+      {
         
         setLoggedInUserId(response.data._id)
         setLoggedInUser(response.data.Name)
@@ -41,18 +56,21 @@ const StudentForm = () => {
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
       }
-      catch(err)
-      {
-        console.log("err"+err)
-      }
+    }
+    catch(err)
+    {
+      console.log("err"+err)
+    }
   };
 
   useEffect(() => {
     if (loggedInUser !== 'Demo User') {
-      console.log(loggedInUser);      
       router.replace('(tabs-student)/(home)');
     }
   }, [loggedInUser]);
+
+  
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,6 +113,8 @@ const StudentForm = () => {
       </ScrollView>
     </SafeAreaView>
   );
+
+  
 };
 
 const styles = StyleSheet.create({

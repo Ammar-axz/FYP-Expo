@@ -13,34 +13,27 @@ import {
   View,
 } from "react-native";
 
-const DATA = [
-  { id: "1", title: "Item 1", image: "https://via.placeholder.com/150" },
-  { id: "2", title: "Item 2", image: "https://via.placeholder.com/150" },
-  { id: "3", title: "Item 3", image: "https://via.placeholder.com/150" },
-  { id: "4", title: "Item 4", image: "https://via.placeholder.com/150" },
-];
 
 const Home = () => {
-  const { loggedInUser, loggedInUserPfp,loggedInUserRole, loggedInUserId,loggedInUserClasses,setLoggedInUserClasses } = userData();
+  const { loggedInUser,loggedInUserId,loggedInUserRole, loggedInUserPfp,setLoggedInUserClasses } = userData();
   
-
   useEffect(()=>{
     getClasses()
-  },[])
+  },[loggedInUserId,loggedInUserRole])
 
   async function getClasses()
+  {
+    try
     {
-      try
-      {
-        let userData = { user_id : loggedInUserId , role : loggedInUserRole }
-        const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
-        setLoggedInUserClasses(classData.data)
-      }
-      catch(e)
-      {
-        console.log(e)
-      }
+      let userData = { user_id : loggedInUserId , role : loggedInUserRole }
+      const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
+      setLoggedInUserClasses(classData.data)
     }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
 
   return (
     <>

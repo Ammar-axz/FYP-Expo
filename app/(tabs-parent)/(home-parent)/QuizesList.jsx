@@ -26,17 +26,7 @@ const QuizCard = ({ quiz }) => {
   if(quiz.quiz.T_Questions == quiz.completed)
   {
     return (
-      <TouchableOpacity
-        style={styles.card}
-        // onPress={()=>{router.navigate('QuizDetails', {course:quiz})}}
-        onPress={()=>{
-          router.push({
-          pathname: 'QuizDetails',
-          params: {
-            course: encodeURIComponent(JSON.stringify(quiz)), // ← Encode it!
-          },
-        })}}
-        >
+      <View style={styles.card}>
         <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
         <View style={styles.textView}>
           <Text style={styles.title}>{quiz.quiz.Title}</Text>
@@ -46,23 +36,13 @@ const QuizCard = ({ quiz }) => {
           <Text style={{fontSize:18,fontWeight:'600',color:"rgba(54,178,149,1)"}}>Marks</Text>  
           <Text style={{fontSize:18,fontWeight:'600',color:"rgba(54,178,149,1)"}}>{quiz.correct} / {quiz.quiz.T_Questions}</Text>  
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
   else
   {
     return (
-      <TouchableOpacity
-        style={styles.card}
-        // onPress={()=>{router.navigate('QuizDetails', {course:quiz})}}
-        onPress={()=>{
-          router.push({
-          pathname: 'QuizDetails',
-          params: {
-            course: encodeURIComponent(JSON.stringify(quiz)), // ← Encode it!
-          },
-        })}}
-        >
+      <View style={styles.card}>
         <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
         <View style={styles.textView}>
           <Text style={styles.title}>{quiz.quiz.Title}</Text>
@@ -82,14 +62,14 @@ const QuizCard = ({ quiz }) => {
           clockwise={false}
           />
           </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 };
 
 
-const Quiz = () => {
-  const {loggedInUser,loggedInUserPoints,loggedInUserId,loggedInUserRole,loggedInUserClasses,incQuizes,setIncQuizes} = userData()
+const QuizList = () => {
+  const {loggedInUser,loggedInUserChild,loggedInUserPoints,loggedInUserId,loggedInUserRole,loggedInUserClasses,incQuizes,setIncQuizes} = userData()
   const [quizes,setQuizes] = useState([])
   // const [incompleteQuizes,setIncompleteQuizes] = useState([])
   const IsFocused = useIsFocused()
@@ -99,13 +79,13 @@ const Quiz = () => {
     if (loggedInUserClasses.length > 0 && IsFocused) {
       getQuizes()
     }
-  },[IsFocused])
+  },[IsFocused,loggedInUserClasses])
   
   async function getQuizes()
   {
     try
     {      
-      let id = {user_id: loggedInUserId , class_id : loggedInUserClasses, role : loggedInUserRole}
+      let id = {user_id: loggedInUserChild , class_id : loggedInUserClasses, role : "Student"}
       let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
       setQuizes(Quizes.data)
       
@@ -126,64 +106,17 @@ const Quiz = () => {
   return (
     <>
     <View style={styles.mainContainer}>
-        <View style={styles.ImageContainer}>
-          <Image
-            style={styles.headerImg}
-            source={require('@/assets/images/QuizHeaderBG.png')}
-            />
-        </View>
-        {/* Header Section */}
-        <View style={styles.container}>
-          <View style={styles.textContainer}>
-            <Text style={styles.greeting}>Assalamualaikum,</Text>
-            <Text style={styles.name}>{loggedInUser} 👋</Text>
-          </View>
-
-          <View style={styles.coinContainer}>
-            <Text style={styles.coinText}>{loggedInUserPoints}</Text>
-            <View style={styles.coinImageWrapper}>
-              <Image style={styles.coinImage} source={require('@/assets/images/coins.png')}/>
-            </View>
-          </View>
-        </View>
-
-        {/* Progress List */}
-        {/* <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedClass}
-            onValueChange={(itemValue) => {
-              console.log(itemValue+"Pick")              
-              setSelectedClass(itemValue)}}
-            style={styles.picker}
-          >
-            {classes.map((item, index) => (
-              <Picker.Item key={index} label={item.Class_Name} value={item.Class_id} />
-            ))}
-          </Picker>
-        </View> */}
-        <View style={styles.ltQuizHeadContainer}>
-          <Text style={styles.ltQuizHead}>Quizes in progress</Text>
-        </View>
-        <View style={styles.progressContainer}>
-          <FlatList
-            data={incQuizes}
-            keyExtractor={item => item.quiz._id}
-            renderItem={({item}) => { 
-            return(
-              <QuizProgressCard quiz={item}/>)
-            }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-        <View style={styles.ltQuizHeadContainer}>
-          <Text style={styles.ltQuizHead}>All Quizes</Text>
-        </View>
         <View style={styles.latestQuiz}>
-            <FlatList
+            {quizes.map((item)=>{
+                return(
+                <QuizCard key={item.quiz._id} quiz={item} />
+                )
+            })
+            } 
+            {/* <FlatList
             data={quizes}
             keyExtractor={item => item.quiz._id}
-            renderItem={({item})=>(<QuizCard quiz={item} /> )}/>
+            renderItem={({item})=>(<QuizCard quiz={item} /> )}/> */}
         </View>
       </View>
       </>
@@ -193,7 +126,7 @@ const Quiz = () => {
 const styles = StyleSheet.create({
   mainContainer:{
     flex:1,
-    backgroundColor:'white'
+    backgroundColor:'transparent'
   },
   wrapper: {
     minHeight:100,
@@ -370,4 +303,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Quiz;
+export default QuizList;

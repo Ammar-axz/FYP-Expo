@@ -45,7 +45,9 @@ export default function StudentDetails() {
         <Tab.Screen name="Exam" >
           {() => <Exam studentData={StudentDetail}/>}
         </Tab.Screen>
-        <Tab.Screen name="Sabaq" component={Sabaq} />
+        <Tab.Screen name="Sabaq">
+          {() => <Sabaq studentData={StudentDetail} />}
+        </Tab.Screen>
         <Tab.Screen name="Attendance">
           {() => <Attendance studentData={StudentDetail} setAttendancePercent={setAttendancePercent}/>}
         </Tab.Screen>
@@ -83,19 +85,19 @@ function SecondScreen({studentDetail, attendancePercent}) {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 10,
     backgroundColor: "#fff",
   },
   heading: {
     color: "#121212",
     fontSize: 28,
     fontWeight: "600",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   prof_pic:{
-    width: 100,
-    height: 100,
-    marginBottom: 10,
+    width: 120,
+    height: 120,
+    marginBottom: 5,
     borderRadius:100
   },
   statsContainer: {

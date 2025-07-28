@@ -7,12 +7,13 @@ import { userData } from '@/Context/UserContext';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StudentForm = () => {
-  const {loggedInUser,setLoggedInUserChild,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
+  const {loggedInUser,loggedInUserId,loggedInUserChild,setLoggedInUserChild,setLoggedInUser,setLoggedInUserId,
+    setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints,setLoggedInUserClasses} = userData()
   const API_URL = process.env.API_URL
   const WEB_API_URL = process.env.WEB_API_URL
 
@@ -34,34 +35,47 @@ const StudentForm = () => {
     try{
       let response = await axios.post(`${API.BASE_URL}/api/login`,form)
         
+      if(response.data.Role != 'parent')
+      {
+        Alert.alert(
+          "Wrong Sign in",
+          `Sign in ${response.data.Role} Module`,
+          [
+            {text:'Ok',onPress:()=>(router.back())}
+          ]
+        )
+      }
+      else
+      {
         setLoggedInUserId(response.data._id)
         setLoggedInUser(response.data.Name)
         setLoggedInUserRole(response.data.Role)
         setLoggedInUserPoints(response.data.Points)
         setLoggedInUserPfp(response.data.pfp)
 
-      response = await axios.get(`${API.BASE_URL}/api/getParentStudent`,{
-        params:
-        {
-          parent_id:response.data._id
-        }})
-        
-      setLoggedInUserChild(response.data.Student_id)
-
+        response = await axios.get(`${API.BASE_URL}/api/getParentStudent`,{
+          params:
+          {
+            parent_id:response.data._id
+          }})
+          
+        setLoggedInUserChild(response.data.Student_id)
+      }
       }
       catch(err)
       {
         // setError(err.response.data)
         console.log("err"+err)
       }
+        
   };
 
   useEffect(() => {
     if (loggedInUser !== 'Demo User') {
-      console.log(loggedInUser);      
       router.replace('(tabs-parent)/(home-parent)');
     }
   }, [loggedInUser]);
+
 
   return (
     <SafeAreaView style={styles.container}>

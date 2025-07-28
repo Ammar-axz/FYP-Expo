@@ -12,30 +12,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import QuickAccess from "@/components/parent/ParentQuickAccess";
 
-const DATA = [
-  { id: "1", title: "Item 1", image: "https://via.placeholder.com/150" },
-  { id: "2", title: "Item 2", image: "https://via.placeholder.com/150" },
-  { id: "3", title: "Item 3", image: "https://via.placeholder.com/150" },
-  { id: "4", title: "Item 4", image: "https://via.placeholder.com/150" },
-];
+import ViewAll from "@/components/Home/ViewAll";
+import QuickAccess from "@/components/parent/ParentQuickAccess";
+import QuizesList from '@/app/(tabs-parent)/(home-parent)/QuizesList'
 
 const Home = () => {
-  const {
-    loggedInUser,
-    loggedInUserPfp,
-    loggedInUserRole,
-    loggedInUserChild,
-    loggedInUserId,
-    loggedInUserClasses,
-    setLoggedInUserClasses,
-  } = userData();
-  const isFocused = useIsFocused();
+  const { loggedInUser,loggedInUserPfp,loggedInUserChild,setLoggedInUserClasses } = userData();
 
-  useEffect(() => {
-    if (isFocused) getClasses();
-  }, [isFocused]);
+  useEffect(()=>{
+    if(loggedInUserChild)
+    getClasses()
+  },[loggedInUserChild])
 
   async function getClasses() {
     try {
@@ -68,7 +56,7 @@ const Home = () => {
           </View>
 
           <View style={styles.iconsContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.bellButton}
               onPress={() => alert("Notifications Pressed")}
             >
@@ -77,16 +65,12 @@ const Home = () => {
                 style={styles.topNotiIcon}
               />
               <View style={styles.notificationDot} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <Image
-        source={
-          loggedInUserPfp
-            ? { uri: loggedInUserPfp }
-            : require('@/assets/icons/user-pic.png')
-        }
-        style={styles.avatar}
-      />
+              source={loggedInUserPfp?{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}:require("@/assets/icons/user-pic.png")}
+              style={styles.profileImage}
+            />
           </View>
         </View>
 
@@ -97,10 +81,10 @@ const Home = () => {
 
         <QuickAccess />
 
-        <View style={{ padding: 16, backgroundColor: "white" }}>
-          {/* <ViewAll title="Quiz results" PageLink="Courses" PageLink={Courses} /> */}
-          {/* <Quiz /> */}
+        <View style={{ paddingHorizontal: 20, backgroundColor: "white" }}>
+        <ViewAll title="Quiz results" PageLink='QuizParent' />
         </View>
+        <QuizesList/>
       </ScrollView>
     </>
   );

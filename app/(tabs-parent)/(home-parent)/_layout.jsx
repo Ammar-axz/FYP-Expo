@@ -17,7 +17,7 @@ const HomeStack = () => {
       <Stack.Screen
         name="QuizParent"
         options={({navigation}) => ({
-          headerShown: true,
+          headerShown: false,
           headerTitle: 'Quiz',
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: 'center',

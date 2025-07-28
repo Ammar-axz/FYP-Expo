@@ -7,12 +7,13 @@ import { userData } from '@/Context/UserContext';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StudentForm = () => {
-  const {loggedInUser,setLoggedInUser,setLoggedInUserId,setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints} = userData()
+  const {loggedInUser,loggedInUserId,loggedInUserRole,setLoggedInUser,setLoggedInUserId,
+    setLoggedInUserPfp,setLoggedInUserRole,setLoggedInUserPoints,setLoggedInUserClasses} = userData()
   const API_URL = process.env.API_URL
   const WEB_API_URL = process.env.WEB_API_URL
 
@@ -33,7 +34,19 @@ const StudentForm = () => {
     // setIsSubmitting(true);
     try{
       let response = await axios.post(`${API.BASE_URL}/api/login`,form)
-        console.log(response.data);
+        
+      if(response.data.Role != 'Teacher')
+      {
+        Alert.alert(
+          "Wrong Sign in",
+          `Sign in ${response.data.Role} Module`,
+          [
+            {text:'Ok',onPress:()=>(router.back())}
+          ]
+        )
+      }
+      else
+      {
         
         setLoggedInUserId(response.data._id)
         setLoggedInUser(response.data.Name)
@@ -43,19 +56,22 @@ const StudentForm = () => {
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
       }
-      catch(err)
-      {
-        // setError(err.response.data)
-        console.log("err"+err)
-      }
+    }
+    catch(err)
+    {
+      // setError(err.response.data)
+      console.log("err"+err)
+    }
   };
 
   useEffect(() => {
     if (loggedInUser !== 'Demo User') {
-      console.log(loggedInUser);      
       router.replace('(tabs-teacher)/(home-teacher)');
     }
   }, [loggedInUser]);
+
+  
+
 
   return (
     <SafeAreaView style={styles.container}>

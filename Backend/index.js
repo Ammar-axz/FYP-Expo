@@ -46,18 +46,24 @@ app.use(adminJs.options.rootPath, adminRouter)
 const httpServer = createServer(app);
 const io = new Server(httpServer,{
     cors: {
-      origin: "http://localhost:5173"
+    //   origin: "http://localhost:5173"
+      origin: "*"
     }
 })
 
 io.on('connection', (socket) => 
 {
     app.set('Socket',socket)
+
+    socket.on("joinRoom", (roomId) => {
+        socket.join(roomId);
+        console.log(`Socket ${socket.id} joined room ${roomId}`);
+    });
     
     socket.on("message",async (msg,id)=>
     {
         io.to(id).emit("messageResponse",msg)
-        await Message.Message.create(
+        await Message.create(
             {
                 "Id":msg.Id,
                 "Type":msg.Type,
@@ -81,6 +87,8 @@ app.get('/',(req,res)=>{
 
 
 //User
+app.get('/api/getUser',UserControllers.getUser)
+
 app.get('/api/user/:User',UserControllers.findUser)
 
 app.post('/api/search-user',UserControllers.SearchUser)
@@ -97,6 +105,8 @@ app.post('/api/Login',UserControllers.checkInput,UserControllers.loginUser)
 
 app.post('/api/addContact',UserControllers.addContact)
 
+app.post('/api/addMultipleContacts',UserControllers.addMultipleContacts)
+
 app.post('/api/getMessages',UserControllers.getMessages)
 
 app.post('/api/getGroupMessages',UserControllers.getGroupMessages)
@@ -106,6 +116,14 @@ app.post('/api/createGroup',upload.single('pfp'),UserControllers.createGroup)
 app.post('/api/getGroupMembers',UserControllers.getGroupMembers)
 
 app.post('/api/getStudent',UserControllers.getStudent)
+
+app.post('/api/getTeachersfromClasses',UserControllers.getTeachersfromClasses)
+
+app.get('/api/getTeacherfromClass',UserControllers.getTeacherfromClass)
+
+app.post('/api/getStudentsfromClasses',UserControllers.getStudentsfromClasses)
+
+app.post('/api/getParentsfromStudents',UserControllers.getParentsfromStudents)
 
 app.get('/api/getParentStudent',UserControllers.getParentStudent)
 

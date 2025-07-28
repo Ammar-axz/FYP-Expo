@@ -71,14 +71,16 @@ async function getQuizes(req,res){
                     // quizes[index].completed=inc_quiz.Completed
                     quiz[index] = {
                         quiz : item,
-                        completed : inc_quiz.Completed
+                        completed : inc_quiz.Completed,
+                        correct : inc_quiz.Correct 
                     }
                 }
                 else
                 {
                     quiz[index] = {
                         quiz : item,
-                        completed : 0
+                        completed : 0,
+                        correct : 0
                     }
                 }
             })
@@ -128,13 +130,17 @@ async function getAllQuizQuestions(req,res){
 async function addIncompleteQuiz(req,res){
     try
     {
-        const quiz = await IncompleteQuiz.updateOne({$and:[{"User_id":req.body.user_id},{"Quiz_id":req.body.quiz_id}]},{$set:{Completed:req.body.completed}})
+        const quiz = await IncompleteQuiz.updateOne({$and:[{"User_id":req.body.user_id},
+            {"Quiz_id":req.body.quiz_id}]},{$set:{Completed:req.body.completed,Correct:req.body.correct}})
         if(quiz.matchedCount === 0)
         {
+            console.log(req.body);
+            
             const inc_quiz = await IncompleteQuiz.create({
                 "User_id":req.body.user_id,
                 "Quiz_id":req.body.quiz_id,
-                "Completed":req.body.completed
+                "Completed":req.body.completed,
+                "Correct":req.body.correct
             })
         }
         res.status(200).send("updated successfully")

@@ -9,6 +9,7 @@ const incompleteQuizSchema = new mongoose.Schema(
         User_id:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
         Quiz_id:{type:mongoose.Schema.Types.ObjectId,ref:"Quiz"},
         Completed:{type:Number},
+        Correct:{type:Number}
     }
 )
 
