@@ -34,18 +34,7 @@ const ChatStck = () => {
             fontSize: 18,
           },
           headerRight: () => (
-            <TouchableOpacity
-              onPress={() => console.log("Search tapped")}
-              style={{
-                padding: 10,
-                borderColor: "#00000026",
-                borderWidth: 1,
-                borderRadius: 30,
-              }}
-            >
-              {" "}
-              <Image source={SearchIcon} />
-            </TouchableOpacity>
+            <Image source={{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}} />
           ),
         })}
       />

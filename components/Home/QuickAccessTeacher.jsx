@@ -58,7 +58,7 @@ const QuickAccessTeacher = () => {
             router.navigate("Attendance-Teacher");
           }}
         >
-          <Image source={require("@/assets/icons/attendance.png")} />
+          <Image style={{height:35,width:35}} source={require("@/assets/icons/Attendance2.png")} />
           <Text style={styles.SubTitle}> Attendance </Text>
         </TouchableOpacity>
         <TouchableOpacity 
@@ -66,20 +66,20 @@ const QuickAccessTeacher = () => {
           onPress={() => {
             router.push("Timetable");
           }}>
-          <Image source={require("@/assets/icons/task.png")} />
+          <Image source={require("@/assets/icons/Schedule.png")} />
           <Text style={styles.SubTitle}> Schedule </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.box}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.innerBox}
           onPress={() => {
             router.navigate("QuranHadith");
           }}
         >
-          <Image source={require("@/assets/icons/dua.png")} />
+          <Image style={{height:35,width:35}} source={require("@/assets/icons/Books.png")} />
           <Text style={styles.SubTitle}> Books </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.innerBox}
           onPress={() => {

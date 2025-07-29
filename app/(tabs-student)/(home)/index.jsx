@@ -31,7 +31,7 @@ const Home = () => {
 
   useEffect(()=>{
     getClasses()
-  },[loggedInUserRole])
+  },[loggedInUserRole,loggedInUserId])
 
   useEffect(()=>{
     if(isFocused)
@@ -67,7 +67,7 @@ const Home = () => {
       let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
       
       Quizes.data.map((i)=>{
-        if(i.completed > 0)
+        if(i.completed > 0 && i.quiz.T_Questions != i.completed )
         {
           incQuizesData.push(i)
         }

@@ -47,7 +47,6 @@ const StudentForm = () => {
       }
       else
       {
-        
         setLoggedInUserId(response.data._id)
         setLoggedInUser(response.data.Name)
         setLoggedInUserPoints(response.data.Points)
@@ -55,21 +54,14 @@ const StudentForm = () => {
         setLoggedInUserPfp(response.data.pfp)
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
+        router.replace('(tabs-student)/(home)');
       }
     }
     catch(err)
     {
       console.log("err"+err)
     }
-  };
-
-  useEffect(() => {
-    if (loggedInUser !== 'Demo User') {
-      router.replace('(tabs-student)/(home)');
-    }
-  }, [loggedInUser]);
-
-  
+  };  
 
 
   return (
@@ -78,14 +70,6 @@ const StudentForm = () => {
         <View>
           <Heading heading="Enter Information" />
           <Paragraph paragraph="Provide your details to continue" />
-
-          <FormField
-            title="Student ID"
-            value={form.studentId}
-            handleChangeText={(e) => setForm({ ...form, studentId: e })}
-            keyboardType="numeric"
-            placeholder="ex. 232435"
-          />
 
           <FormField
             title="Email"

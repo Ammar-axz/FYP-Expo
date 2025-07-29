@@ -46,7 +46,7 @@ const TabsLayout = () => {
           headerShown: false,
           tabBarIcon: ({focused}) => (
             <Image
-              source={require('@/assets/icons/library.png')}
+              source={require('@/assets/icons/courses.png')}
               style={[
                 styles.tabIcon,
                 {tintColor: focused ? '#36B295' : '#0000008C'},
@@ -59,7 +59,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="(courses)"
         options={{
-          tabBarLabel: 'Classes',
+          tabBarLabel: 'Students',
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/library.png')}
@@ -72,11 +72,12 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="Leaderboard"
+        name="(chat)"
         options={{
+          tabBarLabel:'Chat',
           tabBarIcon: ({focused}) => (
             <Image
-              source={require('@/assets/icons/ranking.png')}
+              source={require('@/assets/icons/chat-icon.png')}
               style={[
                 styles.tabIcon,
                 {tintColor: focused ? '#36B295' : '#0000008C',
@@ -88,8 +89,9 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="Setting"
+        name="(profile)"
         options={{
+          tabBarLabel: 'Profile',
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/setting.png')}

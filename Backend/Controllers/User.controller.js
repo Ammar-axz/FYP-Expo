@@ -497,27 +497,35 @@ const updateUserProfile = async (req, res) => {
   const { id } = req.params;
   const { name, email, phone, gender, password, pfp } = req.body;
 
-  try {
+  try {  
     const user = await User.findById(id);
+    
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.phone = phone || user.phone;
-    user.gender = gender || user.gender;
-    user.pfp = pfp || user.pfp;
+    user.Name = name || user.Name;
+    user.Email = email || user.Email;
+    user.Phone = phone || user.Phone;
+    user.Gender = gender || user.Gender;
+    user.Password = password || user.Password;
+    if (req.file) {
+      user.pfp = req.file.filename || user.pfp;
+    }
+    else{
+        user.pfp = user.pfp;
+    }
 
     if (password) {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
 
-    await user.save();
-
-    res.status(200).json({ success: true, user });
+    let userResp = await user.save();
+    console.log(userResp)
+    
+    res.status(200).json({ success: true, userResp });
   } catch (err) {
-    console.error("Update Error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("Update Error:", err.message);
+    res.status(500).json({ success: false, message: "Server error"+err.message });
   }
 };
 

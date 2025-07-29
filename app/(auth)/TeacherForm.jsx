@@ -55,6 +55,7 @@ const StudentForm = () => {
         setLoggedInUserPfp(response.data.pfp)
         // setIsSubmitting(false);
         // navigation.replace('(tabs)');
+        router.replace('(tabs-teacher)/(home-teacher)');
       }
     }
     catch(err)
@@ -63,14 +64,6 @@ const StudentForm = () => {
       console.log("err"+err)
     }
   };
-
-  useEffect(() => {
-    if (loggedInUser !== 'Demo User') {
-      router.replace('(tabs-teacher)/(home-teacher)');
-    }
-  }, [loggedInUser]);
-
-  
 
 
   return (

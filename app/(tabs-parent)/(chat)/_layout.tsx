@@ -34,18 +34,7 @@ const ChatStck = () => {
             fontSize: 18,
           },
           headerRight: () => (
-            <TouchableOpacity
-              onPress={() => console.log("Search tapped")}
-              style={{
-                padding: 10,
-                borderColor: "#00000026",
-                borderWidth: 1,
-                borderRadius: 30,
-              }}
-            >
-              {" "}
-              <Image source={SearchIcon} />
-            </TouchableOpacity>
+            <Image source={{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}} />
           ),
         })}
       />
@@ -53,7 +42,7 @@ const ChatStck = () => {
         name="ChatScreen"
         options={({ route,navigation }) => ({
           headerShown: true,
-          headerTitle: route.params?.ContactName || 'Dua Detail',
+          headerTitle: route.params?.ContactName || 'Chat',
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
           headerStyle: {

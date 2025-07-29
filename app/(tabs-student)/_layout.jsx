@@ -66,7 +66,7 @@ const TabsLayout = () => {
           tabBarLabel: 'Classes',
           tabBarIcon: ({focused}) => (
             <Image
-              source={require('@/assets/icons/Chat.svg')}
+              source={require('@/assets/icons/library.png')}
               style={[
                 styles.tabIcon,
                 {tintColor: focused ? '#36B295' : '#0000008C'},
@@ -92,8 +92,9 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="Setting"
+        name="(profile)"
         options={{
+          title:'Profile',
           tabBarIcon: ({focused}) => (
             <Image
               source={require('@/assets/icons/setting.png')}

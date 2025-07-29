@@ -17,6 +17,7 @@ import {
 let image = 'https://via.placeholder.com/150';
 
 const QuizCard = ({ quiz }) => {
+  
   return (
     <TouchableOpacity
       style={styles.card}

@@ -2,6 +2,7 @@ import { userData } from '@/Context/UserContext';
 import { API } from '@/api';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import {
   Image,
   ScrollView,
@@ -11,23 +12,15 @@ import {
   View
 } from 'react-native';
 
-const latestQuiz = [
-    {id: '1', name: 'Player 1', points: '2500'},
-    {id: '2', name: 'Player 2', points: '1400'},
-    {id: '3', name: 'Player 3', points: '1000'},
-    {id: '4', name: 'Player 4', points: '670'},
-    {id: '5', name: 'Player 5', points: '580'},
-    {id: '6', name: 'Player 6', points: '550'},
-  ];
 
 const QuizCard = ({ course }) => {
-
 return (
     <TouchableOpacity
     style={styles.card}
     // onPress={()=>{navigation.navigate('QuizDetails', {course:course})}}
     >
-    <Image source={require('@/assets/icons/LatestQuizIcon.png')} style={styles.ltQuizIcon}/>
+    <Image source = { course.pfp ?{uri:`${API.BASE_URL}/Images/ProfilePictures/${course.pfp}`}:require("@/assets/icons/user-pic.png")} 
+    style={styles.ltQuizIcon}/>
     <View style={styles.textView}>
         <Text style={styles.title}>{course.Name}</Text>
         <Text style={styles.questions}>{course.Points} QP </Text>
@@ -40,13 +33,13 @@ return (
 const Leaderboard = () => {
   const {loggedInUserPoints} = userData();
   const [users,setUsers] = useState([])
+  const isFocused = useIsFocused()
   let index = 0
 
   useEffect(()=>{
-    console.log("useeffect called");
-    
+    if(isFocused)
     getAllUsers();
-  },[])
+  },[isFocused])
 
   async function getAllUsers()
   {
@@ -54,9 +47,12 @@ const Leaderboard = () => {
     {
       console.log("Get users called")
       let usersData = await axios.get(`${API.BASE_URL}/api/getAllUsers`)
-      console.log("xDDDDDD")
-      console.log(usersData.data);
-      setUsers(usersData.data)
+      
+      let studentsOnly = usersData.data
+          .filter(user => user.Role === 'Student')
+          .sort((a, b) => b.Points - a.Points);
+      console.log(studentsOnly);
+      setUsers(studentsOnly)
     }
     catch(err)
     {
@@ -78,7 +74,7 @@ const Leaderboard = () => {
                 />
             </TouchableOpacity> */}
             <View style={styles.progress}>
-            <Text style={{fontSize:20,fontWeight:'bold'}}>Leaderboard</Text>
+            <Text style={{fontSize:24,fontWeight:'bold'}}>Leaderboard</Text>
             </View>
             <View style={styles.coinContainer}>
                 <Text style={styles.coinText}>{loggedInUserPoints}</Text>
@@ -90,12 +86,12 @@ const Leaderboard = () => {
     <ScrollView style={styles.container}>
 
 
-      <View style={styles.yellowContainer}>
+      {/* <View style={styles.yellowContainer}>
         <View style={styles.yellowContainer2}>
-            <Text style={{fontSize:18,color:'white',fontWeight:'bold'}}>#4</Text>
+            <Text style={{fontSize:18,color:'white',fontWeight:'bold'}}>Top 3 Students</Text>
         </View>
         <Text style={{fontSize:18,width:'80%',color:'white',fontWeight:'bold'}}>You are doing better than 60% of other players!</Text>
-      </View>
+      </View> */}
       <View style={styles.imgContainer}>
         <Image 
         style={styles.rankImg} 
@@ -103,38 +99,40 @@ const Leaderboard = () => {
         resizeMode='contain'
         />
       <View style={styles.ranks}>
+        { users.length >= 3 &&
         <View style={styles.profContainer}>
             <View style={styles.profContainer2}>
                 <Image
-                style={styles.rankProfPic} 
-                source={require('@/assets/icons/pro-pic1.png')}
+                style={[styles.rankProfPic,{borderColor:'#adadadff',borderWidth:4}]}
+                source={ users[1].pfp ?{uri:`${API.BASE_URL}/Images/ProfilePictures/${users[1].pfp}`}:require("@/assets/icons/user-pic.png")} 
                 resizeMode='contain'
                 />
                 <View style={styles.points}>
-                    <Text style={styles.pointsTxt}>1400 QP</Text>
+                    <Text style={styles.pointsTxt}>{users[1].Points}</Text>
                 </View>
             </View>
             <View style={styles.profContainer3}>
                 <Image
-                style={styles.rankProfPic} 
-                source={require('@/assets/icons/pro-pic1.png')}
+                style={[styles.rankProfPic,{borderColor:'#fac105ff',borderWidth:4}]}
+                source={ users[0].pfp ?{uri:`${API.BASE_URL}/Images/ProfilePictures/${users[0].pfp}`}:require("@/assets/icons/user-pic.png")} 
                 resizeMode='contain'
                 />
                 <View style={styles.points}>
-                    <Text style={styles.pointsTxt}>2500 QP</Text>
+                    <Text style={styles.pointsTxt}>{users[0].Points}</Text>
                 </View>
             </View>
             <View style={styles.profContainer4}>
                 <Image
-                style={styles.rankProfPic} 
-                source={require('@/assets/icons/pro-pic1.png')}
+                style={[styles.rankProfPic,{borderColor:'#CD7F32',borderWidth:4}]}
+                source={ users[2].pfp ?{uri:`${API.BASE_URL}/Images/ProfilePictures/${users[2].pfp}`}:require("@/assets/icons/user-pic.png")} 
                 resizeMode='contain'
                 />
                 <View style={styles.points}>
-                    <Text style={styles.pointsTxt}>1000 QP</Text>
+                    <Text style={styles.pointsTxt}>{users[2].Points}</Text>
                 </View>
             </View>
         </View>
+        }
         </View>
 
         <View style={styles.ltQuizHeadContainer}>
@@ -210,6 +208,7 @@ const styles = StyleSheet.create({
         paddingVertical:20,
         paddingTop:10,
         backgroundColor:'transparent',
+        marginTop:30
     },
     profContainer:{
         flexDirection:'row',
@@ -227,17 +226,17 @@ const styles = StyleSheet.create({
         top:65
     },
     rankProfPic:{
-        width:60,
-        height:60,
+        width:80,
+        height:80,
         borderRadius:100,
         overflow:'hidden'
     },
     points:{
         backgroundColor:'rgba(54,178,112,1)',
         padding:6,
-        paddingHorizontal:14,
+        paddingHorizontal:18,
         borderRadius:5,
-        marginTop:'50%'
+        marginTop:20,
     },
     pointsTxt:{
         color:'white',
@@ -333,7 +332,7 @@ const styles = StyleSheet.create({
       },
       questions:{
         fontSize:20,
-        color:'black',
+        color:'#36B295',
         fontWeight:'bold'
       },
       title: {

@@ -33,6 +33,15 @@ const QuizStack = () => {
           headerStyle: {backgroundColor: '#fff'},
         })}
       /> 
+      <Stack.Screen
+        name="QuizComplete"
+        // component={QuizDetails}
+        options={({navigation}) => ({
+          headerShown: false,
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerStyle: {backgroundColor: '#fff'},
+        })}
+      /> 
     </Stack>
   )
 };

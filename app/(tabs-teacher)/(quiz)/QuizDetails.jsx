@@ -15,14 +15,14 @@ const QuizDetails = () => {
     const {quizData} = useLocalSearchParams()
     const QuizData = JSON.parse(decodeURIComponent(quizData))
     const [questions, setQuestions] = useState([]);
-    
+        
     
     useEffect(() => {
         const fetchQuestions = async () => {
         try 
         {
           let resp = await axios.post(`${API.BASE_URL}/api/getAllQuizQuestions`, {Quiz_id : QuizData.quiz_id})
-          setQuestions(resp.data) 
+          setQuestions(resp.data)          
         }
         catch (error) {
           console.error('Error fetching questions:', error);

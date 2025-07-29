@@ -25,7 +25,7 @@ const Timetable = () => {
       let userData = 
       {
         user_id : loggedInUserChild,
-        role : loggedInUserRole
+        role : "Student"
       }
       const schedule = await axios.post(`${API.BASE_URL}/api/getSchedule`,userData)
       setSchedule(schedule.data)

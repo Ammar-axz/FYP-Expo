@@ -110,7 +110,7 @@ const Quiz = () => {
       setQuizes(Quizes.data)
       
       Quizes.data.map((i)=>{
-        if(i.completed > 0)
+        if(i.completed > 0 && i.quiz.T_Questions != i.completed )
         {
           incQuizesData.push(i)
         }

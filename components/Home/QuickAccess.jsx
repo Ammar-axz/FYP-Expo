@@ -52,15 +52,15 @@ const QuickAccess = () => {
           <Text style={styles.SubTitle}> Reminder </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Attendance')}}>
-          <Image source={require('@/assets/icons/attendance.png')} />
+          <Image style={{height:35,width:35}} source={require('@/assets/icons/Attendance2.png')} />
           <Text style={styles.SubTitle} > Attendance </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Timetable')}}>
-          <Image source={require('@/assets/icons/task.png')} />
+          <Image source={require('@/assets/icons/Schedule.png')} />
           <Text style={styles.SubTitle}> Schedule </Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.box}>
+      {/* <View style={styles.box}>
         <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('QuranHadith')}}>
           <Image source={require('@/assets/icons/dua.png')} />
           <Text style={styles.SubTitle} > Books </Text>
@@ -69,8 +69,8 @@ const QuickAccess = () => {
           <Image source={require('@/assets/icons/dua.png')} />
           <Text style={styles.SubTitle} > Duas </Text>
         </TouchableOpacity>
-      </View>
-      <ViewAll title="Schedule" PageLink="(home-teacher)/Timetable"/>
+      </View> */}
+      <ViewAll title="Schedule" PageLink="(tabs-student)/(home)/Timetable"/>
             
         <View style={styles.headingContainer}>
           <Text style={styles.DayHeading}>Today</Text>

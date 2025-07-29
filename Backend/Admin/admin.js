@@ -42,11 +42,19 @@ const Components = {
   // other custom components
 }
 
+const dashboardHandler = async () => {
+  // Asynchronous code where you, e. g. fetch data from your database
+  let users = await User.find()
+  return  users
+}
+
+
 //Create AdminJS instance
 const adminJs = new AdminJS({
   rootPath: '/admin',
   dashboard:{
-    component:Components.Dashboard
+    component:Components.Dashboard,
+    handler: dashboardHandler,
   },
   componentLoader,
   resources: [
@@ -95,7 +103,7 @@ const adminJs = new AdminJS({
   ],
   branding: {
     companyName: 'ILM PRO',
-    // logo: logo, // or null to remove
+    logo: 'http://localhost:5000/Images/Logos/IlmProLandscapeWhite.png',
     // favicon: 'https://yourdomain.com/favicon.ico',
     softwareBrothers: false, // removes "SoftwareBrothers" branding
   }

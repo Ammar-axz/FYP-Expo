@@ -11,8 +11,14 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
 const CourseCard = ({ student_class }) => {
+
+  const [name,setName] = useState('')
+  const isFocused = useIsFocused()
+
   return (
     <TouchableOpacity
       style={styles.card}
@@ -122,6 +128,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    fontWeight: '500',
+    color:'#3f3f3fff'
+  },
+  title2: {
+    fontSize: 18,
     fontWeight: '500',
     color:'#3f3f3fff'
   },

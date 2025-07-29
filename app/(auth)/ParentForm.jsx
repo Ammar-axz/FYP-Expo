@@ -60,6 +60,7 @@ const StudentForm = () => {
           }})
           
         setLoggedInUserChild(response.data.Student_id)
+        router.replace('(tabs-parent)/(home-parent)');
       }
       }
       catch(err)
@@ -69,13 +70,6 @@ const StudentForm = () => {
       }
         
   };
-
-  useEffect(() => {
-    if (loggedInUser !== 'Demo User') {
-      router.replace('(tabs-parent)/(home-parent)');
-    }
-  }, [loggedInUser]);
-
 
   return (
     <SafeAreaView style={styles.container}>

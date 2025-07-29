@@ -17,6 +17,7 @@ import {
 
 const QuizCard = ({ exam , student_id}) => {
   const [marks,setMarks] = useState()
+  const {loggedInUserId} = userData()
 
   useEffect(()=>{
     getExamMarks()
@@ -29,7 +30,7 @@ const QuizCard = ({ exam , student_id}) => {
         let examMarks = await axios.get(`${API.BASE_URL}/api/getStudentExamMarks`,
         {
         params:{
-          student_id:student_id,
+          student_id:loggedInUserId,
           exam_id:exam._id
         } 
         })

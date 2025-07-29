@@ -1,7 +1,7 @@
 import { userData } from '@/Context/UserContext';
 import { API } from '@/api';
 import axios from 'axios';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
     Image,
@@ -24,7 +24,7 @@ const QuizDetails = () => {
     const courseData = JSON.parse(decodeURIComponent(course));
     
     
-    const {loggedInUserId,loggedInUserPoints,setLoggedInUserPoints} = userData();
+    const {loggedInUserId,loggedInUserPoints,setLoggedInUserPoints,incQuizes,setIncQuizes} = userData();
     // const route = useRoute();
     const [quizQue,setQuizQue] = useState({})
     const [que_index,setQue_index] = useState(courseData.completed);
@@ -53,22 +53,28 @@ const QuizDetails = () => {
         console.log(correct);
         
         let increment = que_index+1
-        let inc_quiz = {
-            user_id : loggedInUserId,
-            quiz_id : courseData.quiz._id,
-            completed : increment,
-            correct : correct
-        }
-        console.log(inc_quiz)
         
-        let Question = await axios.post(`${API.BASE_URL}/api/addIncompleteQuiz`,inc_quiz)
-        
+            let inc_quiz = {
+                user_id : loggedInUserId,
+                quiz_id : courseData.quiz._id,
+                completed : increment,
+                correct : correct
+            }
+            console.log(inc_quiz)
+            
+            let Question = await axios.post(`${API.BASE_URL}/api/addIncompleteQuiz`,inc_quiz)
+            
         if(increment < courseData.quiz.Quiz_Questions.length)
-        {
+        {  
             setQue_index(increment)
             setSubmitted(false)
             setCorrectButton(0)
             setInCorrectButton(0)
+        }
+        else
+        {
+            // router.push('QuizComplete')
+            router.dismissTo('(quiz)')
         }
         
     }
@@ -273,7 +279,8 @@ const QuizDetails = () => {
                     </View>
                 </View>
                 <TouchableOpacity style={styles.next} onPress={handleNext}>
-                    <Text style={[styles.choiceTxt,{fontWeight:'bold'}]}> Next </Text>
+                    <Text style={[styles.choiceTxt,{fontWeight:'bold'}]}>
+                        {que_index >= courseData.quiz.Quiz_Questions.length ? "Done" : "Next"}</Text>
                 </TouchableOpacity>
             </View>
         </View>

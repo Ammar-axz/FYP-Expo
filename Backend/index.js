@@ -13,6 +13,7 @@ import ReminderController from './Controllers/Reminder.controller.js'
 import Message from './Models/Message.model.js'
 import { adminJs, adminRouter } from './Admin/admin.js'
 
+// moved to admin.js
 // await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
 
 
@@ -137,7 +138,7 @@ app.post('/api/setAttendance',UserControllers.setAttendance)
 
 app.post('/api/updatePoints',UserControllers.UpdatePoints)
 
-app.put('/api/updateUserProfile/:id', UserControllers.updateUserProfile);
+app.put('/api/updateUserProfile/:id',upload.single('pfp'), UserControllers.updateUserProfile);
 
 
 //Quiz 
