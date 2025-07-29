@@ -139,54 +139,6 @@ async function getTeacherfromClass(req,res){
     }
 }
 
-async function getParentsfromStudents(req,res){
-    try
-    {
-        let parents = await Parent_Student.find({"Student_id":{$in:req.body}})
-        res.status(200).send(parents)
-    }
-    catch(e)
-    {
-        console.log(e)
-    }
-}
-
-async function getStudentsfromClasses(req,res){
-    try
-    {
-        let students = await Class_Student.find({"Class_id":{$in:req.body}})
-        res.status(200).send(students)
-    }
-    catch(e)
-    {
-        console.log(e)
-    }
-}
-
-async function getTeachersfromClasses(req,res){
-    try
-    {
-        let teachers = await Classes.find({"_id":{$in:req.body}})
-        res.status(200).send(teachers)
-    }
-    catch(e)
-    {
-        console.log(e)
-    }
-}
-
-async function getTeacherfromClass(req,res){
-    try
-    {
-        let teacher = await Classes.findOne({"_id":req.query.Class_id})
-        res.status(200).send(teacher)
-    }
-    catch(e)
-    {
-        console.log(e)
-    }
-}
-
 async function getParentStudent(req,res){
     try
     {
@@ -368,20 +320,7 @@ async function getUser(req,res,next){
         res.status(400).send(error)
     }
 }
-async function getUser(req,res,next){
 
-    try
-    {
-        let user = await User.findOne({'_id':req.query.User})
-        
-        res.status(200).send(user)
-    }
-    catch(error)
-    {
-        console.log(error)
-        res.status(400).send(error)
-    }
-}
 async function SearchUser(req,res,next){
 
     try
@@ -405,8 +344,6 @@ async function SearchUser(req,res,next){
 async function addMultipleContacts(req,res,next){
     try
     {
-        console.log(req.body)
-        
         let resp = await Contact.insertMany(req.body)
         res.status(200).send(resp.message)
     }
@@ -417,20 +354,6 @@ async function addMultipleContacts(req,res,next){
     }
 }
 
-async function addMultipleContacts(req,res,next){
-    try
-    {
-        console.log(req.body)
-        
-        let resp = await Contact.insertMany(req.body)
-        res.status(200).send(resp.message)
-    }
-    catch(error)
-    {
-        console.log(error.message);
-        // res.status(400).send(error.name)
-    }
-}
 
 async function addContact(req,res,next){
     try
