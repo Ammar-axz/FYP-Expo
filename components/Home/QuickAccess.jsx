@@ -44,8 +44,10 @@ const QuickAccess = () => {
     const filteredSchedule = schedule.filter((item) => item.Day === dayName);
   
   return (
+    <View style={{backgroundColor:'#0F2823'}}>
     <View style={styles.main}>
-      <ViewAll title='Quick Access' PageLink='Courses' />
+      {/* <ViewAll title='Quick Access' PageLink='Courses' /> */}
+      <Text style={{fontSize:20,fontWeight:'bold',paddingVertical:5}}>Quick Access</Text>
       <View style={styles.box}>
         <TouchableOpacity onPress={()=>{router.push('Reminder')}} style={styles.innerBox}>
           <Image source={require('@/assets/icons/clock1.png')} />
@@ -106,6 +108,7 @@ const QuickAccess = () => {
        </ScrollView>
       </View> */}
     </View>
+    </View>
   );
 };
 
@@ -113,7 +116,9 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff'
+    backgroundColor: "white",
+    borderTopRightRadius:20,
+    borderTopLeftRadius:20
   },
   box: {
     flexDirection: 'row',

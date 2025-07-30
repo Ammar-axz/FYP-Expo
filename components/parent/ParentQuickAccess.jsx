@@ -42,7 +42,7 @@ const ParentQuickAccess = () => {
 
 
   return (
-    <>
+    <View style={{backgroundColor:'#154840'}}>
       <View style={styles.main}>
         {/* <ViewAll title="Quick Access" PageLink="Courses" /> */}
         <Text style={{fontSize:20,fontWeight:'bold'}}>Quick Access</Text>
@@ -101,7 +101,7 @@ const ParentQuickAccess = () => {
             })
           }
       </View>
-    </>
+    </View>
   );
 };
 
@@ -109,7 +109,9 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     padding: 16,
-    backgroundColor: "transparent",
+    backgroundColor: "white",
+    borderTopRightRadius:20,
+    borderTopLeftRadius:20
   },
   box: {
     flexDirection: "row",

@@ -160,6 +160,8 @@ app.post('/api/uploadExamMarks',ClassesController.uploadExamMarks)
 
 app.get('/api/getStudentExamMarks',ClassesController.getStudentExamMarks)
 
+app.get('/api/getStudentTotalExamMarks',ClassesController.getStudentTotalExamMarks)
+
 app.post('/api/createExam',ClassesController.createExam)
 
 app.post('/api/getStudentExam',ClassesController.getStudentExam)

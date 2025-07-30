@@ -11,9 +11,10 @@ import axios from 'axios'
 import {API} from '@/api'
 import { useState,useEffect } from "react";
 import { format } from "date-fns";
+import { userData } from '@/Context/UserContext';
 
 
-const RenderItem = ({ item , student_id}) => {
+const RenderItem = ({ item, student_id }) => {
   const [marks,setMarks] = useState()
   const [text,setText] = useState("")
   const [showInput,setShowInput] = useState(false)
@@ -21,7 +22,8 @@ const RenderItem = ({ item , student_id}) => {
 
   useEffect(()=>{
     getExamMarks()
-  },[showInput])
+    
+  },[])
 
   async function getExamMarks()
   {
@@ -65,9 +67,10 @@ const RenderItem = ({ item , student_id}) => {
             Obtained_Marks:Number(text)
           } 
           let uploadMarks = await axios.post(`${API.BASE_URL}/api/uploadExamMarks`,data)
-          console.log(uploadMarks.data);
+          // console.log(uploadMarks.data);
           
           setShowInput(false)
+          getExamMarks()
         }
         catch(e)
         {
@@ -108,13 +111,13 @@ const RenderItem = ({ item , student_id}) => {
   </View>
 )};
 
-export default function Exam({studentData }) {
+export default function Exam({studentData}) {
   const [exam,setExam] = useState([])
-
-
+  
 useEffect(()=>{
     getStudentExam()
 },[])
+
 
  async function getStudentExam()
  {
@@ -125,6 +128,7 @@ useEffect(()=>{
       }
       let exams = await axios.post(`${API.BASE_URL}/api/getStudentExam`,data)
       setExam(exams.data)
+
     }
     catch(e)
     {
@@ -137,7 +141,7 @@ useEffect(()=>{
       <FlatList
         data={exam}
         renderItem={({ item }) => (
-        <RenderItem item={item} student_id={studentData.student._id} />
+        <RenderItem item={item} student_id={studentData.student._id}  />
         )}
         keyExtractor={(item) => (item._id)}
         showsVerticalScrollIndicator={false}

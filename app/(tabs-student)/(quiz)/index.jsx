@@ -26,7 +26,7 @@ const QuizCard = ({ quiz }) => {
   if(quiz.quiz.T_Questions == quiz.completed)
   {
     return (
-      <TouchableOpacity
+      <View
         style={styles.card}
         // onPress={()=>{router.navigate('QuizDetails', {course:quiz})}}
         onPress={()=>{
@@ -46,7 +46,7 @@ const QuizCard = ({ quiz }) => {
           <Text style={{fontSize:18,fontWeight:'600',color:"rgba(54,178,149,1)"}}>Marks</Text>  
           <Text style={{fontSize:18,fontWeight:'600',color:"rgba(54,178,149,1)"}}>{quiz.correct} / {quiz.quiz.T_Questions}</Text>  
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
   else

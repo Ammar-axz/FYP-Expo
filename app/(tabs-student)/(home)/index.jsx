@@ -176,7 +176,7 @@ const Home = () => {
               <Image
                 source={require('@/assets/icons/clock2.png')}
                 resizeMode="contain"
-                style={{height:28,width:28,tintColor:'#35b170'}}
+                style={{height:25,width:25,tintColor:'#35b170'}}
               />
             {/* </View> */}
             <Text style={styles.scheduleText}>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     color: '#B0C4B1',
-    fontSize: 14,
+    fontSize: 16,
   },
   name: {
     color: '#fff',
@@ -281,9 +281,9 @@ const styles = StyleSheet.create({
   },
   schedule: {
     backgroundColor: '#0F2823',
-    padding: 16,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    padding: 14,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   scheduleBtn: {
     flexDirection: 'row',

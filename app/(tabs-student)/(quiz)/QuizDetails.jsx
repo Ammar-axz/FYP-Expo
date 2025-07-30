@@ -51,30 +51,32 @@ const QuizDetails = () => {
     async function handleNext()
     {
         console.log(correct);
-        
-        let increment = que_index+1
-        
-            let inc_quiz = {
-                user_id : loggedInUserId,
-                quiz_id : courseData.quiz._id,
-                completed : increment,
-                correct : correct
-            }
-            console.log(inc_quiz)
-            
-            let Question = await axios.post(`${API.BASE_URL}/api/addIncompleteQuiz`,inc_quiz)
-            
-        if(increment < courseData.quiz.Quiz_Questions.length)
-        {  
-            setQue_index(increment)
-            setSubmitted(false)
-            setCorrectButton(0)
-            setInCorrectButton(0)
-        }
-        else
+        if(correctButton != 0 )
         {
-            // router.push('QuizComplete')
-            router.dismissTo('(quiz)')
+            let increment = que_index+1
+            
+                let inc_quiz = {
+                    user_id : loggedInUserId,
+                    quiz_id : courseData.quiz._id,
+                    completed : increment,
+                    correct : correct
+                }
+                console.log(inc_quiz)
+                
+                let Question = await axios.post(`${API.BASE_URL}/api/addIncompleteQuiz`,inc_quiz)
+                
+            if(increment < courseData.quiz.Quiz_Questions.length)
+            {  
+                setQue_index(increment)
+                setSubmitted(false)
+                setCorrectButton(0)
+                setInCorrectButton(0)
+            }
+            else
+            {
+                // router.push('QuizComplete')
+                router.dismissTo('(quiz)')
+            }
         }
         
     }
@@ -278,9 +280,9 @@ const QuizDetails = () => {
                         
                     </View>
                 </View>
-                <TouchableOpacity style={styles.next} onPress={handleNext}>
+                <TouchableOpacity style={correctButton == 0 ? styles.next2 : styles.next} onPress={handleNext}>
                     <Text style={[styles.choiceTxt,{fontWeight:'bold'}]}>
-                        {que_index >= courseData.quiz.Quiz_Questions.length ? "Done" : "Next"}</Text>
+                        {que_index == courseData.quiz.Quiz_Questions.length - 1 ? "Done" : "Next"}</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -313,6 +315,14 @@ const styles = StyleSheet.create({
     },
     next:{
         backgroundColor:'rgba(54,178,149,1)',
+        borderRadius:100,
+        alignSelf:'center',
+        padding:'2%',
+        paddingHorizontal:'10%',
+        marginBottom:'3%'
+    },
+    next2:{
+        backgroundColor:'rgba(117, 117, 117, 1)',
         borderRadius:100,
         alignSelf:'center',
         padding:'2%',

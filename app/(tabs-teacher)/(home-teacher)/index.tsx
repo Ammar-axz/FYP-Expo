@@ -11,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ImageBackground
 } from "react-native";
 
 
@@ -38,11 +39,15 @@ const Home = () => {
   return (
     <>
       <ScrollView style={styles.mainContainer}>
-        <Image
+        {/* <Image
           style={styles.headerImg}
           source={require("@/assets/images/QuizHeaderBG.png")}
           resizeMode="stretch"
-        />
+        /> */}
+        <ImageBackground
+          style={styles.wrapper}
+          source={require('@/assets/images/Bg.png')}
+          resizeMode="cover">
         {/* Header Section */}
         <View style={styles.container}>
           <View style={styles.textContainer}>
@@ -74,6 +79,7 @@ const Home = () => {
           <HomeNotification />
         </View>
 
+        </ImageBackground>
         <QuickAccessTeacher />
       </ScrollView>
     </>
@@ -81,6 +87,11 @@ const Home = () => {
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: 'rgba(15,65,56,1)',
+    paddingBottom:10
+  },
   mainContainer: {
     backgroundColor: "white",
   },
@@ -99,11 +110,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   greeting: {
-    color: "black",
-    fontSize: 14,
+    color: "#B0C4B1",
+    fontSize: 16,
   },
   name: {
-    color: "black",
+    color: "white",
     fontSize: 24,
     fontWeight: "bold",
   },

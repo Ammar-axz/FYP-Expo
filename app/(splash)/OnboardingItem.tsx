@@ -62,7 +62,7 @@ const OnboardingScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    // <SafeAreaView style={styles.safeArea}>
     <View>
     {/* Header Section */}
     <View style={styles.header}>
@@ -91,7 +91,7 @@ const OnboardingScreen = () => {
     {/* Footer for Dots and Navigation Buttons */}
     {renderFooter()}
     </View>
-  </SafeAreaView>
+    //</SafeAreaView>
   );
 };
 
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    top: 10,
+    top: 50,
     zIndex: 10, // Ensures header stays above the slider
     width: '100%',
   },

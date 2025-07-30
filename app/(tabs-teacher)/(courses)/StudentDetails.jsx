@@ -26,14 +26,14 @@ export default function StudentDetails() {
 
   const {studentData} = useLocalSearchParams()
   const StudentDetail = JSON.parse(decodeURIComponent(studentData))
-  console.log(StudentDetail);
+  // console.log(StudentDetail);
   
   const [attendancePercent,setAttendancePercent] = useState()
   
 
   return (
     <View style={{ flex: 1 }}>
-      <SecondScreen studentDetail={StudentDetail} attendancePercent={attendancePercent}/>
+      <SecondScreen studentDetail={StudentDetail} attendancePercent={attendancePercent} />
       <Tab.Navigator
         screenOptions={{
           tabBarInactiveTintColor: "#000",
@@ -43,7 +43,7 @@ export default function StudentDetails() {
         }}
       >
         <Tab.Screen name="Exam" >
-          {() => <Exam studentData={StudentDetail}/>}
+          {() => <Exam studentData={StudentDetail} />}
         </Tab.Screen>
         <Tab.Screen name="Sabaq">
           {() => <Sabaq studentData={StudentDetail} />}
@@ -57,24 +57,20 @@ export default function StudentDetails() {
 }
 
 // Header/Profile Section
-function SecondScreen({studentDetail, attendancePercent}) {
+function SecondScreen({studentDetail, attendancePercent }) {
   
   return (
     <View style={styles.container}>
       <Image
         // source={require("@/assets/icons/user-pic.png")}
-        source={{uri:`${API.BASE_URL}/Images/ProfilePictures/${studentDetail.student.pfp}`}}
+        source={studentDetail.student.pfp?{uri:`${API.BASE_URL}/Images/ProfilePictures/${studentDetail.student.pfp}`}:require("@/assets/icons/user-pic.png")}
         style={styles.prof_pic}
       />
       <Text style={styles.heading}>{studentDetail.student.Name}</Text>
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
-          <Text style={styles.statValue}>{attendancePercent}%</Text>
+          <Text style={styles.statValue}>{attendancePercent ? attendancePercent.toFixed(2) : 0}%</Text>
           <Text style={styles.statLabel}>Attendance</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statValue}>89%</Text>
-          <Text style={styles.statLabel}>Test Score</Text>
         </View>
       </View>
       <Text style={styles.overview}>Overview</Text>
@@ -112,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 10,
     // alignItems: "center",
-    width: "45%",
+    width: "100%",
   },
   statValue: {
     fontWeight: "600",

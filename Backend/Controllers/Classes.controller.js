@@ -61,9 +61,41 @@ async function getStudentExamMarks(req,res)
     try
     {
         const {exam_id,student_id} = req.query
-
+        
         let Marks = await Exam_Student.findOne({"Exam_id":exam_id,"Student_id":student_id},{"Obtained_Marks":1,"_id":0})
+
+        if(!Marks)
+        {
+            Marks = await Exam_Student.create({
+                "Exam_id" : exam_id,
+                "Student_id" : student_id
+            })
+            console.log(Marks)
+            
+        }
         res.status(200).send(Marks)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
+}
+async function getStudentTotalExamMarks(req,res)
+{
+    try
+    {
+        const {student_id} = req.query
+        
+        let Marks = await Exam_Student.find({"Student_id":student_id},{"Obtained_Marks":1,"_id":0})
+
+        let Total = 0
+        
+        Marks.map((i)=>{
+            Total = Total + i.Obtained_Marks
+        })
+       
+        res.status(200).send(Total)
     }
     catch(e)
     {
@@ -188,4 +220,4 @@ async function getSabaqs(req,res)
 
 
 export default {getCourse,getSabaqs,getExams,getStudentExam,uploadExamMarks,getStudentExamMarks,
-                createExam,getScheduleForAttendance,getSchedule,getClasses,}
+                createExam,getScheduleForAttendance,getSchedule,getClasses,getStudentTotalExamMarks}

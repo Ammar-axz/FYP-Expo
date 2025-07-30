@@ -40,11 +40,15 @@ const Home = () => {
   return (
     <>
       <ScrollView style={styles.mainContainer}>
-        <Image
+        {/* <Image
           style={styles.headerImg}
           source={require("@/assets/images/QuizHeaderBG.png")}
           resizeMode="stretch"
-        />
+        /> */}
+        <ImageBackground
+          style={styles.wrapper}
+          source={require('@/assets/images/Bg.png')}
+          resizeMode="cover">
         {/* Header Section */}
         <View style={styles.container}>
           <View style={styles.textContainer}>
@@ -53,17 +57,6 @@ const Home = () => {
           </View>
 
           <View style={styles.iconsContainer}>
-            {/* <TouchableOpacity
-              style={styles.bellButton}
-              onPress={() => alert("Notifications Pressed")}
-            >
-              <Image
-                source={require("@/assets/icons/bell-white.png")}
-                style={styles.topNotiIcon}
-              />
-              <View style={styles.notificationDot} />
-            </TouchableOpacity> */}
-
             <Image
               source={loggedInUserPfp?{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}:require("@/assets/icons/user-pic.png")}
               style={styles.profileImage}
@@ -98,7 +91,7 @@ const Home = () => {
         </View>
         </View>
 
-
+        </ImageBackground>
         <QuickAccess />
 
         {/* <View style={{ paddingHorizontal: 20, backgroundColor: "white" }}>
@@ -111,6 +104,11 @@ const Home = () => {
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: 'rgba(15,65,56,1)',
+    paddingBottom:10
+  },
   mainContainer: {
     backgroundColor: "white",
   },
@@ -129,11 +127,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   greeting: {
-    color: "black",
-    fontSize: 14,
+    color: "#B0C4B1",
+    fontSize: 16,
   },
   name: {
-    color: "black",
+    color: "white",
     fontSize: 24,
     fontWeight: "bold",
   },
@@ -151,8 +149,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   profileImage: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 18,
     marginLeft: 10,
     resizeMode: "contain",
@@ -200,7 +198,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: 'rgba(54,178,112,255)',
     width: '90%',
-    height:140,
+    height:120,
     alignSelf: 'center',
     marginVertical: 15,
   },

@@ -40,9 +40,11 @@ const QuickAccessTeacher = () => {
   const filteredSchedule = schedule.filter((item) => item.Day === dayName);
 
   return (
+    <View style={{backgroundColor:'#154840'}}>
     <View style={styles.main}>
-      <ViewAll title="Quick Access" PageLink="Courses" />
-      <View style={styles.box}>
+      {/* <ViewAll title="Quick Access" PageLink="Courses" /> */}
+      <Text style={{fontSize:20,fontWeight:'bold',paddingVertical:5}}>Quick Access</Text>
+      <View style={[styles.box,{marginBottom:0}]}>
         <TouchableOpacity
           onPress={() => {
             router.push("Reminder");
@@ -71,15 +73,6 @@ const QuickAccessTeacher = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.box}>
-        {/* <TouchableOpacity
-          style={styles.innerBox}
-          onPress={() => {
-            router.navigate("QuranHadith");
-          }}
-        >
-          <Image style={{height:35,width:35}} source={require("@/assets/icons/Books.png")} />
-          <Text style={styles.SubTitle}> Books </Text>
-        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.innerBox}
           onPress={() => {
@@ -95,7 +88,7 @@ const QuickAccessTeacher = () => {
             router.navigate("Exam");
           }}
         >
-          <Image source={require("@/assets/icons/donate.png")} />
+          <Image style={{height:35,width:35}} source={require("@/assets/icons/Books.png")} />
           <Text style={styles.SubTitle}> Exams </Text>
         </TouchableOpacity>
       </View>
@@ -122,6 +115,7 @@ const QuickAccessTeacher = () => {
         })
       }
     </View>
+    </View>
   );
 };
 
@@ -130,6 +124,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "white",
+    borderTopRightRadius:20,
+    borderTopLeftRadius:20
   },
   box: {
     flexDirection: "row",

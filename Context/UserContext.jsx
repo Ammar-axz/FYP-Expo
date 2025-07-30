@@ -17,7 +17,7 @@ export const UserContextProvider = ({children})=>{
     <UserContext.Provider value={{loggedInUser,loggedInUserId,loggedInUserChild,loggedInUserRole,
     loggedInUserPfp,loggedInUserPoints,loggedInUserClasses,setLoggedInUser, setLoggedInUserPfp,
     setLoggedInUserId,setLoggedInUserChild,setLoggedInUserRole,setLoggedInUserPoints, setLoggedInUserClasses,
-    incQuizes,setIncQuizes}}>
+    incQuizes,setIncQuizes }}>
         {children}
     </UserContext.Provider>
     )

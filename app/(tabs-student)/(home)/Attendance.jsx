@@ -110,7 +110,7 @@ const Attendance = () => {
         </View>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Percentage</Text>
-          <Text style={styles.statValue}>{stats.Percentage ? stats.Percentage : 0 }%</Text>
+          <Text style={styles.statValue}>{stats.Percentage ? stats.Percentage.toFixed(2) : 0 }%</Text>
         </View>
       </View>
       <View style={{ flex: 1 ,marginTop:10}}>

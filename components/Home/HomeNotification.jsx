@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: 'rgba(54,178,112,255)',
     width: '90%',
-    height:100,
+    height:110,
     alignSelf: 'center',
     marginVertical: 15,
   },
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    height:70,
+    height:80,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'transparent'
