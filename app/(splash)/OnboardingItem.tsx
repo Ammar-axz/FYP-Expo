@@ -68,7 +68,7 @@ const OnboardingScreen = () => {
     <View style={styles.header}>
       {/* <Image source={Logo} style={styles.logo} /> */}
       <Logo width={36} height={38} />
-      <Text style={styles.subtitle}>IlmPssro</Text>
+      <Text style={styles.subtitle}> IlmPro</Text>
     </View>
     {/* FlatList for Onboarding Slides */}
     <FlatList

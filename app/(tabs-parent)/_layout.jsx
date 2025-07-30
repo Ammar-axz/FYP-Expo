@@ -54,14 +54,14 @@ const TabsLayout = () => {
           headerStyle: {backgroundColor: '#fff'},
           tabBarLabel: 'Classes',
           tabBarIcon: ({focused}) => (
-            // <Image
-            //   source={require('@/assets/icons/chat.png')}
-            //   style={[
-            //     styles.tabIcon,
-            //     {tintColor: focused ? '#36B295' : '#0000008C'},
-            //   ]}
-            // />
-          <ChatIcon fill={focused ? '#36B295' : '#0000008C'} width={24} height={24} />
+            <Image
+              source={require('@/assets/icons/chat.png')}
+              style={[
+                styles.tabIcon,
+                {tintColor: focused ? '#36B295' : '#0000008C'},
+              ]}
+            />
+          // <ChatIcon fill={focused ? '#36B295' : '#0000008C'} width={24} height={24} />
           ),
         })}
       />
@@ -79,7 +79,7 @@ const TabsLayout = () => {
             //     },
             //   ]}
             // />
-            <ChatIcon />
+            <ChatIcon fill={focused ? '#36B295' : '#0000008C'} width={24} height={24} />
 
           ),
         }}

@@ -124,12 +124,12 @@ const ChatScreen = () => {
 
       {/* Input Section */}
       <View style={styles.inputContainer}>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Ionicons name="camera-outline" size={24} color="black" style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity>
           <Ionicons name="mic-outline" size={24} color="black" style={styles.icon} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TextInput
           placeholder="Aa"
           placeholderTextColor="#999"
@@ -137,11 +137,11 @@ const ChatScreen = () => {
           value={inputMsg}
           onChangeText={ text => setInputMsg(text)}
         />
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Entypo name="emoji-happy" size={24} color="black" style={styles.icon} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity onPress={handleSubmit}>
-          <Image source={require('@/assets/icons/send-message.png')}/>
+          <Image style={{tintColor:"#36B295",height:30,width:30}} source={require('@/assets/icons/send-message.png')}/>
           {/* <FontAwesome name="send-message" size={24} color="#36B295" style={styles.icon} /> */}
         </TouchableOpacity>
       </View>
