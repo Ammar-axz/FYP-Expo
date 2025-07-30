@@ -1,14 +1,16 @@
 import { router } from 'expo-router';
 import { Image, TouchableOpacity } from 'react-native';
+import Arrow from '@/assets/icons/chevron-left.svg';
 export const BackButton = () => (
   <>
   <TouchableOpacity
     onPress={() => router.back()}
     style={styles.backButton}>
-    <Image
-      source={require('@/assets/icons/left-arrow.png')}
+    {/* <Image
+      source={require('@assets/icons/chevron-left.svg')}
       style={styles.backArrow}
-    />
+    /> */}
+    <Arrow height={24} width={24} />
   </TouchableOpacity>
 </>
 );
@@ -24,13 +26,13 @@ const styles = {
     backgroundColor: 'transparent',
     borderRadius: 100,
     borderWidth:1,
-    borderColor:'gray'
+    borderColor:'#000000'
     },
     backArrow: {
     tintColor: '#000',
     resizeMode: 'contain',
-    height:18,
-    width:18,
+    height:24,
+    width:24,
     marginRight:3
     }
 }

@@ -3,6 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import { BackButton } from '@/components/BackButton';
+import HomeIcon from '@/assets/icons/home.svg';
+import ChatIcon from '@/assets/icons/Chat.svg';
+import ProfileIcon from '@/assets/icons/profile.svg';
 
 // Screens
 // import ReminderLayout from '../(Reminder)/_layout';
@@ -29,13 +32,14 @@ const TabsLayout = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({focused}) => (
-            <Image
-              source={require('@/assets/icons/home.png')}
-              style={[
-                styles.tabIcon,
-                {tintColor: focused ? '#36B295' : '#0000008C'},
-              ]}
-            />
+            // <Image
+            //   source={require('@/assets/icons/home.svg')}
+            //   style={[
+            //     styles.tabIcon,
+            //     {tintColor: focused ? '#36B295' : '#0000008C'},
+            //   ]}
+            // />
+            <HomeIcon fill={focused ? '#36B295' : '#0000008C'} width={24} height={24} />
           ),
         }}
       />
@@ -50,13 +54,14 @@ const TabsLayout = () => {
           headerStyle: {backgroundColor: '#fff'},
           tabBarLabel: 'Classes',
           tabBarIcon: ({focused}) => (
-            <Image
-              source={require('@/assets/icons/chat.png')}
-              style={[
-                styles.tabIcon,
-                {tintColor: focused ? '#36B295' : '#0000008C'},
-              ]}
-            />
+            // <Image
+            //   source={require('@/assets/icons/chat.png')}
+            //   style={[
+            //     styles.tabIcon,
+            //     {tintColor: focused ? '#36B295' : '#0000008C'},
+            //   ]}
+            // />
+          <ChatIcon fill={focused ? '#36B295' : '#0000008C'} width={24} height={24} />
           ),
         })}
       />
@@ -65,15 +70,17 @@ const TabsLayout = () => {
         options={{
           tabBarLabel: 'Chat',
           tabBarIcon: ({focused}) => (
-            <Image
-              source={require('@/assets/icons/chat-icon.png')}
-              style={[
-                styles.tabIcon,
-                {tintColor: focused ? '#36B295' : '#0000008C',
-                  height:30,width:30
-                },
-              ]}
-            />
+            // <Image
+            //   source={require('@/assets/icons/Chat.svg')}
+            //   style={[
+            //     styles.tabIcon,
+            //     {tintColor: focused ? '#36B295' : '#0000008C',
+            //       height:30,width:30
+            //     },
+            //   ]}
+            // />
+            <ChatIcon />
+
           ),
         }}
       />
@@ -82,13 +89,15 @@ const TabsLayout = () => {
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({focused}) => (
-            <Image
-              source={require('@/assets/icons/setting.png')}
-              style={[
-                styles.tabIcon,
-                {tintColor: focused ? '#36B295' : '#0000008C'},
-              ]}
-            />
+            // <Image
+            //   source={require('@/assets/icons/profile.svg')}
+            //   style={[
+            //     styles.tabIcon,
+            //     {tintColor: focused ? '#36B295' : '#0000008C'},
+            //   ]}
+            // />
+            <ProfileIcon fill={focused ? '#36B295' : '#0000008C'} width={24} height={24} />
+
           ),
         }}
       /> 

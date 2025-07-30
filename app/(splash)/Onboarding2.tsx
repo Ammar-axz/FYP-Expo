@@ -29,29 +29,27 @@ const RoleSelection = () => {
       style={styles.container}
     >
       <ScrollView
-        contentContainerStyle={styles.scrollContainer} 
+        contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
         <Heading heading="What are you looking to be?" />
 
-        {['Student', 'Teacher', 'Parent'].map((item) => (
+        {roles.map((role) => (
           <RoleSelect
-            key={item}
-            Role={item}
-            imgSrc={require('@/assets/icons/User.png')}
-            Desc={
-              item === 'Student'
-                ? "Access Student Features"
-                : item === 'Teacher'
-                ? "Manage Teaching Resources"
-                : "Monitor Your Child's Progress"
-            }
-            onPress={() => handleRoleSelect(item)}
-            isSelected={selectedRole === item} // Highlight selected role
+            key={role.title}
+            Role={role.title}
+            imgSrc={role.icon}
+            Desc={role.desc}
+            onPress={() => handleRoleSelect(role.title)}
+            isSelected={selectedRole === role.title}
           />
         ))}
 
-        <ConfirmBtn title="Confirm" handlePress={handleConfirm} disabled={!selectedRole} />
+        <ConfirmBtn
+          title="Confirm"
+          handlePress={handleConfirm}
+          disabled={!selectedRole}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -67,6 +65,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center', // Center the content when few options
+    justifyContent: 'center',
   },
 });

@@ -2,21 +2,17 @@ import HomeNotification from "@/components/Home/HomeNotification";
 import { userData } from "@/Context/UserContext";
 import axios from "axios";
 import { API } from "@/api";
-import React, { useState, useEffect } from "react";
-import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect } from "react";
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   ImageBackground
 } from "react-native";
 
-import ViewAll from "@/components/Home/ViewAll";
 import QuickAccess from "@/components/parent/ParentQuickAccess";
-import QuizesList from '@/app/(tabs-parent)/(home-parent)/QuizesList'
 
 const Home = () => {
   const { loggedInUser,loggedInUserPfp,loggedInUserChild,setLoggedInUserClasses } = userData();

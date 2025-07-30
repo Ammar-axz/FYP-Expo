@@ -1,4 +1,4 @@
-import logo from '@/assets/images/logo.png';
+import Logo from '@/assets/images/logo.svg';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, View } from 'react-native';
@@ -21,7 +21,8 @@ const Splash = () => {
         style={styles.imageBackground}
       >
         <View style={styles.container}>
-          <Image source={logo} style={styles.logo} />
+          {/* <Image source={Logo} style={styles.logo} /> */}
+          <Logo />
           <Text style={styles.title}>IlmPro</Text>
         </View>
       </ImageBackground>

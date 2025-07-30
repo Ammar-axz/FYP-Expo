@@ -1,4 +1,4 @@
-import logo from '@/assets/images/logo.png';
+import Logo from '@/assets/images/logo.svg';
 import { router } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import {
@@ -66,8 +66,9 @@ const OnboardingScreen = () => {
     <View>
     {/* Header Section */}
     <View style={styles.header}>
-      <Image source={logo} style={styles.logo} />
-      <Text style={styles.subtitle}>IlmPro</Text>
+      {/* <Image source={Logo} style={styles.logo} /> */}
+      <Logo width={36} height={38} />
+      <Text style={styles.subtitle}>IlmPssro</Text>
     </View>
     {/* FlatList for Onboarding Slides */}
     <FlatList
@@ -118,12 +119,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   
-  logo: {
-    width: 36,
-    height: 38,
-    resizeMode: 'contain',
-    marginRight: 8,
-  },
+  // logo: {
+  //   width: 36,
+  //   height: 38,
+  //   resizeMode: 'contain',
+  //   marginRight: 8,
+  // },
   subtitle: {
     fontSize: 27,
     fontWeight: 'bold',

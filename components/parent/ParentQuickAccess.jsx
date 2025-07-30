@@ -1,14 +1,13 @@
 import { router } from "expo-router";
 import React , { useEffect, useState }from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
-import Card from "@/components/Home/Card";
-import CourseData from "@/components/Home/CourseData";
 import ViewAll from "@/components/Home/ViewAll";
 import TimeTableItem from "@/components/TimeTableItem";
 import { userData } from '@/Context/UserContext';
 import axios from "axios";
 import { API } from "@/api";
+import AttendanceIcon from '@/assets/icons/attendance.svg';
+import QuizIcon from '@/assets/icons/Group.svg';
 
 const ParentQuickAccess = () => {
  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -54,8 +53,8 @@ const ParentQuickAccess = () => {
             }}
             style={styles.innerBox}
           >
-            <Image style={{height:35,width:35}}  source={require("@/assets/icons/Attendance2.png")} />
-            <Text style={styles.SubTitle}> Attendance </Text>
+            <AttendanceIcon height={35} width={35} />
+            <Text style={styles.boxTitle}> Attendance </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.innerBox}
@@ -64,7 +63,8 @@ const ParentQuickAccess = () => {
             }}
           >
             <Image style={{height:35,width:35}} source={require("@/assets/icons/Schedule.png")} />
-            <Text style={styles.SubTitle}> Schedule </Text>
+
+            <Text style={styles.boxTitle}> Schedule </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.innerBox}
@@ -72,8 +72,9 @@ const ParentQuickAccess = () => {
               router.navigate("QuizParent");
             }}
           >
-            <Image style={{height:35,width:35}} source={require("@/assets/icons/attendance.png")} />
-            <Text style={styles.SubTitle}> Quizes </Text>
+            <QuizIcon height={35} width={35} />
+
+            <Text style={styles.boxTitle}> Quizes </Text>
           </TouchableOpacity>
           
         </View>
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
   },
   SubTitle: {
     textAlign: "center",
-    fontSize: 14,
+    fontSize: 20,
     color: "#2B3032",
     fontWeight: "600",
     lineHeight: 20,
@@ -156,6 +157,12 @@ const styles = StyleSheet.create({
     color: "gray",
     fontWeight: "700",
   },
+  boxTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2B3032',
+    marginTop: 10
+  }
 });
 
 export default ParentQuickAccess;
