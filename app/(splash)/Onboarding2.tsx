@@ -7,21 +7,39 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 
 const RoleSelection = () => {
   const [selectedRole, setSelectedRole] = useState(null);
 
-  const handleRoleSelect = (role) => {
+  const handleRoleSelect = (role: string) => {
     setSelectedRole(role);
   };
 
   const handleConfirm = () => {
     if (selectedRole) {
-      router.navigate(`/(auth)/${selectedRole}Form`, { role: selectedRole }); // Ensure 'AuthScreen' is correct
+      router.navigate(`/(auth)/${selectedRole}Form`, { role: selectedRole });
     }
   };
+
+  const roles = [
+    {
+      title: 'Student',
+      desc: 'Access Student Features',
+      icon: require('@/assets/icons/User.png'),
+    },
+    {
+      title: 'Teacher',
+      desc: 'Manage Teaching Resources',
+      icon: require('@/assets/icons/User.png'),
+    },
+    {
+      title: 'Parent',
+      desc: "Monitor Your Child's Progress",
+      icon: require('@/assets/icons/User.png'),
+    },
+  ];
 
   return (
     <KeyboardAvoidingView
