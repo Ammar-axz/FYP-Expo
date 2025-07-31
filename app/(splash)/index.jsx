@@ -1,7 +1,8 @@
 import Logo from '@/assets/images/logo.svg';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 const Splash = () => {
 
@@ -26,6 +27,8 @@ const Splash = () => {
           <Text style={styles.title}>IlmPro</Text>
         </View>
       </ImageBackground>
+    <StatusBar style='auto' />
+
     </SafeAreaView>
   );
 };

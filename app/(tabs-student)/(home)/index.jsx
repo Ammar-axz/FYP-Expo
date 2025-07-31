@@ -137,7 +137,7 @@ const Home = () => {
           </View>
 
           <View style={styles.iconsContainer}>
-            {/* <TouchableOpacity
+             <TouchableOpacity
               style={styles.bellButton}
               onPress={() => alert('Notifications Pressed')}>
               <Image
@@ -145,7 +145,7 @@ const Home = () => {
                 resizeMode="contain"
               />
               <View style={styles.notificationDot} />
-            </TouchableOpacity> */}
+            </TouchableOpacity> 
 
             <Image
               source={loggedInUserPfp?{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}:require("@/assets/icons/user-pic.png")}

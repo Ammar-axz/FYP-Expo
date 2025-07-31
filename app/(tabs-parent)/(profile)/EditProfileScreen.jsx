@@ -14,6 +14,9 @@ import axios from 'axios';
 import { userData } from '@/Context/UserContext';
 import {API} from '@/api'
 import { router } from 'expo-router';
+import ConfirmBtn from '@/components/ConfirmBtn';
+import Heading from '@/components/Heading'
+
 
 export default function EditProfileScreen() {
   const { loggedInUser, loggedInUserPfp, loggedInUserId,
@@ -147,7 +150,9 @@ export default function EditProfileScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Edit Profile</Text>
+      {/* <Text style={styles.title}>Edit Profile</Text> */}
+                      <Heading heading='Edit Profile' />
+      
 
       <TouchableOpacity onPress={pickImage}>
         <Image
@@ -167,12 +172,16 @@ export default function EditProfileScreen() {
       {renderInput('Email Address', form.email, value => handleChange('email', value), 'email-address')}
       {renderInput('Change Password', form.password, value => handleChange('password', value), 'default', true)}
 
-      <TouchableOpacity style={styles.button} onPress={handleSave}>
-        <Text style={styles.buttonText}>Save Changes</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleLogOut}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
+       {/* 
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save Changes</Text>
+            </TouchableOpacity> 
+            <TouchableOpacity style={styles.button} onPress={handleLogOut}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+            */}
+            <ConfirmBtn title="Save Changes" handlePress={handleSave} />
+            <ConfirmBtn title="Logout" handlePress={handleLogOut} />
     </ScrollView>
   );
 }
@@ -202,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '700',
     marginTop: 30,
-    marginBottom: 20,
+    marginBottom: 10,
     color: '#333',
   },
   avatar: {
@@ -229,8 +238,8 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    backgroundColor: '#f2f2f2',
-    borderColor: '#ddd',
+    backgroundColor: '#fff',
+    borderColor: '#12121224',
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 14,

@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    top: 50,
+    top: 45,
     zIndex: 10, // Ensures header stays above the slider
     width: '100%',
   },

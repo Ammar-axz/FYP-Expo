@@ -14,6 +14,8 @@ import axios from 'axios';
 import { userData } from '@/Context/UserContext';
 import {API} from '@/api'
 import { router } from 'expo-router';
+import ConfirmBtn from '@/components/ConfirmBtn';
+import Heading from '@/components/Heading';
 
 export default function EditProfileScreen() {
   const { loggedInUser, loggedInUserPfp, loggedInUserId,
@@ -147,7 +149,8 @@ export default function EditProfileScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Edit Profile</Text>
+      {/* <Text style={styles.title}>Edit Profile</Text> */}
+      <Heading heading="Edit Profile"/>
 
       <TouchableOpacity onPress={pickImage}>
         <Image
@@ -166,13 +169,16 @@ export default function EditProfileScreen() {
       {renderInput('Gender', form.gender, value => handleChange('gender', value))}
       {renderInput('Email Address', form.email, value => handleChange('email', value), 'email-address')}
       {renderInput('Change Password', form.password, value => handleChange('password', value), 'default', true)}
-
+{/* 
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Save Changes</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> 
       <TouchableOpacity style={styles.button} onPress={handleLogOut}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
+      */}
+      <ConfirmBtn title="Save Changes" handlePress={handleSave} />
+            <ConfirmBtn title="Logout" handlePress={handleLogOut} />
     </ScrollView>
   );
 }
@@ -229,7 +235,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#fff',
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 10,
