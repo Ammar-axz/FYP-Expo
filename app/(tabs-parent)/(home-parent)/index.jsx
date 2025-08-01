@@ -9,10 +9,13 @@ import {
   StyleSheet,
   Text,
   View,
-  ImageBackground
+  ImageBackground,
+  Alert
 } from "react-native";
 
 import QuickAccess from "@/components/parent/ParentQuickAccess";
+import Header from '@/components/Home/Header';
+
 
 const Home = () => {
   const { loggedInUser,loggedInUserPfp,loggedInUserChild,setLoggedInUserClasses } = userData();
@@ -35,7 +38,9 @@ const Home = () => {
     }
   }
       console.log("image uri",loggedInUserPfp);
-
+const handleBellPress = () => {
+    Alert.alert('Notification', 'You pressed the bell icon!');
+  };
 
   return (
     <>
@@ -50,7 +55,7 @@ const Home = () => {
           source={require('@/assets/images/Bg.png')}
           resizeMode="cover">
         {/* Header Section */}
-        <View style={styles.container}>
+        {/* <View style={styles.container}>
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Assalamualaikum,</Text>
             <Text style={styles.name}>{loggedInUser} 👋</Text>
@@ -62,7 +67,16 @@ const Home = () => {
               style={styles.profileImage}
             />
           </View>
-        </View>
+        </View> */}
+
+         <Header
+        name={loggedInUser}
+        profileImage={loggedInUserPfp}
+        onBellPress={handleBellPress}
+          bellButtonStyle={{ backgroundColor: "#fff" }}
+
+      />
+
 
         {/* Progress List */}
         {/* <View style={styles.progressContainer}>

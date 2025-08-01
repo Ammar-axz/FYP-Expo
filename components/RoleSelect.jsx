@@ -1,29 +1,39 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ImageBackground,
+} from 'react-native';
 
-const RoleSelect = ({ Role, imgSrc, Desc, onPress, isSelected }) => {
-
+const RoleSelect = ({ Role, imgSrc, Desc, onPress, isSelected, bgImage }) => {
   return (
     <TouchableOpacity
       style={[styles.touchable, isSelected && styles.selectedBorder]}
       activeOpacity={0.8}
-      onPress={onPress} // No need to set `isSelected` inside this component
+      onPress={onPress}
     >
-      <LinearGradient
-        colors={isSelected ? ['#0f9b0f', '#095C47'] : ['#ffffff', '#ffffff']}
-        style={styles.RoleContainer}
-      >
-        <View>
+      {isSelected ? (
+        <ImageBackground
+          source={bgImage}
+          imageStyle={styles.backgroundImage}
+          style={styles.RoleContainer}
+        >
+          <View>
+            <Image source={imgSrc} style={styles.RoleImage} />
+            <Text style={[styles.RoleTitle, styles.textWhite]}>{Role}</Text>
+            <Text style={[styles.RoleDesc, styles.textWhite]}>{Desc}</Text>
+          </View>
+        </ImageBackground>
+      ) : (
+        <View style={[styles.RoleContainer, { backgroundColor: '#ffffff' }]}>
           <Image source={imgSrc} style={styles.RoleImage} />
-          <Text style={[styles.RoleTitle, isSelected && styles.textWhite]}>
-            {Role}
-          </Text>
-          <Text style={[styles.RoleDesc, isSelected && styles.textWhite]}>
-            {Desc}
-          </Text>
+          <Text style={styles.RoleTitle}>{Role}</Text>
+          <Text style={styles.RoleDesc}>{Desc}</Text>
         </View>
-      </LinearGradient>
+      )}
     </TouchableOpacity>
   );
 };
@@ -32,9 +42,10 @@ const styles = StyleSheet.create({
   touchable: {
     marginVertical: 8,
     marginHorizontal: 10,
-    borderRadius: 12,
+    borderRadius: 16,
     borderColor: '#12121226',
     borderWidth: 1,
+    overflow: 'hidden',
   },
   selectedBorder: {
     borderColor: '#0f9b0f',
@@ -43,6 +54,11 @@ const styles = StyleSheet.create({
   RoleContainer: {
     padding: 15,
     borderRadius: 12,
+    justifyContent: 'center',
+  },
+  backgroundImage: {
+    borderRadius: 12,
+    resizeMode: 'cover',
   },
   RoleImage: {
     marginBottom: 10,

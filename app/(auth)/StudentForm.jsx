@@ -79,13 +79,19 @@ const StudentForm = () => {
             placeholder="example@domain.com"
           />
 
-          <FormField
+          {/* <FormField
             title="Password"
             value={form.pass}
             handleChangeText={(e) => setForm({ ...form, pass: e })}
             placeholder="Enter your password"
             secureTextEntry={true} // Hides password
-          />
+          /> */}
+          <FormField
+  title="Password"
+  value={form.pass}
+  handleChangeText={(e) => setForm({ ...form, pass: e })}
+  placeholder="Enter your password"
+/>
 
           <ConfirmBtn
             title="Log in"

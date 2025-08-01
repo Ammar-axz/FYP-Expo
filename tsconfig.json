@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "components/BackButton.jsx", "app/(splash)/Onboarding2.jsx", "components/RoleSelect.jsx", "app/(splash)/_layout.jsx", "app/(splash)/index.jsx", "app/(splash)/OnboardingItem.jsx", "app/(auth)/SignIn.jsx", "components/ConfirmBtn.jsx"  ]
+, "components/BackButton.jsx", "app/(splash)/Onboarding2.jsx", "components/RoleSelect.jsx", "app/(splash)/_layout.jsx", "app/(splash)/index.jsx", "app/(splash)/OnboardingItem.jsx", "app/(auth)/SignIn.jsx", "components/ConfirmBtn.jsx", "app/(tabs-teacher)/(home-teacher)/index.jsx"  ]
 }

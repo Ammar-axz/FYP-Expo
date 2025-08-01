@@ -1,24 +1,36 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { API } from '@/api';
+import NotificationIcon from '@/assets/icons/Notification.svg';
 
-const Header = ({ name, profileImage, onBellPress }) => {
+const Header = ({
+  name,
+  profileImage,
+  onBellPress,
+  containerStyle,
+  greetingStyle,
+  nameStyle,
+  bellButtonStyle,
+  notificationDotStyle,
+  profileImageStyle,
+}) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       {/* Texts */}
       <View style={styles.textContainer}>
-        <Text style={styles.greeting}>Assalamualaikum,</Text>
-        <Text style={styles.name}>{name} 👋</Text>
+        <Text style={[styles.greeting, greetingStyle]}>Assalamualaikum,</Text>
+        <Text style={[styles.name, nameStyle]}>{name} 👋</Text>
       </View>
 
       {/* Icons */}
       <View style={styles.iconsContainer}>
-        <TouchableOpacity style={styles.bellButton} onPress={onBellPress}>
-          <Image
+        <TouchableOpacity style={[styles.bellButton, bellButtonStyle]} onPress={onBellPress}>
+          {/* <Image
             source={require('@/assets/icons/bell.png')}
             resizeMode="contain"
-          />
-          <View style={styles.notificationDot} />
+          /> */}
+          <NotificationIcon />
+          <View style={[styles.notificationDot, notificationDotStyle]} />
         </TouchableOpacity>
 
         <Image
@@ -27,7 +39,7 @@ const Header = ({ name, profileImage, onBellPress }) => {
               ? { uri: `${API.BASE_URL}/Images/ProfilePictures/${profileImage}` }
               : require('@/assets/icons/user-pic.png')
           }
-          style={styles.profileImage}
+          style={[styles.profileImage, profileImageStyle]}
         />
       </View>
     </View>
@@ -37,8 +49,8 @@ const Header = ({ name, profileImage, onBellPress }) => {
 export default Header;
 
 const styles = StyleSheet.create({
-   container: {
-    marginTop:25,
+  container: {
+    marginTop: 25,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',

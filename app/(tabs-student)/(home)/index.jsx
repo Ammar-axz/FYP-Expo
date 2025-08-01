@@ -16,9 +16,11 @@ import {
   TouchableOpacity,
   View,
   Modal,
-  Button
+  Button,
+  Alert
 } from 'react-native';
 import { router } from 'expo-router';
+import Header from '@/components/Home/Header';
 
 const Home = () => {
   const {loggedInUser,loggedInUserPfp,loggedInUserId,loggedInUserRole,loggedInUserClasses,setLoggedInUserClasses,
@@ -121,6 +123,9 @@ const Home = () => {
     {console.log(e)}
   }
 
+  const handleBellPress = () => {
+    Alert.alert('Notification', 'You pressed the bell icon!');
+  };
 
   return (
     <>
@@ -130,7 +135,7 @@ const Home = () => {
         source={require('@/assets/images/Bg.png')}
         resizeMode="cover">
         {/* Header Section */}
-        <View style={styles.container}>
+        {/* <View style={styles.container}>
           <View style={styles.textContainer}>
             <Text style={styles.greeting}>Assalamualaikum,</Text>
             <Text style={styles.name}>{loggedInUser} 👋</Text>
@@ -152,7 +157,15 @@ const Home = () => {
               style={styles.profileImage}
             />
           </View>
-        </View>
+        </View> */}
+
+ <Header
+        name={loggedInUser}
+        profileImage={loggedInUserPfp}
+        onBellPress={handleBellPress}
+          bellButtonStyle={{ backgroundColor: "#fff" }}
+
+      />
 
         {/* Progress List */}
         <View style={styles.progressContainer}>
@@ -218,13 +231,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(15,65,56,1)',
   },
-  container: {
-    marginTop:25,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+  // container: {
+  //   marginTop:25,
+  //   padding: 16,
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   justifyContent: 'space-between',
+  // },
   modal:{
     position:'absolute',
   },
@@ -238,46 +251,46 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     padding:20
   },
-  textContainer: {
-    flex: 1,
-  },
-  greeting: {
-    color: '#B0C4B1',
-    fontSize: 16,
-  },
-  name: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  iconsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  bellButton: {
-    backgroundColor: '#3C7060',
-    padding: 15,
-    borderRadius: 100,
-  },
-  notificationDot: {
-    position: 'absolute',
-    top: -3,
-    right: -3,
-    width: 8,
-    height: 8,
-    backgroundColor: 'red',
-    borderRadius: 4,
-  },
-  profileImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 100,
-    marginLeft: 10,
-    resizeMode: 'contain',
-  },
+  // textContainer: {
+  //   flex: 1,
+  // },
+  // greeting: {
+  //   color: '#B0C4B1',
+  //   fontSize: 16,
+  // },
+  // name: {
+  //   color: '#fff',
+  //   fontSize: 24,
+  //   fontWeight: 'bold',
+  // },
+  // iconsContainer: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+  // bellButton: {
+  //   backgroundColor: '#3C7060',
+  //   padding: 15,
+  //   borderRadius: 100,
+  // },
+  // notificationDot: {
+  //   position: 'absolute',
+  //   top: -3,
+  //   right: -3,
+  //   width: 8,
+  //   height: 8,
+  //   backgroundColor: 'red',
+  //   borderRadius: 4,
+  // },
+  // profileImage: {
+  //   width: 50,
+  //   height: 50,
+  //   borderRadius: 100,
+  //   marginLeft: 10,
+  //   resizeMode: 'contain',
+  // },
   progressContainer: {
     flexDirection: 'row',
-    marginLeft:10
+    marginLeft:10,
   },
   schedule: {
     backgroundColor: '#0F2823',

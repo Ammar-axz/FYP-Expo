@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import EyeIcon from '../assets/icons/eye.png';
-import EyeIconHide from '../assets/icons/eye-hide.png';
+import EyeIcon from '@/assets/icons/eye.png';
+import EyeIconHide from '@/assets/icons/eye-hide.png';
 
 const FormField = ({ title, value, placeholder, handleChangeText, ...props }) => {
   const [showPassword, setShowPassword] = useState(false);

@@ -94,7 +94,6 @@ const StudentForm = () => {
             value={form.pass}
             handleChangeText={(e) => setForm({ ...form, pass: e })}
             placeholder="Enter your password"
-            secureTextEntry={true} // Hides password
           />
 
           <ConfirmBtn

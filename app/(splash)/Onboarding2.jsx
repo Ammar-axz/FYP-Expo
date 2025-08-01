@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import gradientImage from '@/assets/images/gradient.png';
 
 const RoleSelection = () => {
   const [selectedRole, setSelectedRole] = useState(null);
@@ -60,6 +61,7 @@ const RoleSelection = () => {
             Desc={role.desc}
             onPress={() => handleRoleSelect(role.title)}
             isSelected={selectedRole === role.title}
+            bgImage={gradientImage}
           />
         ))}
 
