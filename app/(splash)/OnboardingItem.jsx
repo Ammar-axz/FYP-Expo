@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import SlideData from './SlideData';
+import LogoComponent from '@/components/LogoComponent';
 
 const OnboardingScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -65,11 +66,11 @@ const OnboardingScreen = () => {
     // <SafeAreaView style={styles.safeArea}>
     <View>
     {/* Header Section */}
-    <View style={styles.header}>
-      {/* <Image source={Logo} style={styles.logo} /> */}
+    {/* <View style={styles.header}>
       <Logo width={36} height={38} />
       <Text style={styles.subtitle}> IlmPro</Text>
-    </View>
+    </View> */}
+    <LogoComponent logoTitleStyle={{ color: "#fff", fontSize: 27 }} />
     {/* FlatList for Onboarding Slides */}
     <FlatList
       data={SlideData}

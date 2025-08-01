@@ -1,6 +1,7 @@
 import ConfirmBtn from '@/components/ConfirmBtn';
 import Heading from '@/components/Heading';
 import RoleSelect from '@/components/RoleSelect';
+import LogoComponent from '@/components/LogoComponent';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -51,6 +52,8 @@ const RoleSelection = () => {
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
+     <LogoComponent logoTitleStyle={{ color: "#000", fontSize: 27 }} />
+
         <Heading heading="What are you looking to be?" />
 
         {roles.map((role) => (

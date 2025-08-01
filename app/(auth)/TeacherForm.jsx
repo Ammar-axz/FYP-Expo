@@ -6,7 +6,7 @@ import Paragraph from '@/components/Paragraph';
 import { userData } from '@/Context/UserContext';
 import axios from 'axios';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
