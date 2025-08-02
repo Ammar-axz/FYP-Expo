@@ -6,6 +6,7 @@ import ReminderList from './ReminderList';
 import { userData } from '@/Context/UserContext';
 import axios from 'axios'
 import {API} from '@/api'
+import Heading from '@/components/Heading'
 
 
 const ReminderScreen = () => {
@@ -59,6 +60,9 @@ const ReminderScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={{padding: 10}}>
+
+      <Heading heading="Reminder" />
       
       <ReminderList reminders={reminders} removeReminder={removeReminder}/>
 
@@ -73,14 +77,15 @@ const ReminderScreen = () => {
       />
 
     </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: { 
     flex: 1,
-    marginHorizontal: 10,
-    backgroundColor: 'white',
+    marginHorizontal: 0,
+    backgroundColor: '#fff',
   },
   addButtonText: {
     color: '#fff', 

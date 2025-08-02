@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    paddingHorizontal: 10,
+    height: 57
   },
   iconContainer: {
     justifyContent: 'center',

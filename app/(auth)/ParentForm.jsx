@@ -78,7 +78,9 @@ const StudentForm = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
           <Heading heading="Enter Information" />
-          <Paragraph paragraph="Provide your details to continue" />
+          <View style={{marginVertical: 20}}>
+            <Paragraph paragraph="Provide your details to continue" />
+          </View>
 
           {/* <FormField
             title="Student ID"
@@ -112,7 +114,7 @@ const StudentForm = () => {
           />
 
           <ConfirmBtn
-            title="Log in"
+            title="Save & Continue"
             isLoading={isSubmitting}
             handlePress={handleSubmit}
           />

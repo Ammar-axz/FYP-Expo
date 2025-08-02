@@ -31,8 +31,8 @@ function RenderReminder ({item,removeReminder})
         onPress={()=>removeReminder(item._id)}
       >
         <Image
-          source={require('@/assets/icons/delete.png')}
-          style={{resizeMode: 'contain'}}
+          source={require('@/assets/icons/DateRightArrow.png')}
+          style={{resizeMode: 'contain', height: 24, width: 24}}
         />
       </TouchableOpacity>
     </View>

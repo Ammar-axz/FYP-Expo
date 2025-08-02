@@ -1,88 +1,86 @@
-import { Picker } from "@react-native-picker/picker";
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import { Picker } from '@react-native-picker/picker';
 import { userData } from "@/Context/UserContext";
-import { useEffect } from "react";
 import axios from "axios";
-import {API} from "@/api"
+import { API } from "@/api";
 import { format } from "date-fns";
 
-
-const StudentListComp = ({ attendanceItem }) => {
-  return (
-    <View style={styles.item}>
-      <View style={{ flexDirection: "column", gap: 5 }}>
-        <Text style={styles.day}>{attendanceItem.Day}</Text>
-        <Text style={styles.date}>{format(new Date(attendanceItem.Date).toDateString(),'dd MMMM yyyy')}</Text>
-      </View>
-      <View style={{ flexDirection: "column", gap: 5 ,marginRight:5 }}>
-        <Text style={attendanceItem.Status ? styles.present : styles.absent }>{attendanceItem.Status? "Present" : "Absent"}</Text>
-      </View>
+const StudentListComp = ({ attendanceItem }) => (
+  <View style={styles.item}>
+    <View style={{ flexDirection: "column", gap: 5 }}>
+      <Text style={styles.day}>{attendanceItem.Day}</Text>
+      <Text style={styles.date}>
+        {format(new Date(attendanceItem.Date), 'dd MMM yyyy')}
+      </Text>
     </View>
-  );
-};
-
+    <Text
+      style={attendanceItem.Status ? styles.present : styles.absent}>
+      {attendanceItem.Status ? "Present" : "Absent"}
+    </Text>
+  </View>
+);
 
 const Attendance = () => {
-  const [selectedMonth, setSelectedMonth] = useState('2024-12')
-  const {loggedInUserId,loggedInUserRole,loggedInUserClasses} = userData()
-  const today = new Date()
-  const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0])
-  const [attendance,setAttendance] = useState([])
-  const [stats,setStats] = useState(
-  {
-    Conducted : 0,
-    Attended : 0,
-    Percentage : 0
-  })
+  const { loggedInUserId, loggedInUserClasses } = userData();
+  const [selectedClass, setSelectedClass] = useState(loggedInUserClasses[0]);
+  const [attendance, setAttendance] = useState([]);
+  const [stats, setStats] = useState({ Conducted: 0, Attended: 0, Percentage: 0 });
+  const [markedDates, setMarkedDates] = useState({});
 
-  useEffect(()=>{
-    getAttendance()
-  },[selectedClass])
+  useEffect(() => {
+    if (selectedClass) getAttendance();
+  }, [selectedClass]);
 
-  useEffect(()=>{
-    if(attendance)
-    calculateStats()
+  useEffect(() => {
+    if (attendance) {
+      calculateStats();
+      mapAttendanceToCalendar();
+    }
+  }, [attendance]);
 
-  },[attendance])
-
-  async function getAttendance()
-  {
-    try
-    {
+  const getAttendance = async () => {
+    try {
       const attendanceData = {
-        class_id:selectedClass.Class_id,
-        student_id:loggedInUserId
-      }
-      const attendanceResp = await axios.post(`${API.BASE_URL}/api/getStudentAttendance`,attendanceData)
-      setAttendance(attendanceResp.data)
-      console.log(attendanceResp.data)
+        class_id: selectedClass.Class_id,
+        student_id: loggedInUserId
+      };
+      const response = await axios.post(`${API.BASE_URL}/api/getStudentAttendance`, attendanceData);
+      setAttendance(response.data);
+    } catch (error) {
+      console.error(error);
     }
-    catch(e)
-    {
-      console.log(e)      
-    }
-  }
+  };
 
-  function calculateStats()
-  {
-    let totalClasses = attendance.length
-    let presentCleasses = 0
-    let percentage
-    attendance.map((i)=>
-    {
-      i.Status ? presentCleasses++ : null
-    })
+  const calculateStats = () => {
+    const total = attendance.length;
+    const attended = attendance.filter(item => item.Status).length;
+    const percentage = total ? (attended / total) * 100 : 0;
+    setStats({ Conducted: total, Attended: attended, Percentage: percentage });
+  };
 
-    percentage = (presentCleasses/totalClasses)*100
-    setStats({
-      Conducted:totalClasses,
-      Attended:presentCleasses,
-      Percentage:percentage
-    })
-
-  }
+  const mapAttendanceToCalendar = () => {
+    const mapped = {};
+    attendance.forEach(item => {
+      const date = format(new Date(item.Date), 'yyyy-MM-dd');
+      mapped[date] = {
+        marked: true,
+        dotColor: item.Status ? '#36B295' : '#c02e2e',
+        customStyles: {
+          container: {
+            backgroundColor: item.Status ? '#d7f5eb' : '#ffe5e5',
+            borderRadius: 10
+          },
+          text: {
+            color: '#000',
+            fontWeight: 'bold'
+          }
+        }
+      };
+    });
+    setMarkedDates(mapped);
+  };
 
   return (
     <View style={styles.container}>
@@ -92,13 +90,13 @@ const Attendance = () => {
           onValueChange={(itemValue) => setSelectedClass(itemValue)}
           style={styles.picker}
         >
-          {loggedInUserClasses.map((item, index) => (
-            <Picker.Item key={index} label={item.Class_Name} value={item} />
+          {loggedInUserClasses.map((item, idx) => (
+            <Picker.Item key={idx} label={item.Class_Name} value={item} />
           ))}
         </Picker>
       </View>
 
-      {/* Attendance Stats */}
+      {/* Stats */}
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Conducted</Text>
@@ -110,69 +108,74 @@ const Attendance = () => {
         </View>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Percentage</Text>
-          <Text style={styles.statValue}>{stats.Percentage ? stats.Percentage.toFixed(2) : 0 }%</Text>
+          <Text style={styles.statValue}>{stats.Percentage.toFixed(1)}%</Text>
         </View>
       </View>
-      <View style={{ flex: 1 ,marginTop:10}}>
-        {attendance.length === 0 || !attendance ? 
-          <Text style={{fontSize:18,textAlign:"center"}}>no records available</Text>:
+
+      {/* Calendar */}
+      <Calendar
+        markingType={'custom'}
+        markedDates={markedDates}
+        theme={{
+          todayTextColor: '#36B295',
+          arrowColor: '#000',
+          dotColor: '#36B295',
+          textDayFontWeight: '500',
+          textDayFontSize: 14,
+          textMonthFontSize: 18,
+          textDayHeaderFontSize: 14,
+          backgroundColor: 'red'
+        }}
+      />
+
+      {/* Attendance List */}
+      <View style={{ flex: 1, marginTop: 10 }}>
+        {attendance.length === 0 ? (
+          <Text style={{ fontSize: 16, textAlign: "center" }}>No attendance records</Text>
+        ) : (
           <FlatList
             data={attendance}
-            keyExtractor={(item) => (item._id)}
+            keyExtractor={(item) => item._id}
             renderItem={({ item }) => <StudentListComp attendanceItem={item} />}
           />
-        }
+        )}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
   pickerContainer: {
-    width: "100%",
-    height: 50,
-    borderRadius: 30,
-    justifyContent: "center",
-    marginBottom: 20,
-    backgroundColor: "#f4f4f4",
+    width: "100%", height: 50, borderRadius: 30,
+    justifyContent: "center", marginBottom: 10,
+    backgroundColor: "#f4f4f4"
   },
-  picker: {
-    width: "100%",
-    height: 50,
-  },
-  subHeader: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 20,
-  },
+  picker: { width: "100%", height: 50 },
   statsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginBottom: 15
   },
   statBox: {
     flex: 1,
-    height: 120,
+    height: 100,
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: "#f4f4f4",
     borderRadius: 21,
-    alignItems: 'center',
     marginHorizontal: 5,
-    marginVertical: 10
   },
   statValue: {
-    fontSize: 24,
-    fontWeight: '500',
+    fontSize: 30,
+    fontWeight: 'medium',
     color: '#000',
+    marginTop: 5
   },
   statLabel: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#000',
-    fontWeight: '500'
+    fontWeight: 'medium'
   },
   item: {
     flexDirection: "row",
@@ -185,29 +188,23 @@ const styles = StyleSheet.create({
   },
   day: {
     fontWeight: "600",
-    fontSize: 18,
-    // color: "#36B295",
+    fontSize: 16,
   },
   date: {
-    fontWeight: "600",
-    fontSize: 18,
-    color: "rgba(0, 0, 0, 0.50)",
-  },
-  title: {
-    fontWeight: "600",
-    fontSize: 18,
-    color: "#000",
+    fontWeight: "500",
+    fontSize: 14,
+    color: "rgba(0, 0, 0, 0.5)",
   },
   present: {
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 16,
     color: "#36B295",
   },
   absent: {
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 16,
     color: "#c02e2eff",
-  }
+  },
 });
 
 export default Attendance;

@@ -66,12 +66,11 @@ const StudentForm = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-        {/* <LogoComponent logoTitleStyle={{ color: "#000", fontSize: 27 }} headerContainer={{ position: 'relative',
-    top:0,
-    zIndex: 10,}} /> */}
 
           <Heading heading="Enter Information" />
-          <Paragraph paragraph="Provide your details to continue" />
+          <View style={{marginVertical: 20}}>
+            <Paragraph paragraph="Provide your details to continue" />
+          </View>
 
           <FormField
             title="Email"
@@ -96,7 +95,7 @@ const StudentForm = () => {
           />
 
           <ConfirmBtn
-            title="Log in"
+            title="Save & Continue"
             isLoading={isSubmitting}
             handlePress={handleSubmit}
           />

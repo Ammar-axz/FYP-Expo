@@ -1,16 +1,17 @@
-import ConfirmBtn from '@/components/ConfirmBtn';
-import Heading from '@/components/Heading';
-import RoleSelect from '@/components/RoleSelect';
-import LogoComponent from '@/components/LogoComponent';
-import { router } from 'expo-router';
-import React, { useState } from 'react';
+import ConfirmBtn from "@/components/ConfirmBtn";
+import Heading from "@/components/Heading";
+import RoleSelect from "@/components/RoleSelect";
+import LogoComponent from "@/components/LogoComponent";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-} from 'react-native';
-import gradientImage from '@/assets/images/gradient.png';
+  View,
+} from "react-native";
+import gradientImage from "@/assets/images/gradient.png";
 
 const RoleSelection = () => {
   const [selectedRole, setSelectedRole] = useState(null);
@@ -27,34 +28,36 @@ const RoleSelection = () => {
 
   const roles = [
     {
-      title: 'Student',
-      desc: 'Access Student Features',
-      icon: require('@/assets/icons/User.png'),
+      title: "Student",
+      desc: "Access all your Saba’q and latest video based online courses to level in deen",
+      icon: require("@/assets/icons/User.png"),
     },
     {
-      title: 'Teacher',
-      desc: 'Manage Teaching Resources',
-      icon: require('@/assets/icons/User.png'),
+      title: "Teacher",
+      desc: "Stay updated with essential alerts like check-in ",
+      icon: require("@/assets/icons/Host.png"),
     },
     {
-      title: 'Parent',
-      desc: "Monitor Your Child's Progress",
-      icon: require('@/assets/icons/User.png'),
+      title: "Parent",
+      desc: "Stay up to date with your child progress and stays connected with Qari (Teacher)",
+      icon: require("@/assets/icons/User.png"),
     },
   ];
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
-     <LogoComponent logoTitleStyle={{ color: "#000", fontSize: 27 }} />
+        <LogoComponent logoTitleStyle={{ color: "#000", fontSize: 27 }} />
 
-        <Heading heading="What are you looking to be?" />
+        <View style={styles.headingBox}>
+          <Heading heading="What are you looking to be?" />
+        </View>
 
         {roles.map((role) => (
           <RoleSelect
@@ -69,7 +72,7 @@ const RoleSelection = () => {
         ))}
 
         <ConfirmBtn
-          title="Confirm"
+          title="Continue"
           handlePress={handleConfirm}
           disabled={!selectedRole}
         />
@@ -84,10 +87,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
+  headingBox: {
+    marginTop: 100,
+    marginBottom: 0
+  }
 });
