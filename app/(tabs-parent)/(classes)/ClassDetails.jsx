@@ -52,7 +52,12 @@ function ClassDetails() {
         <View style={{justifyContent:'center',alignItems:'center'}}>
           <Image
             // source={require("@/assets/icons/user-pic.png")}
-            source={{uri:`${API.BASE_URL}/Images/ProfilePictures/${teacher.pfp}`}}
+            source={
+              teacher.pfp
+                ? { uri: `${API.BASE_URL}/Images/ProfilePictures/${teacher.pfp}` }
+                : require('@/assets/icons/user-pic.png')
+              }
+            
             style={styles.prof_pic}
           />
           <Text style={styles.heading}>Qari {teacher.Name}</Text>
