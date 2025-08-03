@@ -1,11 +1,11 @@
-import Progress from '@/components/Home/Progress';
-import QuickAccess from '@/components/Home/QuickAccess';
-import { userData } from '@/Context/UserContext';
-import axios from 'axios';
-import { useState,useEffect } from 'react';
-import { API } from '@/api';
-import { useIsFocused } from '@react-navigation/native';
-import { format } from 'date-fns';
+import Progress from "@/components/Home/Progress";
+import QuickAccess from "@/components/Home/QuickAccess";
+import { userData } from "@/Context/UserContext";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { API } from "@/api";
+import { useIsFocused } from "@react-navigation/native";
+import { format } from "date-fns";
 import {
   FlatList,
   Image,
@@ -17,219 +17,224 @@ import {
   View,
   Modal,
   Button,
-  Alert
-} from 'react-native';
-import { router } from 'expo-router';
-import Header from '@/components/Home/Header';
+  Alert,
+} from "react-native";
+import Header from "@/components/Home/Header";
 
 const Home = () => {
-  const {loggedInUser,loggedInUserPfp,loggedInUserId,loggedInUserRole,loggedInUserClasses,setLoggedInUserClasses,
-    incQuizes,setIncQuizes } = userData()
+  const {
+    loggedInUser,
+    loggedInUserPfp,
+    loggedInUserId,
+    loggedInUserRole,
+    loggedInUserClasses,
+    setLoggedInUserClasses,
+    incQuizes,
+    setIncQuizes,
+  } = userData();
   // const [quizes,setQuizes] = useState([])
   const [reminder, setReminder] = useState();
-  const [show,setShow] = useState(false)
-  const isFocused = useIsFocused()
-  let incQuizesData = []
+  const [show, setShow] = useState(false);
+  const isFocused = useIsFocused();
+  let incQuizesData = [];
 
-  useEffect(()=>{
-    getClasses()
-  },[loggedInUserRole,loggedInUserId])
+  useEffect(() => {
+    getClasses();
+  }, [loggedInUserRole, loggedInUserId]);
 
-  useEffect(()=>{
-    if(isFocused)
-      getReminder()
-  },[isFocused])
+  useEffect(() => {
+    if (isFocused) getReminder();
+  }, [isFocused]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (loggedInUserClasses.length > 0) {
-      getQuizes()
+      getQuizes();
     }
-  },[loggedInUserClasses])
+  }, [loggedInUserClasses]);
 
-  async function getClasses()
-  {
-    try
-    {
-      let userData = { user_id : loggedInUserId , role : loggedInUserRole }
-      const classData = await axios.post(`${API.BASE_URL}/api/getClasses`,userData)
-      setLoggedInUserClasses(classData.data)        
-    }
-    catch(e)
-    {
-      console.log(e)
-    }
-  }
-  
-
-  async function getQuizes()
-  {
-    try
-    {        
-      let id = {user_id: loggedInUserId , class_id : loggedInUserClasses, role : loggedInUserRole}
-      let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`,id)
-      
-      Quizes.data.map((i)=>{
-        if(i.completed > 0 && i.quiz.T_Questions != i.completed )
-        {
-          incQuizesData.push(i)
-        }
-      })
-      setIncQuizes(incQuizesData)
-    }
-    catch(e)
-    {
-      console.log(e)
+  async function getClasses() {
+    try {
+      let userData = { user_id: loggedInUserId, role: loggedInUserRole };
+      const classData = await axios.post(
+        `${API.BASE_URL}/api/getClasses`,
+        userData
+      );
+      setLoggedInUserClasses(classData.data);
+    } catch (e) {
+      console.log(e);
     }
   }
 
-  async function getReminder()
-  {    
-    try{
-      let reminders = []
-      let resp = await axios.get(`${API.BASE_URL}/api/getReminders`,
-        {
-          params:{
-            user_id:loggedInUserId
-        }}
-      )
-      reminders = resp.data
-      
-      if(reminders.length == 0)
-      {
-        setReminder()
-      }
-      
-    const today = new Date();
-    let closestReminder = null;
-    let minDiff = Infinity;
+  async function getQuizes() {
+    try {
+      let id = {
+        user_id: loggedInUserId,
+        class_id: loggedInUserClasses,
+        role: loggedInUserRole,
+      };
+      let Quizes = await axios.post(`${API.BASE_URL}/api/getQuizes`, id);
 
-    reminders.forEach((reminder) => {
-      const reminderDate = new Date(reminder.Date)
-      if (reminderDate > today) {
-        const diff = reminderDate - today
-        if (diff < minDiff) {
-          minDiff = diff
-          closestReminder = reminder
+      Quizes.data.map((i) => {
+        if (i.completed > 0 && i.quiz.T_Questions != i.completed) {
+          incQuizesData.push(i);
         }
+      });
+      setIncQuizes(incQuizesData);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function getReminder() {
+    try {
+      let reminders = [];
+      let resp = await axios.get(`${API.BASE_URL}/api/getReminders`, {
+        params: {
+          user_id: loggedInUserId,
+        },
+      });
+      reminders = resp.data;
+
+      if (reminders.length == 0) {
+        setReminder();
       }
-    });
 
-    if (closestReminder) {
-      setReminder(closestReminder)
-    }
+      const today = new Date();
+      let closestReminder = null;
+      let minDiff = Infinity;
 
+      reminders.forEach((reminder) => {
+        const reminderDate = new Date(reminder.Date);
+        if (reminderDate > today) {
+          const diff = reminderDate - today;
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestReminder = reminder;
+          }
+        }
+      });
+
+      if (closestReminder) {
+        setReminder(closestReminder);
+      }
+    } catch (e) {
+      console.log(e);
     }
-    catch(e)
-    {console.log(e)}
   }
 
   const handleBellPress = () => {
-    Alert.alert('Notification', 'You pressed the bell icon!');
+    Alert.alert("Notification", "You pressed the bell icon!");
   };
 
   return (
     <>
-    <ScrollView style={{backgroundColor:'white'}}>
-      <ImageBackground
-        style={styles.wrapper}
-        source={require('@/assets/images/Bg.png')}
-        resizeMode="cover">
-        {/* Header Section */}
-        {/* <View style={styles.container}>
-          <View style={styles.textContainer}>
-            <Text style={styles.greeting}>Assalamualaikum,</Text>
-            <Text style={styles.name}>{loggedInUser} 👋</Text>
-          </View>
-
-          <View style={styles.iconsContainer}>
-             <TouchableOpacity
-              style={styles.bellButton}
-              onPress={() => alert('Notifications Pressed')}>
-              <Image
-                source={require('@/assets/icons/bell.png')}
-                resizeMode="contain"
-              />
-              <View style={styles.notificationDot} />
-            </TouchableOpacity> 
-
-            <Image
-              source={loggedInUserPfp?{uri:`${API.BASE_URL}/Images/ProfilePictures/${loggedInUserPfp}`}:require("@/assets/icons/user-pic.png")}
-              style={styles.profileImage}
-            />
-          </View>
-        </View> */}
-
- <Header
-        name={loggedInUser}
-        profileImage={loggedInUserPfp}
-        onBellPress={handleBellPress}
-          bellButtonStyle={{ backgroundColor: "#fff" }}
-
-      />
-
-        {/* Progress List */}
-        <View style={styles.progressContainer}>
-          <FlatList
-            data={incQuizes}
-            keyExtractor={item => item.quiz._id}
-            renderItem={({item}) => (
-              <Progress quiz={item} />
-            )}
-            horizontal
-            showsHorizontalScrollIndicator={false}
+      <ScrollView style={{ backgroundColor: "white" }}>
+        <ImageBackground
+          style={styles.wrapper}
+          source={require("@/assets/images/Bg.png")}
+          resizeMode="cover"
+        >
+          <Header
+            name={loggedInUser}
+            profileImage={loggedInUserPfp}
+            onBellPress={handleBellPress}
+            bellButtonStyle={{ backgroundColor: "#fff" }}
           />
-        </View>
 
-        {/* Schedule Notification */}
-        <View style={styles.schedule}>
-          <TouchableOpacity
-            style={styles.scheduleBtn}
-            onPress={() => setShow(true)}>
-            {/* <View style={styles.clockIcon}> */}
-              <Image
-                source={require('@/assets/icons/clock2.png')}
-                resizeMode="contain"
-                style={{height:25,width:25,tintColor:'#35b170'}}
-              />
-            {/* </View> */}
-            <Text style={styles.scheduleText}>
-              {reminder?reminder.Title:"No Upcoming Reminders"}
-            </Text>
-            <Image
-              source={require('@/assets/icons/arrow.png')}
-              resizeMode="contain"
-              style={styles.arrowIcon}
+          {/* Progress List */}
+          <View style={styles.progressContainer}>
+            <FlatList
+              data={incQuizes}
+              keyExtractor={(item) => item.quiz._id}
+              renderItem={({ item }) => <Progress quiz={item} />}
+              horizontal
+              showsHorizontalScrollIndicator={false}
             />
-          </TouchableOpacity>
+          </View>
 
-          {reminder?
-          <Modal style={styles.modal} visible={show} transparent={true}>
-            <View style={styles.overlay}>
-              <View style={styles.dialog}>
-                <Text style={{fontSize:22,fontWeight:'bold',textAlign:'center',marginBottom:10}}>Upcoming Reminder</Text>
-                <Text style={{fontSize:20}}>{reminder.Title}</Text>
-                <Text style={{fontSize:18}}>Date : {format(reminder.Date,'dd MMM yyyy')}</Text>
-                <Text style={{fontSize:18}}>Time : {format(reminder.Date,'hh:mm a')}</Text>
-                <TouchableOpacity style={{backgroundColor:'#3dc29aff',padding:8,borderRadius:100,marginTop:10}}  onPress={() => setShow(false)} >
-                    <Text style={{textAlign:'center',color:'white',fontSize:18,fontWeight:'bold'}}>OK</Text>
-                </TouchableOpacity>
+          {/* Schedule Notification */}
+          <View style={styles.schedule}>
+            <TouchableOpacity
+              style={styles.scheduleBtn}
+              onPress={() => setShow(true)}
+            >
+              {/* <View style={styles.clockIcon}> */}
+              <View style={{backgroundColor: '#29403b', borderRadius: 30, padding: 10}}>
+                <Image
+                source={require("@/assets/icons/clock2.png")}
+                resizeMode="contain"
+                style={{ height: 25, width: 25, tintColor: "#35b170" }}
+              />
               </View>
-            </View>
-          </Modal>
-          :null}
+              {/* </View> */}
+              <Text style={styles.scheduleText}>
+                {reminder ? reminder.Title : "No Upcoming Reminders"}
+              </Text>
+              <Image
+                source={require("@/assets/icons/arrow.png")}
+                resizeMode="contain"
+                style={styles.arrowIcon}
+              />
+            </TouchableOpacity>
 
-        </View>
-      </ImageBackground>
-      <QuickAccess />
+            {reminder ? (
+              <Modal style={styles.modal} visible={show} transparent={true}>
+                <View style={styles.overlay}>
+                  <View style={styles.dialog}>
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        marginBottom: 10,
+                      }}
+                    >
+                      Upcoming Reminder
+                    </Text>
+                    <Text style={{ fontSize: 20 }}>{reminder.Title}</Text>
+                    <Text style={{ fontSize: 18 }}>
+                      Date : {format(reminder.Date, "dd MMM yyyy")}
+                    </Text>
+                    <Text style={{ fontSize: 18 }}>
+                      Time : {format(reminder.Date, "hh:mm a")}
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: "#3dc29aff",
+                        padding: 8,
+                        borderRadius: 100,
+                        marginTop: 10,
+                      }}
+                      onPress={() => setShow(false)}
+                    >
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          color: "white",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        OK
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+            ) : null}
+          </View>
+           
+        </ImageBackground>
+        <QuickAccess />
       </ScrollView>
-      </>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: 'rgba(15,65,56,1)',
+    backgroundColor: "rgba(15,65,56,1)",
   },
   // container: {
   //   marginTop:25,
@@ -238,18 +243,18 @@ const styles = StyleSheet.create({
   //   alignItems: 'center',
   //   justifyContent: 'space-between',
   // },
-  modal:{
-    position:'absolute',
+  modal: {
+    position: "absolute",
   },
-  overlay:{
-    height:'120%',
-    width:'100%',
-    backgroundColor:'#000000a8'
+  overlay: {
+    height: "120%",
+    width: "100%",
+    backgroundColor: "#000000a8",
   },
-  dialog:{
-    top:'25%',
-    backgroundColor:'white',
-    padding:20
+  dialog: {
+    top: "25%",
+    backgroundColor: "white",
+    padding: 20,
   },
   // textContainer: {
   //   flex: 1,
@@ -289,19 +294,22 @@ const styles = StyleSheet.create({
   //   resizeMode: 'contain',
   // },
   progressContainer: {
-    flexDirection: 'row',
-    marginLeft:10,
+    flexDirection: "row",
+    marginLeft: 20,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center'
   },
   schedule: {
-    backgroundColor: '#0F2823',
+    backgroundColor: "#0F2823",
     padding: 14,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
   scheduleBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   clockIcon: {
     // backgroundColor: '#fff',
@@ -309,15 +317,17 @@ const styles = StyleSheet.create({
     padding: 7,
   },
   scheduleText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     lineHeight: 20,
     flex: 1,
     marginLeft: 15,
   },
   arrowIcon: {
     marginTop: 5,
+    height: 20,
+    width: 20
   },
 });
 

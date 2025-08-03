@@ -22,17 +22,16 @@ const styles = {
     alignItems:'center',
     justifyContent:'center',
     marginVertical:15,
-    marginLeft:10,
     backgroundColor: 'transparent',
     borderRadius: 100,
     borderWidth:1,
-    borderColor:'#000000'
+    borderColor:'#d8d8d8'
     },
     backArrow: {
     tintColor: '#000',
     resizeMode: 'contain',
     height:24,
     width:24,
-    marginRight:3
+    marginRight:0
     }
 }

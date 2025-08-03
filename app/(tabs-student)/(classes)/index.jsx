@@ -1,7 +1,7 @@
 import Card from '@/components/Home/Card';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation , useIsFocused } from '@react-navigation/native';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { userData } from '@/Context/UserContext';
 import {
   FlatList,
@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { useEffect } from 'react';
-import { useIsFocused } from '@react-navigation/native';
+
+
 
 const CourseCard = ({ student_class }) => {
 
@@ -20,6 +20,7 @@ const CourseCard = ({ student_class }) => {
   const isFocused = useIsFocused()
 
   return (
+    <>
     <TouchableOpacity
       style={styles.card}
       // onPress={()=>{router.navigate('QuizDetails', {course:quiz})}}
@@ -27,7 +28,7 @@ const CourseCard = ({ student_class }) => {
         router.push({
           pathname: "ClassDetails",
           params: {
-            Class: encodeURIComponent(JSON.stringify(student_class)), // ← Encode it!
+            Class: encodeURIComponent(JSON.stringify(student_class)),
           },
         });
       }}
@@ -36,7 +37,8 @@ const CourseCard = ({ student_class }) => {
         <Text style={styles.title}>{student_class.Class_Name}</Text>
       </View>
       <Image style={{height:32,width:32}} source={require('@/assets/icons/DateRightArrow.png')} />
-    </TouchableOpacity>
+    </TouchableOpacity> 
+    </>
   );
 };
 
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop:40,
     marginHorizontal:'3%',
-    alignSelf:'center'
+    alignSelf:'center',
   },
   title: {
     fontSize: 20,

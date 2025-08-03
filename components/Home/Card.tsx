@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   cardImage: {
     width: '100%',
     height: 200,
-    borderRadius: 10,
+    borderRadius: 12,
     overflow: 'hidden'
   },
   textRow: {

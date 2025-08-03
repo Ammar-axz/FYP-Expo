@@ -1,20 +1,18 @@
 import React from "react";
-// Screens
-// import ReminderLayout from '../(Reminder)/_layout';
-// import Attendance from '@/app/Home/Attendance';
-// import DuaDetail from '@/app/Home/DuaDetail';
-// import DuaDhikr from '@/app/Home/DuaDhikr';
-// import QuranDetail from '@/app/Home/QuranDetail';
-// import QuranHadith from '@/app/Home/QuranHadith';
 import { BackButton } from "@/components/BackButton";
 import { Search } from "@/components/Search";
 import { Stack } from "expo-router";
 
+// Reusable header style to remove border/shadow
+const cleanHeader = {
+  backgroundColor: "#fff",
+};
+
 const HomeStack = () => {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{ headerShown: false, headerShadowVisible: false }}>
       <Stack.Screen name="index" />
-      {/* <Stack.Screen name="Courses"  /> */}
+
       <Stack.Screen
         name="Attendance"
         options={({ navigation }) => ({
@@ -22,9 +20,10 @@ const HomeStack = () => {
           headerTitle: "",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: { backgroundColor: "white", elevation: 0 },
+          headerStyle: cleanHeader,
         })}
       />
+
       <Stack.Screen
         name="Reminder"
         options={({ navigation }) => ({
@@ -32,43 +31,39 @@ const HomeStack = () => {
           headerTitle: "",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: "#fff",
-            elevation: 10,
-            shadowOffset: { height: 0 }, 
-            shadowOpacity: 0, // iOS
-            borderBottomWidth: 0, // fallback
-          },
+          headerStyle: cleanHeader,
+          headerBackTitleVisible: false,
+
         })}
       />
 
       <Stack.Screen
         name="Timetable"
-        options={({ route, navigation }) => ({
-          headerShown: false,
-          headerStyle: { backgroundColor: "#fff" },
-        })}
+        options={{ headerShown: false }}
       />
+
       <Stack.Screen
         name="Exam"
-        options={({ route, navigation }) => ({
+        options={({ navigation }) => ({
           headerShown: true,
           headerTitle: "Exams",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: { backgroundColor: "#fff" },
+          headerStyle: cleanHeader,
         })}
       />
+
       <Stack.Screen
         name="Sabaq"
-        options={({ route, navigation }) => ({
+        options={({ navigation }) => ({
           headerShown: true,
           headerTitle: "Sabaq",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: { backgroundColor: "#fff" },
+          headerStyle: cleanHeader,
         })}
       />
+
       <Stack.Screen
         name="DuaDhikr"
         options={({ navigation }) => ({
@@ -76,9 +71,10 @@ const HomeStack = () => {
           headerTitle: "",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: { backgroundColor: "#fff" },
+          headerStyle: cleanHeader,
         })}
       />
+
       <Stack.Screen
         name="DuaDetail"
         options={({ route, navigation }) => ({
@@ -87,9 +83,10 @@ const HomeStack = () => {
           headerLeft: () => <BackButton navigation={navigation} />,
           headerRight: () => <Search navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: { backgroundColor: "#fff" },
+          headerStyle: cleanHeader,
         })}
       />
+
       <Stack.Screen
         name="QuranHadith"
         options={({ navigation }) => ({
@@ -97,9 +94,10 @@ const HomeStack = () => {
           headerTitle: "",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: { backgroundColor: "#fff" },
+          headerStyle: cleanHeader,
         })}
       />
+
       <Stack.Screen
         name="QuranDetail"
         options={({ route, navigation }) => ({
@@ -108,20 +106,9 @@ const HomeStack = () => {
           headerLeft: () => <BackButton navigation={navigation} />,
           headerRight: () => <Search navigation={navigation} />,
           headerTitleAlign: "center",
-          headerStyle: { backgroundColor: "#fff" },
+          headerStyle: cleanHeader,
         })}
       />
-      {/* <Stack.Screen
-        name="(Reminder)"
-        component={ReminderLayout}
-        options={({navigation}) => ({
-          headerShown: true,
-          headerTitle: 'Reminder',
-          headerLeft: () => <BackButton navigation={navigation} />,
-          headerTitleAlign: 'center',
-          headerStyle: {backgroundColor: '#fff'},
-        })}
-      /> */}
     </Stack>
   );
 };

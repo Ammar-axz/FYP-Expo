@@ -78,7 +78,7 @@ const StudentForm = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
           <Heading heading="Enter Information" />
-          <View style={{marginVertical: 20}}>
+          <View style={{marginVertical: 10}}>
             <Paragraph paragraph="Provide your details to continue" />
           </View>
 
