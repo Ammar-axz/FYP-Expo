@@ -11,6 +11,7 @@ import axios from "axios";
 import { API } from "@/api";
 
 const QuickAccess = () => {
+  const { loggedInUserClasses } = userData();
   const days = [
     "Sunday",
     "Monday",
@@ -86,7 +87,7 @@ const QuickAccess = () => {
             <Text style={styles.SubTitle}> Schedule </Text>
           </TouchableOpacity>
         </View>
-        {/* <View style={styles.box}>
+         <View style={styles.box}>
         <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('QuranHadith')}}>
           <Image source={require('@/assets/icons/dua.png')} />
           <Text style={styles.SubTitle} > Books </Text>
@@ -95,7 +96,11 @@ const QuickAccess = () => {
           <Image source={require('@/assets/icons/dua.png')} />
           <Text style={styles.SubTitle} > Duas </Text>
         </TouchableOpacity>
-      </View> */}
+         <TouchableOpacity style={styles.innerBox} onPress={()=>{router.navigate('Courses')}}>
+          <Image source={require('@/assets/icons/dua.png')} />
+          <Text style={styles.SubTitle} > Courses </Text>
+        </TouchableOpacity>
+      </View>
         {/*<ViewAll title="Schedule" PageLink="(tabs-student)/(home)/Timetable" />
 
          <View style={styles.headingContainer}>
@@ -131,6 +136,16 @@ const QuickAccess = () => {
               scrollEnabled={false}
               contentContainerStyle={{ paddingBottom: 20 }}
             />
+
+            <FlatList
+        data={loggedInUserClasses || []}
+        renderItem={({ item }) => <Card student_class={item} />}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={false}
+        scrollEnabled={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
           </ScrollView>
         </View>
       </View>

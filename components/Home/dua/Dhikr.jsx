@@ -28,7 +28,7 @@ const DhikrCard = ({title, image}) => {
   return (
     <View style={styles.card}>
       <Image
-        source={typeof image === 'string' ? {uri: image} : image} // Handles both local & remote images
+        source={typeof image === 'string' ? {uri: image} : image}
         style={styles.icon}
       />
       <Text style={styles.title}>{title}</Text>

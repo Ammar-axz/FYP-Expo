@@ -6,6 +6,9 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 const DuaDetail = () => {
   const {dua} = useLocalSearchParams()
   const [showFull, setShowFull] = useState(false);
+  console.log('Received dua:', dua || 'No data received');
+  console.log('Received dua:', JSON.stringify(dua, null, 2));
+
 
   return (
     <View style={styles.container}>

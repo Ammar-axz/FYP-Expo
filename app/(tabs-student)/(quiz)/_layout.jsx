@@ -17,13 +17,23 @@ const QuizStack = () => {
           headerStyle: {backgroundColor: '#fff'},
         })}
       />
-      <Stack.Screen 
+      <Stack.Screen
+        name="QuizMain"
+        options={({navigation}) => ({
+          headerShown: false,
+          headerTitle: '',
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#fff'},
+        })}
+      />
+      {/* <Stack.Screen 
         name='QuizOnboard'
-        // component={QuizOnboard}
+        //component={QuizOnboard}
         options={() => ({
           headerShown: false,
-          headerStyle: {backgroundColor: '#fff'},
-      })} />
+          headerStyle: {backgroundColor: '#000'},
+      })} /> */}
       <Stack.Screen
         name="QuizDetails"
         // component={QuizDetails}

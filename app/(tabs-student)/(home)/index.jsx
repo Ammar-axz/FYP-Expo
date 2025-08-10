@@ -21,6 +21,8 @@ import {
 } from "react-native";
 import Header from "@/components/Home/Header";
 
+
+
 const Home = () => {
   const {
     loggedInUser,
@@ -37,6 +39,14 @@ const Home = () => {
   const [show, setShow] = useState(false);
   const isFocused = useIsFocused();
   let incQuizesData = [];
+
+
+  const DATA = [
+  {id: '1', title: 'Item 1', image: 'https://via.placeholder.com/150'},
+  {id: '2', title: 'Item 2', image: 'https://via.placeholder.com/150'},
+  {id: '3', title: 'Item 3', image: 'https://via.placeholder.com/150'},
+  {id: '4', title: 'Item 4', image: 'https://via.placeholder.com/150'},
+];
 
   useEffect(() => {
     getClasses();
@@ -143,15 +153,24 @@ const Home = () => {
 
           {/* Progress List */}
           <View style={styles.progressContainer}>
-            <FlatList
+             <FlatList
               data={incQuizes}
               keyExtractor={(item) => item.quiz._id}
               renderItem={({ item }) => <Progress quiz={item} />}
               horizontal
               showsHorizontalScrollIndicator={false}
-            />
+            /> 
+             
           </View>
-
+{/* <FlatList
+            data={DATA}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <Progress title={item.title} image={item.image} />
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          /> */}
           {/* Schedule Notification */}
           <View style={styles.schedule}>
             <TouchableOpacity

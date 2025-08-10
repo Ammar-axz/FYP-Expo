@@ -9,11 +9,11 @@ const DuaCard = ({ title, image, dua }) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => navigation.navigate('DuaDetail', { dua })} // Passing dua details
+      onPress={() => navigation.navigate('DuaDetail', { dua })}
     >
       <Image source={typeof image === 'string' ? { uri: image } : image} style={styles.icon} />
       <Text style={styles.title}>{title}</Text>
-      <Image source={require('../../../assets/icons/rightarrowblack.png')} style={styles.arrowIcon} />
+      <Image source={require('../../../assets/icons/chevron-right.png')} style={styles.arrowIcon} />
     </TouchableOpacity>
   );
 };
@@ -54,13 +54,13 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   title: {
-    fontSize: 19,
+    fontSize: 16,
     fontWeight: '500',
     flex: 1,
   },
   arrowIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
   },
 });

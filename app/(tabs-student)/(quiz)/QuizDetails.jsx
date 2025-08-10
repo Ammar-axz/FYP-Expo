@@ -330,15 +330,17 @@ const styles = StyleSheet.create({
         marginBottom:'3%'
     },
     totalQueTxt:{
-        fontSize:20,
-        marginHorizontal:'5%',
+        fontSize:14,
+        marginHorizontal:'2%',
         marginVertical:'2%',
+        fontWeight: '500'
     },
     questionTxt:{
-        fontSize:35,
+        fontSize:30,
         marginHorizontal:10,
         marginBottom:10,
-        fontWeight:'bold',
+        fontWeight:'600',
+        textTransform: 'capitalize'
     },
     choiceContainer:{
         flex:1,
@@ -354,7 +356,7 @@ const styles = StyleSheet.create({
         width:30
     },
     choiceOption:{
-        backgroundColor:'rgb(187, 187, 187)',
+        backgroundColor:'#F5F5F5',
         borderRadius:100,
         margin:'2%',
         padding:'5%',
@@ -381,10 +383,10 @@ const styles = StyleSheet.create({
         fontWeight:'bold'
     },
     choiceTxt2:{
-        fontSize:23,
+        fontSize:16,
         textAlign:'center',
-        color:'black',
-        fontWeight:'bold'
+        color:'#121212',
+        fontWeight:'medium'
     },
     choiceTxtContainer:{
         flexDirection:'row',

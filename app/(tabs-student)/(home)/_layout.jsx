@@ -3,6 +3,7 @@ import { BackButton } from "@/components/BackButton";
 import { Search } from "@/components/Search";
 import { Stack } from "expo-router";
 
+
 // Reusable header style to remove border/shadow
 const cleanHeader = {
   backgroundColor: "#fff",
@@ -53,6 +54,17 @@ const HomeStack = () => {
         })}
       />
 
+        <Stack.Screen
+        name="Courses"
+        options={({ navigation }) => ({
+          headerShown: false,
+          headerTitle: "Courses",
+          headerLeft: () => <BackButton navigation={navigation} />,
+          headerTitleAlign: "center",
+          headerStyle: cleanHeader,
+        })}
+      />
+
       <Stack.Screen
         name="Sabaq"
         options={({ navigation }) => ({
@@ -86,6 +98,7 @@ const HomeStack = () => {
           headerStyle: cleanHeader,
         })}
       />
+      
 
       <Stack.Screen
         name="QuranHadith"
