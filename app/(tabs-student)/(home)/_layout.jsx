@@ -18,7 +18,7 @@ const HomeStack = () => {
         name="Attendance"
         options={({ navigation }) => ({
           headerShown: true,
-          headerTitle: "",
+          headerTitle: "Attendance",
           headerLeft: () => <BackButton navigation={navigation} />,
           headerTitleAlign: "center",
           headerStyle: cleanHeader,

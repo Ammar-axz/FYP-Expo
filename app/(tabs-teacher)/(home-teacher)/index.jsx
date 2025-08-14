@@ -48,23 +48,23 @@ const Home = () => {
   return (
     <>
       <ScrollView style={styles.mainContainer}>
-        {/* <Image
+        <Image
           style={styles.headerImg}
           source={require("@/assets/images/QuizHeaderBG.png")}
           resizeMode="stretch"
-        /> */}
-        {/* <ImageBackground
+        />
+        <ImageBackground
           style={styles.wrapper}
           source={require('@/assets/images/Bg.png')}
-          resizeMode="cover"> */}
+          resizeMode="cover">
         {/* Header Section */}
 
         <Header
           name={loggedInUser}
           profileImage={loggedInUserPfp}
           onBellPress={() => console.log("Bell pressed")}
-          greetingStyle={{ color: "#00000080" }}
-          nameStyle={{ color: "#000" }}
+          greetingStyle={{ color: "white" }}
+          nameStyle={{ color: "white" }}
           bellButtonStyle={{ backgroundColor: "#fff" }}
           profileImageStyle={{ borderWidth: 2, borderColor: "#fff" }}
         />
@@ -74,7 +74,7 @@ const Home = () => {
           <HomeNotification />
         </View>
 
-        {/* </ImageBackground> */}
+        </ImageBackground>
         <QuickAccessTeacher />
       </ScrollView>
     </>
@@ -88,61 +88,61 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   mainContainer: {
-    backgroundColor: "#d4eee0",
+    backgroundColor: "white",
   },
   headerImg: {
     position: "absolute",
     height: 400,
   },
-  // container: {
-  //   marginTop: 25,
-  //   padding: 16,
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "space-between",
-  // },
-  // textContainer: {
-  //   flex: 1,
-  // },
-  // greeting: {
-  //   color: "#B0C4B1",
-  //   fontSize: 16,
-  // },
-  // name: {
-  //   color: "white",
-  //   fontSize: 24,
-  //   fontWeight: "bold",
-  // },
-  // iconsContainer: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  // },
-  // notificationDot: {
-  //   position: "absolute",
-  //   top: -3,
-  //   right: -3,
-  //   width: 8,
-  //   height: 8,
-  //   backgroundColor: "red",
-  //   borderRadius: 4,
-  // },
-  // profileImage: {
-  //   width: 50,
-  //   height: 50,
-  //   borderRadius: 100,
-  //   marginLeft: 10,
-  //   marginRight:10,
-  //   resizeMode: "contain",
-  // },
-  // bellButton: {
-  //   borderRadius: 100,
-  // },
-  // topNotiIcon: {
-  //   width: 40,
-  //   height: 40,
-  //   borderRadius: 100,
-  //   resizeMode: "contain",
-  // },
+  container: {
+    marginTop: 25,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  textContainer: {
+    flex: 1,
+  },
+  greeting: {
+    color: "#B0C4B1",
+    fontSize: 16,
+  },
+  name: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  iconsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  notificationDot: {
+    position: "absolute",
+    top: -3,
+    right: -3,
+    width: 8,
+    height: 8,
+    backgroundColor: "red",
+    borderRadius: 4,
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    marginLeft: 10,
+    marginRight:10,
+    resizeMode: "contain",
+  },
+  bellButton: {
+    borderRadius: 100,
+  },
+  topNotiIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    resizeMode: "contain",
+  },
   progressContainer: {
     flexDirection: "row",
   },

@@ -129,7 +129,7 @@ const Attendance = () => {
       />
 
       {/* Attendance List */}
-      <View style={{ flex: 1, marginTop: 10 }}>
+      {/* <View style={{ flex: 1, marginTop: 10 }}>
         {attendance.length === 0 ? (
           <Text style={{ fontSize: 16, textAlign: "center" }}>No attendance records</Text>
         ) : (
@@ -139,7 +139,7 @@ const Attendance = () => {
             renderItem={({ item }) => <StudentListComp attendanceItem={item} />}
           />
         )}
-      </View>
+      </View> */}
     </View>
   );
 };

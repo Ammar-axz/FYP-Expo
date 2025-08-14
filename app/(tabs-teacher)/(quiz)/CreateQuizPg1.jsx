@@ -23,7 +23,7 @@ const categories = [
 const CreateQuizPg1 = () => {
 
   const {Class} = useLocalSearchParams()
-  const selectedClass = JSON.parse(decodeURIComponent(Class));
+  const selectedClass = JSON.parse(decodeURIComponent(Class))
   
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [quiz, setQuiz] = useState({

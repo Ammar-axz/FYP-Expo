@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
+    // padding: 10,
     marginBottom: 25,
     marginTop: 5,
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   dueContainer: {
     backgroundColor: "rgba(49,152,98,255)",
     padding: 7,
-    width: 151,
+    width: 171,
     borderRadius: 30,
     marginTop: 5,
   },

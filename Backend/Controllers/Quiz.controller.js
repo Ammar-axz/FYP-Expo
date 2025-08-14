@@ -9,6 +9,9 @@ async function AddQuiz(req, res, next) {
 
         // Validate required fields
         if (!title || !class_id || !due_date || !t_questions || !questions || questions.length === 0) {
+            console.log(req.body)
+            
+            console.log(title, class_id, class_name, due_date, t_questions, questions)            
             return res.status(400).send("Missing required fields");
         }
 

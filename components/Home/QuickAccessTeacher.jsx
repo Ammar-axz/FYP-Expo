@@ -40,7 +40,7 @@ const QuickAccessTeacher = () => {
   const filteredSchedule = schedule.filter((item) => item.Day === dayName);
 
   return (
-    <View style={{backgroundColor:'#fff'}}>  
+    <View style={{backgroundColor:'#154840'}}>  
     
     <View style={styles.main}>
       {/* <ViewAll title="Quick Access" PageLink="Courses" /> */}

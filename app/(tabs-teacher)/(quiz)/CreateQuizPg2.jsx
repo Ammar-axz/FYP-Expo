@@ -19,6 +19,9 @@ const CreateQuizPg2 = () => {
   const router = useRouter()
   const {quiz} = useLocalSearchParams()
   const quizData = JSON.parse(decodeURIComponent(quiz));
+  console.log(quizData.class_id);
+  console.log(quizData.class_name);
+  
   const [modalVisible, setModalVisible] = useState(false);
   const [quizQuestions,setQuizQuestions] = useState([])
   const [error,setError] = useState()

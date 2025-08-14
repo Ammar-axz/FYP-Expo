@@ -103,7 +103,7 @@ const Quiz = () => {
             style={styles.picker}
           >
             {loggedInUserClasses.map((item, index) => (
-              <Picker.Item key={index} label={item.Class} value={item._id} />
+              <Picker.Item key={index} label={item.Class} value={item} />
             ))}
           </Picker>
         </View>
