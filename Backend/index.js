@@ -78,9 +78,9 @@ io.on('connection', (socket) =>
     })
     
 })
-// httpServer.listen(port,()=>{
-//     console.log(`Server running at port  ${port}`)
-// })
+httpServer.listen(port,()=>{
+    console.log(`Server running at port  ${port}`)
+})
 
 app.get('/',(req,res)=>{
     res.send("Hello World")
