@@ -14,7 +14,7 @@ import Message from './Models/Message.model.js'
 // import { adminJs, adminRouter } from './Admin/admin.js' --
 
 // moved to admin.js
-// await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
+await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
 
 
 const Storage = multer.diskStorage({
