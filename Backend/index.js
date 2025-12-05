@@ -42,7 +42,7 @@ app.use(cors())
 app.use(express.static('public'))
 app.use(express.json())
 
-app.use(adminJs.options.rootPath, adminRouter)
+// app.use(adminJs.options.rootPath, adminRouter)
 
 const httpServer = createServer(app);
 const io = new Server(httpServer,{
