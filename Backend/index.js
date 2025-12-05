@@ -11,7 +11,7 @@ import ClassesController from './Controllers/Classes.controller.js'
 import ReminderController from './Controllers/Reminder.controller.js'
 
 import Message from './Models/Message.model.js'
-import { adminJs, adminRouter } from './Admin/admin.js'
+// import { adminJs, adminRouter } from './Admin/admin.js' --
 
 // moved to admin.js
 // await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
@@ -42,7 +42,7 @@ app.use(cors())
 app.use(express.static('public'))
 app.use(express.json())
 
-// app.use(adminJs.options.rootPath, adminRouter)
+// app.use(adminJs.options.rootPath, adminRouter) --
 
 const httpServer = createServer(app);
 const io = new Server(httpServer,{
