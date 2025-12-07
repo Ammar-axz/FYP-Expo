@@ -37,9 +37,9 @@ const Storage = multer.diskStorage({
 const upload = multer({storage:Storage})
 
 const app=express()
-const port=5000
+const port=process.env.PORT || 5000
 app.use(cors())
-app.use(express.static('public'))
+app.use(express.static('Public'))
 app.use(express.json())
 
 app.use(adminJs.options.rootPath, adminRouter)
@@ -78,7 +78,7 @@ io.on('connection', (socket) =>
     })
     
 })
-httpServer.listen(process.env.PORT || port,()=>{
+httpServer.listen(port,()=>{
     console.log(`Server running at port  ${port}`)
 })
 
