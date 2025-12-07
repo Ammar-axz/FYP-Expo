@@ -103,7 +103,7 @@ const adminJs = new AdminJS({
   ],
   branding: {
     companyName: 'ILM PRO',
-    logo: 'http://localhost:5000/Images/Logos/IlmProLandscapeWhite.png',
+    // logo: 'http://localhost:5000/Images/Logos/IlmProLandscapeWhite.png',
     // favicon: 'https://yourdomain.com/favicon.ico',
     softwareBrothers: false, // removes "SoftwareBrothers" branding
   }
