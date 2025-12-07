@@ -32,7 +32,7 @@ import Sabaq from '../Models/Sabaq.model.js'
 import Parent_Student from '../Models/Parent_Student.model.js'
 
 
-const db = await mongoose.connect("mongodb+srv://ammar:ammar123@ilm-pro.jeilouv.mongodb.net/?retryWrites=true&w=majority&appName=ILM-Pro")
+const db = await mongoose.connect(process.env.MONGODB_URI)
 
 const componentLoader = new ComponentLoader()
 
