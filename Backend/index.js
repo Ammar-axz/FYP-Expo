@@ -11,10 +11,11 @@ import ClassesController from './Controllers/Classes.controller.js'
 import ReminderController from './Controllers/Reminder.controller.js'
 
 import Message from './Models/Message.model.js'
-import { adminJs, adminRouter } from './Admin/admin.js'
+// import { adminJs, adminRouter } from './Admin/admin.js' --
 
 // moved to admin.js
 // await mongoose.connect("")
+await mongoose.connect(process.env.MONGODB_URI)
 
 
 const Storage = multer.diskStorage({
@@ -42,7 +43,7 @@ app.use(cors())
 app.use(express.static('Public'))
 app.use(express.json())
 
-app.use(adminJs.options.rootPath, adminRouter)
+// app.use(adminJs.options.rootPath, adminRouter) --
 
 const httpServer = createServer(app);
 const io = new Server(httpServer,{
