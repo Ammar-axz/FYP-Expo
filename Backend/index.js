@@ -11,6 +11,25 @@ import ClassesController from './Controllers/Classes.controller.js'
 import ReminderController from './Controllers/Reminder.controller.js'
 
 import Message from './Models/Message.model.js'
+
+import axios from 'axios'
+import google from 'googleapis'
+import serviceAccount from './google-services.json'
+
+const SCOPES = ['https://www.googleapis.com/auth/firebase.messaging'];
+
+async function getAccessToken() {
+  const jwtClient = new google.auth.JWT(
+    serviceAccount.client_email,
+    null,
+    serviceAccount.private_key,
+    SCOPES
+  );
+
+  const { token } = await jwtClient.authorize();
+  return token;
+}
+
 // import { adminJs, adminRouter } from './Admin/admin.js' --
 
 // moved to admin.js
@@ -86,6 +105,39 @@ app.get('/',(req,res)=>{
     res.send("Hello World")
 })
 
+
+//Push Notification
+app.post('/send-notification', async (req, res) => {
+  const { token, title, body } = req.body;
+
+  try {
+    const accessToken = await getAccessToken();
+
+    const response = await axios.post(
+      `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
+      {
+        message: {
+          token,
+          notification: {
+            title,
+            body
+          }
+        }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    res.json({ success: true, data: response.data });
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    res.status(500).json({ success: false });
+  }
+});
 
 //User
 app.get('/api/getUser',UserControllers.getUser)
