@@ -4,6 +4,7 @@ import { createServer } from "http"
 import mongoose from 'mongoose'
 import multer from 'multer'
 import { Server } from "socket.io"
+import fs from 'fs';
 
 import UserControllers from './Controllers/User.controller.js'
 import QuizController from './Controllers/Quiz.controller.js'
@@ -14,7 +15,9 @@ import Message from './Models/Message.model.js'
 
 import axios from 'axios'
 import google from 'googleapis'
-import serviceAccount from './google-services.json'
+// import serviceAccount from './google-services.json' assert { type: 'json' };
+const rawData = fs.readFileSync('./google-services.json', 'utf8');
+const serviceAccount = JSON.parse(rawData);
 
 const SCOPES = ['https://www.googleapis.com/auth/firebase.messaging'];
 
