@@ -9,6 +9,7 @@ buildscript {
     classpath('com.android.tools.build:gradle')
     classpath('com.facebook.react:react-native-gradle-plugin')
     classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+    classpath('com.google.gms:google-services:4.4.2')
   }
 }
 
@@ -20,6 +21,14 @@ def reactNativeAndroidDir = new File(
   "../android"
 )
 
+def notifeeDir = new File(
+  providers.exec {
+    workingDir(rootDir)
+    commandLine("node", "--print", "require.resolve('@notifee/react-native/package.json')")
+  }.standardOutput.asText.get().trim(),
+  "../android"
+).getParentFile()
+
 allprojects {
   repositories {
     maven {
@@ -30,6 +39,10 @@ allprojects {
     google()
     mavenCentral()
     maven { url 'https://www.jitpack.io' }
+    // Notifee local Maven repository
+    maven {
+      url "${notifeeDir}/android/libs"
+    }
   }
 }
 

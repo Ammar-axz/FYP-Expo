@@ -9,74 +9,130 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UserContextProvider } from '@/Context/UserContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-import messaging from '@react-native-firebase/messaging';
 import { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
-export default function RootLayout() 
-{
-  const [fcmToken, setFcmToken] = useState <string> ("");
-  
-  useEffect(() => {
-    // Request permission
-    messaging().requestPermission().then(authStatus => {
-      if (
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL
-      ) {
-        getToken();
-      }
-    });
+// Import Firebase with error handling
+let messagingService: any = null;
+let messagingModule: any = null;
 
-    // Foreground messages
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('New Notification', remoteMessage.notification?.body || 'No body');
-    });
+try {
+  const firebase = require('@/firebase.js');
+  messagingService = firebase.messagingService;
+  messagingModule = firebase.messagingModule;
+} catch (error) {
+  console.warn('Firebase not available:', error);
+}
 
-    // Background messages
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Background message', remoteMessage);
-    });
+export default function RootLayout() {
+  const [fcmToken, setFcmToken] = useState<string>('');
 
-    return unsubscribe;
-  }, []);
-
+  // Function to get FCM token
   const getToken = async () => {
-    const token = await messaging().getToken();
-    console.log('FCM Token:', token);
-    setFcmToken(token);
-    // Send this token to your backend
+    if (!messagingService) {
+      console.warn('Firebase messaging not available');
+      return;
+    }
+    try {
+      const token = await messagingService.getToken();
+      console.log('FCM Token:', token);
+      setFcmToken(token);
+      // TODO: Send this token to your backend
+    } catch (err) {
+      console.error('Error getting FCM token:', err);
+    }
+  };
+  // Request notification permission
+  const requestPermission = async () => {
+    if (!messagingService || !messagingModule) {
+      console.warn('Firebase messaging not available');
+      return;
+    }
+    try {
+      const authStatus = await messagingService.requestPermission();
+      const enabled =
+        authStatus === messagingModule.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messagingModule.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('FCM Permission granted');
+        getToken();
+      } else {
+        console.log('FCM Permission denied');
+      }
+    } catch (error) {
+      console.error('Error requesting FCM permission:', error);
+    }
   };
 
+  async function createDefaultChannel() {
+    try {
+      await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+        importance: AndroidImportance.HIGH,
+      });
+      console.log('Notification channel created');
+    } catch (error) {
+      console.error('Error creating notification channel:', error);
+    }
+  }
 
+  useEffect(() => {
+    createDefaultChannel();
 
+    if (!messagingService || !messagingModule) {
+      console.warn('Firebase messaging not initialized. Skipping FCM setup.');
+      return;
+    }
 
+    requestPermission();
+
+    // Handle foreground messages
+    const unsubscribeForeground = messagingService.onMessage(async (remoteMessage: any) => {
+      Alert.alert('New Notification', remoteMessage.notification?.body || 'No body');
+      console.log('Foreground message:', remoteMessage);
+    });
+
+    // Handle background messages
+    messagingService.setBackgroundMessageHandler(async (remoteMessage: any) => {
+      console.log('Background message:', remoteMessage);
+      // Optional: Show local notification using notifee
+    });
+
+    return () => {
+      if (unsubscribeForeground) {
+        unsubscribeForeground();
+      }
+    };
+  }, []);
+
+  // Font loading
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
     <UserContextProvider>
-    <GestureHandlerRootView>
-    <SafeAreaProvider>
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack
-      screenOptions={
-        {headerShown:false}
-      }
-      >
-        <Stack.Screen name="(splash)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-    </SafeAreaProvider>
-    </GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="(splash)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </UserContextProvider>
   );
 }

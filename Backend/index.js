@@ -13,25 +13,15 @@ import ReminderController from './Controllers/Reminder.controller.js'
 
 import Message from './Models/Message.model.js'
 
-import axios from 'axios'
-import google from 'googleapis'
+
 // import serviceAccount from './google-services.json' assert { type: 'json' };
-const rawData = fs.readFileSync('./google-services.json', 'utf8');
+const rawData = fs.readFileSync('./ilmpro-notifications-firebase-adminsdk-fbsvc-d2f1089608.json', 'utf8');
 const serviceAccount = JSON.parse(rawData);
+import admin from 'firebase-admin'
 
-const SCOPES = ['https://www.googleapis.com/auth/firebase.messaging'];
-
-async function getAccessToken() {
-  const jwtClient = new google.auth.JWT(
-    serviceAccount.client_email,
-    null,
-    serviceAccount.private_key,
-    SCOPES
-  );
-
-  const { token } = await jwtClient.authorize();
-  return token;
-}
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 // import { adminJs, adminRouter } from './Admin/admin.js' --
 
@@ -111,34 +101,47 @@ app.get('/',(req,res)=>{
 
 //Push Notification
 app.post('/send-notification', async (req, res) => {
-  const { token, title, body } = req.body;
+  const { token, title, body, data } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ success: false, message: 'Token missing' });
+  }
 
   try {
-    const accessToken = await getAccessToken();
-
-    const response = await axios.post(
-      `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
-      {
-        message: {
-          token,
-          notification: {
-            title,
-            body
-          }
-        }
+    console.log('FCM TOKEN:', token);
+    const message = {
+      token,
+      notification: {
+        title: title || 'Notification',
+        body: body || '',
       },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+      data: data || {},
+      android: {
+        priority: 'high',
+        notification: {
+          channelId: 'default', // Make sure this channel exists in your app
+          sound: 'default',     // Optional: sound
+          clickAction: 'FLUTTER_NOTIFICATION_CLICK' // For handling clicks
+        },
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'default',
+          },
+        },
+      },
+    };
 
-    res.json({ success: true, data: response.data });
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).json({ success: false });
+    const response = await admin.messaging().send(message);
+
+    res.json({
+      success: true,
+      messageId: response,
+    });
+  } catch (error) {
+    console.error('FCM Error:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
